@@ -1,5 +1,6 @@
-struct A
+int main()
 {
-    int a;
-};
-;
+    char c = 'a';
+    (c = getchar()) = 'a';
+    return 0;
+}

@@ -6,6 +6,7 @@ import pprint
 
 
 precedence = (
+    ('left', '=', 'MULTEQ', 'DIVEQ', 'ADDEQ', 'SUBEQ'),
     ('left', '?', ':'),
     ('left', 'LOGOR'),
     ('left', 'LOGAND'),
@@ -370,26 +371,6 @@ def p_expr_or_null_or_init(p):
     p[0] = p[1]
 
 
-def p_assignment_expr(p):
-    """
-        assignment_expr : ID assignmenteq_op expression
-    """
-    var = n("var", [], p[1])
-    p[0] = n("assignemnteq_expr", [var, p[3]], p[2])
-
-
-def p_assignment_op(p):
-    """
-        assignmenteq_op     : '='
-                            | MULTEQ
-                            | ADDEQ
-                            | SUBEQ
-                            | MODEQ
-                            | DIVEQ
-    """
-    p[0] = p[1]
-
-
 def p_jump(p):
     """
         jump    : BREAK
@@ -426,17 +407,42 @@ def p_expressions_end(p):
 
 def p_expression(p):
     """
-        expression  : bin_expr
-                    | assignment_expr
+        expression  : expression '=' expression
+                    | expression ADDEQ expression
+                    | expression SUBEQ expression
+                    | expression MULTEQ expression
+                    | expression DIVEQ expression
+                    | expression MODEQ expression
+    """
+    p[0] = n("assignment", [p[1], p[3]], p[2])
+
+
+def p_expression_wparenth(p):
+    """
+        expression : '(' expression ')'
+    """
+    p[0] = p[2]
+
+
+def p_expression_to_ternary(p):
+    """
+        expression : tern_expr
     """
     p[0] = p[1]
 
 
-def p_expression_wternary(p):
+def p_ternary_expr(p):
     """
-        expression  : bin_expr '?' bin_expr ':' bin_expr
+        tern_expr  : tern_expr '?' tern_expr ':' tern_expr
     """
-    p[0] = n("expr_ternary", [p[1], p[3], p[5]])
+    p[0] = n("ternary_expr", [p[1], p[3], p[5]])
+
+
+def p_ternary_expr_to_binary(p):
+    """
+        tern_expr : bin_expr
+    """
+    p[0] = p[1]
 
 
 def p_binary_expr(p):
