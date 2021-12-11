@@ -173,6 +173,7 @@ element : ID
         | NUMBER // 11212.12121
         | CHR // character 'a'
         | STR // string "abd"
+        | ( expression )
 ```
 
 Currently not supprted styles (that i know of):
