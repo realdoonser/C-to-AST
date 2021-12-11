@@ -295,7 +295,7 @@ def p_conditional(p):
 
 def p_conditional_elseif(p):
     """
-        conditional : IF '(' expression ')' ELSE conditional
+        conditional : IF '(' expression ')' '{' stats_or_null '}' ELSE conditional
     """
     p[0] = n("conditional", [p[3], p[6]], "else")
 

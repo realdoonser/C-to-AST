@@ -57,7 +57,7 @@ Rule 42    statement -> decl ;
 Rule 43    statement -> assignment_expr ;
 Rule 44    statement -> conditional
 Rule 45    conditional -> IF ( expression ) { stats_or_null }
-Rule 46    conditional -> IF ( expression ) ELSE conditional
+Rule 46    conditional -> IF ( expression ) { stats_or_null } ELSE conditional
 Rule 47    conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null }
 Rule 48    stats_or_null -> statements
 Rule 49    stats_or_null -> empty
@@ -114,8 +114,8 @@ WHILE                :
 [                    : 16 17
 ]                    : 16 17
 error                : 
-{                    : 19 26 32 33 34 35 45 47 47 50
-}                    : 19 26 32 33 34 35 45 47 47 50
+{                    : 19 26 32 33 34 35 45 46 47 47 50
+}                    : 19 26 32 33 34 35 45 46 47 47 50
 
 Nonterminals, with rules where they appear
 
@@ -142,7 +142,7 @@ params               : 32 34 36
 program              : 1 2 0
 statement            : 39 40
 statements           : 32 33 39 48
-stats_or_null        : 45 47 47 50
+stats_or_null        : 45 46 47 47 50
 type                 : 8 31 32 33 34 35 38
 
 Parsing method: LALR
@@ -877,7 +877,7 @@ state 52
     (9) decl -> . new_type_dec
     (51) assignment_expr -> . ID assignmenteq_op expression
     (45) conditional -> . IF ( expression ) { stats_or_null }
-    (46) conditional -> . IF ( expression ) ELSE conditional
+    (46) conditional -> . IF ( expression ) { stats_or_null } ELSE conditional
     (47) conditional -> . IF ( expression ) { stats_or_null } ELSE { stats_or_null }
     (57) type -> . VOID
     (58) type -> . CHAR
@@ -1016,7 +1016,7 @@ state 61
     (9) decl -> . new_type_dec
     (51) assignment_expr -> . ID assignmenteq_op expression
     (45) conditional -> . IF ( expression ) { stats_or_null }
-    (46) conditional -> . IF ( expression ) ELSE conditional
+    (46) conditional -> . IF ( expression ) { stats_or_null } ELSE conditional
     (47) conditional -> . IF ( expression ) { stats_or_null } ELSE { stats_or_null }
     (57) type -> . VOID
     (58) type -> . CHAR
@@ -1114,7 +1114,7 @@ state 64
     (9) decl -> . new_type_dec
     (51) assignment_expr -> . ID assignmenteq_op expression
     (45) conditional -> . IF ( expression ) { stats_or_null }
-    (46) conditional -> . IF ( expression ) ELSE conditional
+    (46) conditional -> . IF ( expression ) { stats_or_null } ELSE conditional
     (47) conditional -> . IF ( expression ) { stats_or_null } ELSE { stats_or_null }
     (57) type -> . VOID
     (58) type -> . CHAR
@@ -1199,7 +1199,7 @@ state 67
     (9) decl -> . new_type_dec
     (51) assignment_expr -> . ID assignmenteq_op expression
     (45) conditional -> . IF ( expression ) { stats_or_null }
-    (46) conditional -> . IF ( expression ) ELSE conditional
+    (46) conditional -> . IF ( expression ) { stats_or_null } ELSE conditional
     (47) conditional -> . IF ( expression ) { stats_or_null } ELSE { stats_or_null }
     (57) type -> . VOID
     (58) type -> . CHAR
@@ -1285,7 +1285,7 @@ state 71
 state 72
 
     (45) conditional -> IF . ( expression ) { stats_or_null }
-    (46) conditional -> IF . ( expression ) ELSE conditional
+    (46) conditional -> IF . ( expression ) { stats_or_null } ELSE conditional
     (47) conditional -> IF . ( expression ) { stats_or_null } ELSE { stats_or_null }
 
     (               shift and go to state 95
@@ -1558,7 +1558,7 @@ state 94
 state 95
 
     (45) conditional -> IF ( . expression ) { stats_or_null }
-    (46) conditional -> IF ( . expression ) ELSE conditional
+    (46) conditional -> IF ( . expression ) { stats_or_null } ELSE conditional
     (47) conditional -> IF ( . expression ) { stats_or_null } ELSE { stats_or_null }
     (22) expression -> . ID
     (23) expression -> . NUMBER
@@ -1628,7 +1628,7 @@ state 99
 state 100
 
     (45) conditional -> IF ( expression . ) { stats_or_null }
-    (46) conditional -> IF ( expression . ) ELSE conditional
+    (46) conditional -> IF ( expression . ) { stats_or_null } ELSE conditional
     (47) conditional -> IF ( expression . ) { stats_or_null } ELSE { stats_or_null }
 
     )               shift and go to state 101
@@ -1637,16 +1637,16 @@ state 100
 state 101
 
     (45) conditional -> IF ( expression ) . { stats_or_null }
-    (46) conditional -> IF ( expression ) . ELSE conditional
+    (46) conditional -> IF ( expression ) . { stats_or_null } ELSE conditional
     (47) conditional -> IF ( expression ) . { stats_or_null } ELSE { stats_or_null }
 
     {               shift and go to state 102
-    ELSE            shift and go to state 103
 
 
 state 102
 
     (45) conditional -> IF ( expression ) { . stats_or_null }
+    (46) conditional -> IF ( expression ) { . stats_or_null } ELSE conditional
     (47) conditional -> IF ( expression ) { . stats_or_null } ELSE { stats_or_null }
     (48) stats_or_null -> . statements
     (49) stats_or_null -> . empty
@@ -1666,7 +1666,7 @@ state 102
     (9) decl -> . new_type_dec
     (51) assignment_expr -> . ID assignmenteq_op expression
     (45) conditional -> . IF ( expression ) { stats_or_null }
-    (46) conditional -> . IF ( expression ) ELSE conditional
+    (46) conditional -> . IF ( expression ) { stats_or_null } ELSE conditional
     (47) conditional -> . IF ( expression ) { stats_or_null } ELSE { stats_or_null }
     (57) type -> . VOID
     (58) type -> . CHAR
@@ -1697,61 +1697,30 @@ state 102
     CLASS           shift and go to state 18
 
     expression                     shift and go to state 68
-    stats_or_null                  shift and go to state 104
+    stats_or_null                  shift and go to state 103
+    conditional                    shift and go to state 71
     statements                     shift and go to state 88
     empty                          shift and go to state 89
     statement                      shift and go to state 67
     decl                           shift and go to state 69
     assignment_expr                shift and go to state 70
-    conditional                    shift and go to state 71
     type                           shift and go to state 62
     new_type_dec                   shift and go to state 8
     new_type                       shift and go to state 16
 
 state 103
 
-    (46) conditional -> IF ( expression ) ELSE . conditional
-    (45) conditional -> . IF ( expression ) { stats_or_null }
-    (46) conditional -> . IF ( expression ) ELSE conditional
-    (47) conditional -> . IF ( expression ) { stats_or_null } ELSE { stats_or_null }
+    (45) conditional -> IF ( expression ) { stats_or_null . }
+    (46) conditional -> IF ( expression ) { stats_or_null . } ELSE conditional
+    (47) conditional -> IF ( expression ) { stats_or_null . } ELSE { stats_or_null }
 
-    IF              shift and go to state 72
+    }               shift and go to state 104
 
-    conditional                    shift and go to state 105
 
 state 104
 
-    (45) conditional -> IF ( expression ) { stats_or_null . }
-    (47) conditional -> IF ( expression ) { stats_or_null . } ELSE { stats_or_null }
-
-    }               shift and go to state 106
-
-
-state 105
-
-    (46) conditional -> IF ( expression ) ELSE conditional .
-
-    {               reduce using rule 46 (conditional -> IF ( expression ) ELSE conditional .)
-    ID              reduce using rule 46 (conditional -> IF ( expression ) ELSE conditional .)
-    NUMBER          reduce using rule 46 (conditional -> IF ( expression ) ELSE conditional .)
-    CHR             reduce using rule 46 (conditional -> IF ( expression ) ELSE conditional .)
-    STR             reduce using rule 46 (conditional -> IF ( expression ) ELSE conditional .)
-    IF              reduce using rule 46 (conditional -> IF ( expression ) ELSE conditional .)
-    VOID            reduce using rule 46 (conditional -> IF ( expression ) ELSE conditional .)
-    CHAR            reduce using rule 46 (conditional -> IF ( expression ) ELSE conditional .)
-    SHORT           reduce using rule 46 (conditional -> IF ( expression ) ELSE conditional .)
-    INT             reduce using rule 46 (conditional -> IF ( expression ) ELSE conditional .)
-    LONG            reduce using rule 46 (conditional -> IF ( expression ) ELSE conditional .)
-    FLOAT           reduce using rule 46 (conditional -> IF ( expression ) ELSE conditional .)
-    DOUBLE          reduce using rule 46 (conditional -> IF ( expression ) ELSE conditional .)
-    STRUCT          reduce using rule 46 (conditional -> IF ( expression ) ELSE conditional .)
-    CLASS           reduce using rule 46 (conditional -> IF ( expression ) ELSE conditional .)
-    }               reduce using rule 46 (conditional -> IF ( expression ) ELSE conditional .)
-
-
-state 106
-
     (45) conditional -> IF ( expression ) { stats_or_null } .
+    (46) conditional -> IF ( expression ) { stats_or_null } . ELSE conditional
     (47) conditional -> IF ( expression ) { stats_or_null } . ELSE { stats_or_null }
 
     {               reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
@@ -1770,17 +1739,23 @@ state 106
     STRUCT          reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
     CLASS           reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
     }               reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    ELSE            shift and go to state 107
+    ELSE            shift and go to state 105
 
 
-state 107
+state 105
 
+    (46) conditional -> IF ( expression ) { stats_or_null } ELSE . conditional
     (47) conditional -> IF ( expression ) { stats_or_null } ELSE . { stats_or_null }
+    (45) conditional -> . IF ( expression ) { stats_or_null }
+    (46) conditional -> . IF ( expression ) { stats_or_null } ELSE conditional
+    (47) conditional -> . IF ( expression ) { stats_or_null } ELSE { stats_or_null }
 
-    {               shift and go to state 108
+    {               shift and go to state 106
+    IF              shift and go to state 72
 
+    conditional                    shift and go to state 107
 
-state 108
+state 106
 
     (47) conditional -> IF ( expression ) { stats_or_null } ELSE { . stats_or_null }
     (48) stats_or_null -> . statements
@@ -1801,7 +1776,7 @@ state 108
     (9) decl -> . new_type_dec
     (51) assignment_expr -> . ID assignmenteq_op expression
     (45) conditional -> . IF ( expression ) { stats_or_null }
-    (46) conditional -> . IF ( expression ) ELSE conditional
+    (46) conditional -> . IF ( expression ) { stats_or_null } ELSE conditional
     (47) conditional -> . IF ( expression ) { stats_or_null } ELSE { stats_or_null }
     (57) type -> . VOID
     (58) type -> . CHAR
@@ -1832,7 +1807,7 @@ state 108
     CLASS           shift and go to state 18
 
     expression                     shift and go to state 68
-    stats_or_null                  shift and go to state 109
+    stats_or_null                  shift and go to state 108
     statements                     shift and go to state 88
     empty                          shift and go to state 89
     statement                      shift and go to state 67
@@ -1843,14 +1818,36 @@ state 108
     new_type_dec                   shift and go to state 8
     new_type                       shift and go to state 16
 
-state 109
+state 107
+
+    (46) conditional -> IF ( expression ) { stats_or_null } ELSE conditional .
+
+    {               reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
+    ID              reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
+    NUMBER          reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
+    CHR             reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
+    STR             reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
+    IF              reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
+    VOID            reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
+    CHAR            reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
+    SHORT           reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
+    INT             reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
+    LONG            reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
+    FLOAT           reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
+    DOUBLE          reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
+    STRUCT          reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
+    CLASS           reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
+    }               reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
+
+
+state 108
 
     (47) conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null . }
 
-    }               shift and go to state 110
+    }               shift and go to state 109
 
 
-state 110
+state 109
 
     (47) conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .
 
