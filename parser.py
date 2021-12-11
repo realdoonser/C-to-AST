@@ -1,5 +1,5 @@
 import ply.yacc as yacc
-from lexer import tokens
+from lexer import *
 import sys
 import pprint
 
@@ -566,10 +566,13 @@ def p_empty(p):
     pass
 
 
-parser = yacc.yacc()
+def make_parser():
+    parser = yacc.yacc()
+    return parser
+
 
 if __name__ == "__main__":
     with open(sys.argv[-1]) as f:
         data = f.read()
-    result: n = parser.parse(data)
+    result: n = make_parser().parse(data)
     print(result)

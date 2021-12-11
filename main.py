@@ -1,17 +1,9 @@
 from lexer import *
 
-data = """
-void main(){
-    int a = 3 ;
-    return 1;
-}
-"""
-
-lexer.input(data)
-
-token_stream = []
-
 if __name__ == "__main__":
+    with open(sys.argv[-1]) as f:
+        data = f.read()
+    lexer = make_lexer()
+    lexer.input(data)
     for tok in lexer:
-        token_stream.append(tok)
-    print(token_stream[0])
+        print(tok)
