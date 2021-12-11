@@ -19,9 +19,9 @@ Rule 2     program -> external_decl program
 Rule 3     program -> include
 Rule 4     program -> external_decl
 Rule 5     include -> INCLUDE
-Rule 6     external_decl -> decl
+Rule 6     external_decl -> decl ;
 Rule 7     external_decl -> func_def
-Rule 8     decl -> type declarators ;
+Rule 8     decl -> type declarators
 Rule 9     decl -> new_type_dec
 Rule 10    declarators -> declarator_1 , declarators
 Rule 11    declarators -> declarator_1
@@ -30,81 +30,97 @@ Rule 13    declarator_1 -> declarator_2 = initializer
 Rule 14    declarator_2 -> ID
 Rule 15    declarator_2 -> ID ( )
 Rule 16    declarator_2 -> ID [ ]
-Rule 17    initializer -> NUMBER
-Rule 18    initializer -> CHR
-Rule 19    initializer -> STR
-Rule 20    new_type_dec -> new_type ID { new_type_params } ;
-Rule 21    new_type -> STRUCT
-Rule 22    new_type -> CLASS
-Rule 23    new_type_params -> new_type_param new_type_params
-Rule 24    new_type_params -> new_type_param
-Rule 25    new_type_param -> type declarators ;
-Rule 26    func_def -> type ID ( params ) { }
-Rule 27    func_def -> type ID ( ) { }
-Rule 28    params -> param , params
-Rule 29    params -> param
-Rule 30    param -> type declarator_2
-Rule 31    type -> VOID
-Rule 32    type -> CHAR
-Rule 33    type -> SHORT
-Rule 34    type -> INT
-Rule 35    type -> LONG
-Rule 36    type -> FLOAT
-Rule 37    type -> DOUBLE
+Rule 17    declarator_2 -> ID [ expression ]
+Rule 18    initializer -> expression
+Rule 19    initializer -> { expressions }
+Rule 20    expressions -> expression , expressions
+Rule 21    expressions -> expression
+Rule 22    expression -> ID
+Rule 23    expression -> NUMBER
+Rule 24    expression -> CHR
+Rule 25    expression -> STR
+Rule 26    new_type_dec -> new_type ID { new_type_params } ;
+Rule 27    new_type -> STRUCT
+Rule 28    new_type -> CLASS
+Rule 29    new_type_params -> new_type_param new_type_params
+Rule 30    new_type_params -> new_type_param
+Rule 31    new_type_param -> type declarators ;
+Rule 32    func_def -> type ID ( params ) { statements }
+Rule 33    func_def -> type ID ( ) { statements }
+Rule 34    func_def -> type ID ( params ) { }
+Rule 35    func_def -> type ID ( ) { }
+Rule 36    params -> param , params
+Rule 37    params -> param
+Rule 38    param -> type declarator_2
+Rule 39    statements -> statement ; statements
+Rule 40    statements -> statement ;
+Rule 41    statement -> expression
+Rule 42    statement -> decl
+Rule 43    type -> VOID
+Rule 44    type -> CHAR
+Rule 45    type -> SHORT
+Rule 46    type -> INT
+Rule 47    type -> LONG
+Rule 48    type -> FLOAT
+Rule 49    type -> DOUBLE
 
 Terminals, with rules where they appear
 
-(                    : 15 26 27
-)                    : 15 26 27
-,                    : 10 28
-;                    : 8 20 25
+(                    : 15 32 33 34 35
+)                    : 15 32 33 34 35
+,                    : 10 20 36
+;                    : 6 26 31 39 40
 =                    : 13
 BREAK                : 
-CHAR                 : 32
-CHR                  : 18
-CLASS                : 22
-DOUBLE               : 37
+CHAR                 : 44
+CHR                  : 24
+CLASS                : 28
+DOUBLE               : 49
 ELSE                 : 
-FLOAT                : 36
+FLOAT                : 48
 GEQ                  : 
-ID                   : 14 15 16 20 26 27
+ID                   : 14 15 16 17 22 26 32 33 34 35
 IF                   : 
 INCLUDE              : 5
-INT                  : 34
+INT                  : 46
 LEQ                  : 
-LONG                 : 35
-NUMBER               : 17
+LONG                 : 47
+NUMBER               : 23
 RETURN               : 
-SHORT                : 33
-STR                  : 19
-STRUCT               : 21
+SHORT                : 45
+STR                  : 25
+STRUCT               : 27
 THEN                 : 
-VOID                 : 31
+VOID                 : 43
 WHILE                : 
-[                    : 16
-]                    : 16
+[                    : 16 17
+]                    : 16 17
 error                : 
-{                    : 20 26 27
-}                    : 20 26 27
+{                    : 19 26 32 33 34 35
+}                    : 19 26 32 33 34 35
 
 Nonterminals, with rules where they appear
 
-decl                 : 6
+decl                 : 6 42
 declarator_1         : 10 11
-declarator_2         : 12 13 30
-declarators          : 8 10 25
+declarator_2         : 12 13 38
+declarators          : 8 10 31
+expression           : 17 18 20 21 41
+expressions          : 19 20
 external_decl        : 2 4
 func_def             : 7
 include              : 1 3
 initializer          : 13
-new_type             : 20
+new_type             : 26
 new_type_dec         : 9
-new_type_param       : 23 24
-new_type_params      : 20 23
-param                : 28 29
-params               : 26 28
+new_type_param       : 29 30
+new_type_params      : 26 29
+param                : 36 37
+params               : 32 34 36
 program              : 1 2 0
-type                 : 8 25 26 27 30
+statement            : 39 40
+statements           : 32 33 39
+type                 : 8 31 32 33 34 35 38
 
 Parsing method: LALR
 
@@ -116,22 +132,24 @@ state 0
     (3) program -> . include
     (4) program -> . external_decl
     (5) include -> . INCLUDE
-    (6) external_decl -> . decl
+    (6) external_decl -> . decl ;
     (7) external_decl -> . func_def
-    (8) decl -> . type declarators ;
+    (8) decl -> . type declarators
     (9) decl -> . new_type_dec
-    (26) func_def -> . type ID ( params ) { }
-    (27) func_def -> . type ID ( ) { }
-    (31) type -> . VOID
-    (32) type -> . CHAR
-    (33) type -> . SHORT
-    (34) type -> . INT
-    (35) type -> . LONG
-    (36) type -> . FLOAT
-    (37) type -> . DOUBLE
-    (20) new_type_dec -> . new_type ID { new_type_params } ;
-    (21) new_type -> . STRUCT
-    (22) new_type -> . CLASS
+    (32) func_def -> . type ID ( params ) { statements }
+    (33) func_def -> . type ID ( ) { statements }
+    (34) func_def -> . type ID ( params ) { }
+    (35) func_def -> . type ID ( ) { }
+    (43) type -> . VOID
+    (44) type -> . CHAR
+    (45) type -> . SHORT
+    (46) type -> . INT
+    (47) type -> . LONG
+    (48) type -> . FLOAT
+    (49) type -> . DOUBLE
+    (26) new_type_dec -> . new_type ID { new_type_params } ;
+    (27) new_type -> . STRUCT
+    (28) new_type -> . CLASS
 
     INCLUDE         shift and go to state 4
     VOID            shift and go to state 9
@@ -168,22 +186,24 @@ state 2
     (3) program -> . include
     (4) program -> . external_decl
     (5) include -> . INCLUDE
-    (6) external_decl -> . decl
+    (6) external_decl -> . decl ;
     (7) external_decl -> . func_def
-    (8) decl -> . type declarators ;
+    (8) decl -> . type declarators
     (9) decl -> . new_type_dec
-    (26) func_def -> . type ID ( params ) { }
-    (27) func_def -> . type ID ( ) { }
-    (31) type -> . VOID
-    (32) type -> . CHAR
-    (33) type -> . SHORT
-    (34) type -> . INT
-    (35) type -> . LONG
-    (36) type -> . FLOAT
-    (37) type -> . DOUBLE
-    (20) new_type_dec -> . new_type ID { new_type_params } ;
-    (21) new_type -> . STRUCT
-    (22) new_type -> . CLASS
+    (32) func_def -> . type ID ( params ) { statements }
+    (33) func_def -> . type ID ( ) { statements }
+    (34) func_def -> . type ID ( params ) { }
+    (35) func_def -> . type ID ( ) { }
+    (43) type -> . VOID
+    (44) type -> . CHAR
+    (45) type -> . SHORT
+    (46) type -> . INT
+    (47) type -> . LONG
+    (48) type -> . FLOAT
+    (49) type -> . DOUBLE
+    (26) new_type_dec -> . new_type ID { new_type_params } ;
+    (27) new_type -> . STRUCT
+    (28) new_type -> . CLASS
 
     $end            reduce using rule 3 (program -> include .)
     INCLUDE         shift and go to state 4
@@ -215,22 +235,24 @@ state 3
     (3) program -> . include
     (4) program -> . external_decl
     (5) include -> . INCLUDE
-    (6) external_decl -> . decl
+    (6) external_decl -> . decl ;
     (7) external_decl -> . func_def
-    (8) decl -> . type declarators ;
+    (8) decl -> . type declarators
     (9) decl -> . new_type_dec
-    (26) func_def -> . type ID ( params ) { }
-    (27) func_def -> . type ID ( ) { }
-    (31) type -> . VOID
-    (32) type -> . CHAR
-    (33) type -> . SHORT
-    (34) type -> . INT
-    (35) type -> . LONG
-    (36) type -> . FLOAT
-    (37) type -> . DOUBLE
-    (20) new_type_dec -> . new_type ID { new_type_params } ;
-    (21) new_type -> . STRUCT
-    (22) new_type -> . CLASS
+    (32) func_def -> . type ID ( params ) { statements }
+    (33) func_def -> . type ID ( ) { statements }
+    (34) func_def -> . type ID ( params ) { }
+    (35) func_def -> . type ID ( ) { }
+    (43) type -> . VOID
+    (44) type -> . CHAR
+    (45) type -> . SHORT
+    (46) type -> . INT
+    (47) type -> . LONG
+    (48) type -> . FLOAT
+    (49) type -> . DOUBLE
+    (26) new_type_dec -> . new_type ID { new_type_params } ;
+    (27) new_type -> . STRUCT
+    (28) new_type -> . CLASS
 
     $end            reduce using rule 4 (program -> external_decl .)
     INCLUDE         shift and go to state 4
@@ -272,19 +294,9 @@ state 4
 
 state 5
 
-    (6) external_decl -> decl .
+    (6) external_decl -> decl . ;
 
-    INCLUDE         reduce using rule 6 (external_decl -> decl .)
-    VOID            reduce using rule 6 (external_decl -> decl .)
-    CHAR            reduce using rule 6 (external_decl -> decl .)
-    SHORT           reduce using rule 6 (external_decl -> decl .)
-    INT             reduce using rule 6 (external_decl -> decl .)
-    LONG            reduce using rule 6 (external_decl -> decl .)
-    FLOAT           reduce using rule 6 (external_decl -> decl .)
-    DOUBLE          reduce using rule 6 (external_decl -> decl .)
-    STRUCT          reduce using rule 6 (external_decl -> decl .)
-    CLASS           reduce using rule 6 (external_decl -> decl .)
-    $end            reduce using rule 6 (external_decl -> decl .)
+    ;               shift and go to state 21
 
 
 state 6
@@ -306,9 +318,11 @@ state 6
 
 state 7
 
-    (8) decl -> type . declarators ;
-    (26) func_def -> type . ID ( params ) { }
-    (27) func_def -> type . ID ( ) { }
+    (8) decl -> type . declarators
+    (32) func_def -> type . ID ( params ) { statements }
+    (33) func_def -> type . ID ( ) { statements }
+    (34) func_def -> type . ID ( params ) { }
+    (35) func_def -> type . ID ( ) { }
     (10) declarators -> . declarator_1 , declarators
     (11) declarators -> . declarator_1
     (12) declarator_1 -> . declarator_2
@@ -316,98 +330,89 @@ state 7
     (14) declarator_2 -> . ID
     (15) declarator_2 -> . ID ( )
     (16) declarator_2 -> . ID [ ]
+    (17) declarator_2 -> . ID [ expression ]
 
-    ID              shift and go to state 22
+    ID              shift and go to state 23
 
-    declarators                    shift and go to state 21
-    declarator_1                   shift and go to state 23
-    declarator_2                   shift and go to state 24
+    declarators                    shift and go to state 22
+    declarator_1                   shift and go to state 24
+    declarator_2                   shift and go to state 25
 
 state 8
 
     (9) decl -> new_type_dec .
 
-    INCLUDE         reduce using rule 9 (decl -> new_type_dec .)
-    VOID            reduce using rule 9 (decl -> new_type_dec .)
-    CHAR            reduce using rule 9 (decl -> new_type_dec .)
-    SHORT           reduce using rule 9 (decl -> new_type_dec .)
-    INT             reduce using rule 9 (decl -> new_type_dec .)
-    LONG            reduce using rule 9 (decl -> new_type_dec .)
-    FLOAT           reduce using rule 9 (decl -> new_type_dec .)
-    DOUBLE          reduce using rule 9 (decl -> new_type_dec .)
-    STRUCT          reduce using rule 9 (decl -> new_type_dec .)
-    CLASS           reduce using rule 9 (decl -> new_type_dec .)
-    $end            reduce using rule 9 (decl -> new_type_dec .)
+    ;               reduce using rule 9 (decl -> new_type_dec .)
 
 
 state 9
 
-    (31) type -> VOID .
+    (43) type -> VOID .
 
-    ID              reduce using rule 31 (type -> VOID .)
+    ID              reduce using rule 43 (type -> VOID .)
 
 
 state 10
 
-    (32) type -> CHAR .
+    (44) type -> CHAR .
 
-    ID              reduce using rule 32 (type -> CHAR .)
+    ID              reduce using rule 44 (type -> CHAR .)
 
 
 state 11
 
-    (33) type -> SHORT .
+    (45) type -> SHORT .
 
-    ID              reduce using rule 33 (type -> SHORT .)
+    ID              reduce using rule 45 (type -> SHORT .)
 
 
 state 12
 
-    (34) type -> INT .
+    (46) type -> INT .
 
-    ID              reduce using rule 34 (type -> INT .)
+    ID              reduce using rule 46 (type -> INT .)
 
 
 state 13
 
-    (35) type -> LONG .
+    (47) type -> LONG .
 
-    ID              reduce using rule 35 (type -> LONG .)
+    ID              reduce using rule 47 (type -> LONG .)
 
 
 state 14
 
-    (36) type -> FLOAT .
+    (48) type -> FLOAT .
 
-    ID              reduce using rule 36 (type -> FLOAT .)
+    ID              reduce using rule 48 (type -> FLOAT .)
 
 
 state 15
 
-    (37) type -> DOUBLE .
+    (49) type -> DOUBLE .
 
-    ID              reduce using rule 37 (type -> DOUBLE .)
+    ID              reduce using rule 49 (type -> DOUBLE .)
 
 
 state 16
 
-    (20) new_type_dec -> new_type . ID { new_type_params } ;
+    (26) new_type_dec -> new_type . ID { new_type_params } ;
 
-    ID              shift and go to state 25
+    ID              shift and go to state 26
 
 
 state 17
 
-    (21) new_type -> STRUCT .
+    (27) new_type -> STRUCT .
 
-    ID              reduce using rule 21 (new_type -> STRUCT .)
+    ID              reduce using rule 27 (new_type -> STRUCT .)
 
 
 state 18
 
-    (22) new_type -> CLASS .
+    (28) new_type -> CLASS .
 
-    ID              reduce using rule 22 (new_type -> CLASS .)
+    ID              reduce using rule 28 (new_type -> CLASS .)
 
 
 state 19
@@ -426,18 +431,38 @@ state 20
 
 state 21
 
-    (8) decl -> type declarators . ;
+    (6) external_decl -> decl ; .
 
-    ;               shift and go to state 26
+    INCLUDE         reduce using rule 6 (external_decl -> decl ; .)
+    VOID            reduce using rule 6 (external_decl -> decl ; .)
+    CHAR            reduce using rule 6 (external_decl -> decl ; .)
+    SHORT           reduce using rule 6 (external_decl -> decl ; .)
+    INT             reduce using rule 6 (external_decl -> decl ; .)
+    LONG            reduce using rule 6 (external_decl -> decl ; .)
+    FLOAT           reduce using rule 6 (external_decl -> decl ; .)
+    DOUBLE          reduce using rule 6 (external_decl -> decl ; .)
+    STRUCT          reduce using rule 6 (external_decl -> decl ; .)
+    CLASS           reduce using rule 6 (external_decl -> decl ; .)
+    $end            reduce using rule 6 (external_decl -> decl ; .)
 
 
 state 22
 
-    (26) func_def -> type ID . ( params ) { }
-    (27) func_def -> type ID . ( ) { }
+    (8) decl -> type declarators .
+
+    ;               reduce using rule 8 (decl -> type declarators .)
+
+
+state 23
+
+    (32) func_def -> type ID . ( params ) { statements }
+    (33) func_def -> type ID . ( ) { statements }
+    (34) func_def -> type ID . ( params ) { }
+    (35) func_def -> type ID . ( ) { }
     (14) declarator_2 -> ID .
     (15) declarator_2 -> ID . ( )
     (16) declarator_2 -> ID . [ ]
+    (17) declarator_2 -> ID . [ expression ]
 
     (               shift and go to state 27
     =               reduce using rule 14 (declarator_2 -> ID .)
@@ -446,7 +471,7 @@ state 22
     [               shift and go to state 28
 
 
-state 23
+state 24
 
     (10) declarators -> declarator_1 . , declarators
     (11) declarators -> declarator_1 .
@@ -455,7 +480,7 @@ state 23
     ;               reduce using rule 11 (declarators -> declarator_1 .)
 
 
-state 24
+state 25
 
     (12) declarator_1 -> declarator_2 .
     (13) declarator_1 -> declarator_2 . = initializer
@@ -465,45 +490,30 @@ state 24
     =               shift and go to state 30
 
 
-state 25
+state 26
 
-    (20) new_type_dec -> new_type ID . { new_type_params } ;
+    (26) new_type_dec -> new_type ID . { new_type_params } ;
 
     {               shift and go to state 31
 
 
-state 26
-
-    (8) decl -> type declarators ; .
-
-    INCLUDE         reduce using rule 8 (decl -> type declarators ; .)
-    VOID            reduce using rule 8 (decl -> type declarators ; .)
-    CHAR            reduce using rule 8 (decl -> type declarators ; .)
-    SHORT           reduce using rule 8 (decl -> type declarators ; .)
-    INT             reduce using rule 8 (decl -> type declarators ; .)
-    LONG            reduce using rule 8 (decl -> type declarators ; .)
-    FLOAT           reduce using rule 8 (decl -> type declarators ; .)
-    DOUBLE          reduce using rule 8 (decl -> type declarators ; .)
-    STRUCT          reduce using rule 8 (decl -> type declarators ; .)
-    CLASS           reduce using rule 8 (decl -> type declarators ; .)
-    $end            reduce using rule 8 (decl -> type declarators ; .)
-
-
 state 27
 
-    (26) func_def -> type ID ( . params ) { }
-    (27) func_def -> type ID ( . ) { }
+    (32) func_def -> type ID ( . params ) { statements }
+    (33) func_def -> type ID ( . ) { statements }
+    (34) func_def -> type ID ( . params ) { }
+    (35) func_def -> type ID ( . ) { }
     (15) declarator_2 -> ID ( . )
-    (28) params -> . param , params
-    (29) params -> . param
-    (30) param -> . type declarator_2
-    (31) type -> . VOID
-    (32) type -> . CHAR
-    (33) type -> . SHORT
-    (34) type -> . INT
-    (35) type -> . LONG
-    (36) type -> . FLOAT
-    (37) type -> . DOUBLE
+    (36) params -> . param , params
+    (37) params -> . param
+    (38) param -> . type declarator_2
+    (43) type -> . VOID
+    (44) type -> . CHAR
+    (45) type -> . SHORT
+    (46) type -> . INT
+    (47) type -> . LONG
+    (48) type -> . FLOAT
+    (49) type -> . DOUBLE
 
     )               shift and go to state 34
     VOID            shift and go to state 9
@@ -521,9 +531,19 @@ state 27
 state 28
 
     (16) declarator_2 -> ID [ . ]
+    (17) declarator_2 -> ID [ . expression ]
+    (22) expression -> . ID
+    (23) expression -> . NUMBER
+    (24) expression -> . CHR
+    (25) expression -> . STR
 
-    ]               shift and go to state 36
+    ]               shift and go to state 37
+    ID              shift and go to state 36
+    NUMBER          shift and go to state 39
+    CHR             shift and go to state 40
+    STR             shift and go to state 41
 
+    expression                     shift and go to state 38
 
 state 29
 
@@ -535,39 +555,46 @@ state 29
     (14) declarator_2 -> . ID
     (15) declarator_2 -> . ID ( )
     (16) declarator_2 -> . ID [ ]
+    (17) declarator_2 -> . ID [ expression ]
 
-    ID              shift and go to state 38
+    ID              shift and go to state 43
 
-    declarator_1                   shift and go to state 23
-    declarators                    shift and go to state 37
-    declarator_2                   shift and go to state 24
+    declarator_1                   shift and go to state 24
+    declarators                    shift and go to state 42
+    declarator_2                   shift and go to state 25
 
 state 30
 
     (13) declarator_1 -> declarator_2 = . initializer
-    (17) initializer -> . NUMBER
-    (18) initializer -> . CHR
-    (19) initializer -> . STR
+    (18) initializer -> . expression
+    (19) initializer -> . { expressions }
+    (22) expression -> . ID
+    (23) expression -> . NUMBER
+    (24) expression -> . CHR
+    (25) expression -> . STR
 
-    NUMBER          shift and go to state 40
-    CHR             shift and go to state 41
-    STR             shift and go to state 42
+    {               shift and go to state 46
+    ID              shift and go to state 36
+    NUMBER          shift and go to state 39
+    CHR             shift and go to state 40
+    STR             shift and go to state 41
 
-    initializer                    shift and go to state 39
+    initializer                    shift and go to state 44
+    expression                     shift and go to state 45
 
 state 31
 
-    (20) new_type_dec -> new_type ID { . new_type_params } ;
-    (23) new_type_params -> . new_type_param new_type_params
-    (24) new_type_params -> . new_type_param
-    (25) new_type_param -> . type declarators ;
-    (31) type -> . VOID
-    (32) type -> . CHAR
-    (33) type -> . SHORT
-    (34) type -> . INT
-    (35) type -> . LONG
-    (36) type -> . FLOAT
-    (37) type -> . DOUBLE
+    (26) new_type_dec -> new_type ID { . new_type_params } ;
+    (29) new_type_params -> . new_type_param new_type_params
+    (30) new_type_params -> . new_type_param
+    (31) new_type_param -> . type declarators ;
+    (43) type -> . VOID
+    (44) type -> . CHAR
+    (45) type -> . SHORT
+    (46) type -> . INT
+    (47) type -> . LONG
+    (48) type -> . FLOAT
+    (49) type -> . DOUBLE
 
     VOID            shift and go to state 9
     CHAR            shift and go to state 10
@@ -577,34 +604,37 @@ state 31
     FLOAT           shift and go to state 14
     DOUBLE          shift and go to state 15
 
-    new_type_params                shift and go to state 43
-    new_type_param                 shift and go to state 44
-    type                           shift and go to state 45
+    new_type_params                shift and go to state 47
+    new_type_param                 shift and go to state 48
+    type                           shift and go to state 49
 
 state 32
 
-    (30) param -> type . declarator_2
+    (38) param -> type . declarator_2
     (14) declarator_2 -> . ID
     (15) declarator_2 -> . ID ( )
     (16) declarator_2 -> . ID [ ]
+    (17) declarator_2 -> . ID [ expression ]
 
-    ID              shift and go to state 38
+    ID              shift and go to state 43
 
-    declarator_2                   shift and go to state 46
+    declarator_2                   shift and go to state 50
 
 state 33
 
-    (26) func_def -> type ID ( params . ) { }
+    (32) func_def -> type ID ( params . ) { statements }
+    (34) func_def -> type ID ( params . ) { }
 
-    )               shift and go to state 47
+    )               shift and go to state 51
 
 
 state 34
 
-    (27) func_def -> type ID ( ) . { }
+    (33) func_def -> type ID ( ) . { statements }
+    (35) func_def -> type ID ( ) . { }
     (15) declarator_2 -> ID ( ) .
 
-    {               shift and go to state 48
+    {               shift and go to state 52
     =               reduce using rule 15 (declarator_2 -> ID ( ) .)
     ,               reduce using rule 15 (declarator_2 -> ID ( ) .)
     ;               reduce using rule 15 (declarator_2 -> ID ( ) .)
@@ -612,14 +642,24 @@ state 34
 
 state 35
 
-    (28) params -> param . , params
-    (29) params -> param .
+    (36) params -> param . , params
+    (37) params -> param .
 
-    ,               shift and go to state 49
-    )               reduce using rule 29 (params -> param .)
+    ,               shift and go to state 53
+    )               reduce using rule 37 (params -> param .)
 
 
 state 36
+
+    (22) expression -> ID .
+
+    ]               reduce using rule 22 (expression -> ID .)
+    ,               reduce using rule 22 (expression -> ID .)
+    ;               reduce using rule 22 (expression -> ID .)
+    }               reduce using rule 22 (expression -> ID .)
+
+
+state 37
 
     (16) declarator_2 -> ID [ ] .
 
@@ -629,28 +669,66 @@ state 36
     )               reduce using rule 16 (declarator_2 -> ID [ ] .)
 
 
-state 37
+state 38
+
+    (17) declarator_2 -> ID [ expression . ]
+
+    ]               shift and go to state 54
+
+
+state 39
+
+    (23) expression -> NUMBER .
+
+    ]               reduce using rule 23 (expression -> NUMBER .)
+    ,               reduce using rule 23 (expression -> NUMBER .)
+    ;               reduce using rule 23 (expression -> NUMBER .)
+    }               reduce using rule 23 (expression -> NUMBER .)
+
+
+state 40
+
+    (24) expression -> CHR .
+
+    ]               reduce using rule 24 (expression -> CHR .)
+    ,               reduce using rule 24 (expression -> CHR .)
+    ;               reduce using rule 24 (expression -> CHR .)
+    }               reduce using rule 24 (expression -> CHR .)
+
+
+state 41
+
+    (25) expression -> STR .
+
+    ]               reduce using rule 25 (expression -> STR .)
+    ,               reduce using rule 25 (expression -> STR .)
+    ;               reduce using rule 25 (expression -> STR .)
+    }               reduce using rule 25 (expression -> STR .)
+
+
+state 42
 
     (10) declarators -> declarator_1 , declarators .
 
     ;               reduce using rule 10 (declarators -> declarator_1 , declarators .)
 
 
-state 38
+state 43
 
     (14) declarator_2 -> ID .
     (15) declarator_2 -> ID . ( )
     (16) declarator_2 -> ID . [ ]
+    (17) declarator_2 -> ID . [ expression ]
 
     =               reduce using rule 14 (declarator_2 -> ID .)
     ,               reduce using rule 14 (declarator_2 -> ID .)
     ;               reduce using rule 14 (declarator_2 -> ID .)
     )               reduce using rule 14 (declarator_2 -> ID .)
-    (               shift and go to state 50
+    (               shift and go to state 55
     [               shift and go to state 28
 
 
-state 39
+state 44
 
     (13) declarator_1 -> declarator_2 = initializer .
 
@@ -658,53 +736,55 @@ state 39
     ;               reduce using rule 13 (declarator_1 -> declarator_2 = initializer .)
 
 
-state 40
+state 45
 
-    (17) initializer -> NUMBER .
+    (18) initializer -> expression .
 
-    ,               reduce using rule 17 (initializer -> NUMBER .)
-    ;               reduce using rule 17 (initializer -> NUMBER .)
-
-
-state 41
-
-    (18) initializer -> CHR .
-
-    ,               reduce using rule 18 (initializer -> CHR .)
-    ;               reduce using rule 18 (initializer -> CHR .)
+    ,               reduce using rule 18 (initializer -> expression .)
+    ;               reduce using rule 18 (initializer -> expression .)
 
 
-state 42
+state 46
 
-    (19) initializer -> STR .
+    (19) initializer -> { . expressions }
+    (20) expressions -> . expression , expressions
+    (21) expressions -> . expression
+    (22) expression -> . ID
+    (23) expression -> . NUMBER
+    (24) expression -> . CHR
+    (25) expression -> . STR
 
-    ,               reduce using rule 19 (initializer -> STR .)
-    ;               reduce using rule 19 (initializer -> STR .)
+    ID              shift and go to state 36
+    NUMBER          shift and go to state 39
+    CHR             shift and go to state 40
+    STR             shift and go to state 41
+
+    expressions                    shift and go to state 56
+    expression                     shift and go to state 57
+
+state 47
+
+    (26) new_type_dec -> new_type ID { new_type_params . } ;
+
+    }               shift and go to state 58
 
 
-state 43
+state 48
 
-    (20) new_type_dec -> new_type ID { new_type_params . } ;
+    (29) new_type_params -> new_type_param . new_type_params
+    (30) new_type_params -> new_type_param .
+    (29) new_type_params -> . new_type_param new_type_params
+    (30) new_type_params -> . new_type_param
+    (31) new_type_param -> . type declarators ;
+    (43) type -> . VOID
+    (44) type -> . CHAR
+    (45) type -> . SHORT
+    (46) type -> . INT
+    (47) type -> . LONG
+    (48) type -> . FLOAT
+    (49) type -> . DOUBLE
 
-    }               shift and go to state 51
-
-
-state 44
-
-    (23) new_type_params -> new_type_param . new_type_params
-    (24) new_type_params -> new_type_param .
-    (23) new_type_params -> . new_type_param new_type_params
-    (24) new_type_params -> . new_type_param
-    (25) new_type_param -> . type declarators ;
-    (31) type -> . VOID
-    (32) type -> . CHAR
-    (33) type -> . SHORT
-    (34) type -> . INT
-    (35) type -> . LONG
-    (36) type -> . FLOAT
-    (37) type -> . DOUBLE
-
-    }               reduce using rule 24 (new_type_params -> new_type_param .)
+    }               reduce using rule 30 (new_type_params -> new_type_param .)
     VOID            shift and go to state 9
     CHAR            shift and go to state 10
     SHORT           shift and go to state 11
@@ -713,13 +793,13 @@ state 44
     FLOAT           shift and go to state 14
     DOUBLE          shift and go to state 15
 
-    new_type_param                 shift and go to state 44
-    new_type_params                shift and go to state 52
-    type                           shift and go to state 45
+    new_type_param                 shift and go to state 48
+    new_type_params                shift and go to state 59
+    type                           shift and go to state 49
 
-state 45
+state 49
 
-    (25) new_type_param -> type . declarators ;
+    (31) new_type_param -> type . declarators ;
     (10) declarators -> . declarator_1 , declarators
     (11) declarators -> . declarator_1
     (12) declarator_1 -> . declarator_2
@@ -727,48 +807,91 @@ state 45
     (14) declarator_2 -> . ID
     (15) declarator_2 -> . ID ( )
     (16) declarator_2 -> . ID [ ]
+    (17) declarator_2 -> . ID [ expression ]
 
-    ID              shift and go to state 38
+    ID              shift and go to state 43
 
-    declarators                    shift and go to state 53
-    declarator_1                   shift and go to state 23
-    declarator_2                   shift and go to state 24
+    declarators                    shift and go to state 60
+    declarator_1                   shift and go to state 24
+    declarator_2                   shift and go to state 25
 
-state 46
+state 50
 
-    (30) param -> type declarator_2 .
+    (38) param -> type declarator_2 .
 
-    ,               reduce using rule 30 (param -> type declarator_2 .)
-    )               reduce using rule 30 (param -> type declarator_2 .)
-
-
-state 47
-
-    (26) func_def -> type ID ( params ) . { }
-
-    {               shift and go to state 54
+    ,               reduce using rule 38 (param -> type declarator_2 .)
+    )               reduce using rule 38 (param -> type declarator_2 .)
 
 
-state 48
+state 51
 
-    (27) func_def -> type ID ( ) { . }
+    (32) func_def -> type ID ( params ) . { statements }
+    (34) func_def -> type ID ( params ) . { }
 
-    }               shift and go to state 55
+    {               shift and go to state 61
 
 
-state 49
+state 52
 
-    (28) params -> param , . params
-    (28) params -> . param , params
-    (29) params -> . param
-    (30) param -> . type declarator_2
-    (31) type -> . VOID
-    (32) type -> . CHAR
-    (33) type -> . SHORT
-    (34) type -> . INT
-    (35) type -> . LONG
-    (36) type -> . FLOAT
-    (37) type -> . DOUBLE
+    (33) func_def -> type ID ( ) { . statements }
+    (35) func_def -> type ID ( ) { . }
+    (39) statements -> . statement ; statements
+    (40) statements -> . statement ;
+    (41) statement -> . expression
+    (42) statement -> . decl
+    (22) expression -> . ID
+    (23) expression -> . NUMBER
+    (24) expression -> . CHR
+    (25) expression -> . STR
+    (8) decl -> . type declarators
+    (9) decl -> . new_type_dec
+    (43) type -> . VOID
+    (44) type -> . CHAR
+    (45) type -> . SHORT
+    (46) type -> . INT
+    (47) type -> . LONG
+    (48) type -> . FLOAT
+    (49) type -> . DOUBLE
+    (26) new_type_dec -> . new_type ID { new_type_params } ;
+    (27) new_type -> . STRUCT
+    (28) new_type -> . CLASS
+
+    }               shift and go to state 64
+    ID              shift and go to state 36
+    NUMBER          shift and go to state 39
+    CHR             shift and go to state 40
+    STR             shift and go to state 41
+    VOID            shift and go to state 9
+    CHAR            shift and go to state 10
+    SHORT           shift and go to state 11
+    INT             shift and go to state 12
+    LONG            shift and go to state 13
+    FLOAT           shift and go to state 14
+    DOUBLE          shift and go to state 15
+    STRUCT          shift and go to state 17
+    CLASS           shift and go to state 18
+
+    type                           shift and go to state 62
+    statements                     shift and go to state 63
+    statement                      shift and go to state 65
+    expression                     shift and go to state 66
+    decl                           shift and go to state 67
+    new_type_dec                   shift and go to state 8
+    new_type                       shift and go to state 16
+
+state 53
+
+    (36) params -> param , . params
+    (36) params -> . param , params
+    (37) params -> . param
+    (38) param -> . type declarator_2
+    (43) type -> . VOID
+    (44) type -> . CHAR
+    (45) type -> . SHORT
+    (46) type -> . INT
+    (47) type -> . LONG
+    (48) type -> . FLOAT
+    (49) type -> . DOUBLE
 
     VOID            shift and go to state 9
     CHAR            shift and go to state 10
@@ -779,69 +902,183 @@ state 49
     DOUBLE          shift and go to state 15
 
     param                          shift and go to state 35
-    params                         shift and go to state 56
+    params                         shift and go to state 68
     type                           shift and go to state 32
-
-state 50
-
-    (15) declarator_2 -> ID ( . )
-
-    )               shift and go to state 57
-
-
-state 51
-
-    (20) new_type_dec -> new_type ID { new_type_params } . ;
-
-    ;               shift and go to state 58
-
-
-state 52
-
-    (23) new_type_params -> new_type_param new_type_params .
-
-    }               reduce using rule 23 (new_type_params -> new_type_param new_type_params .)
-
-
-state 53
-
-    (25) new_type_param -> type declarators . ;
-
-    ;               shift and go to state 59
-
 
 state 54
 
-    (26) func_def -> type ID ( params ) { . }
+    (17) declarator_2 -> ID [ expression ] .
 
-    }               shift and go to state 60
+    =               reduce using rule 17 (declarator_2 -> ID [ expression ] .)
+    ,               reduce using rule 17 (declarator_2 -> ID [ expression ] .)
+    ;               reduce using rule 17 (declarator_2 -> ID [ expression ] .)
+    )               reduce using rule 17 (declarator_2 -> ID [ expression ] .)
 
 
 state 55
 
-    (27) func_def -> type ID ( ) { } .
+    (15) declarator_2 -> ID ( . )
 
-    INCLUDE         reduce using rule 27 (func_def -> type ID ( ) { } .)
-    VOID            reduce using rule 27 (func_def -> type ID ( ) { } .)
-    CHAR            reduce using rule 27 (func_def -> type ID ( ) { } .)
-    SHORT           reduce using rule 27 (func_def -> type ID ( ) { } .)
-    INT             reduce using rule 27 (func_def -> type ID ( ) { } .)
-    LONG            reduce using rule 27 (func_def -> type ID ( ) { } .)
-    FLOAT           reduce using rule 27 (func_def -> type ID ( ) { } .)
-    DOUBLE          reduce using rule 27 (func_def -> type ID ( ) { } .)
-    STRUCT          reduce using rule 27 (func_def -> type ID ( ) { } .)
-    CLASS           reduce using rule 27 (func_def -> type ID ( ) { } .)
-    $end            reduce using rule 27 (func_def -> type ID ( ) { } .)
+    )               shift and go to state 69
 
 
 state 56
 
-    (28) params -> param , params .
+    (19) initializer -> { expressions . }
 
-    )               reduce using rule 28 (params -> param , params .)
+    }               shift and go to state 70
 
 
 state 57
+
+    (20) expressions -> expression . , expressions
+    (21) expressions -> expression .
+
+    ,               shift and go to state 71
+    }               reduce using rule 21 (expressions -> expression .)
+
+
+state 58
+
+    (26) new_type_dec -> new_type ID { new_type_params } . ;
+
+    ;               shift and go to state 72
+
+
+state 59
+
+    (29) new_type_params -> new_type_param new_type_params .
+
+    }               reduce using rule 29 (new_type_params -> new_type_param new_type_params .)
+
+
+state 60
+
+    (31) new_type_param -> type declarators . ;
+
+    ;               shift and go to state 73
+
+
+state 61
+
+    (32) func_def -> type ID ( params ) { . statements }
+    (34) func_def -> type ID ( params ) { . }
+    (39) statements -> . statement ; statements
+    (40) statements -> . statement ;
+    (41) statement -> . expression
+    (42) statement -> . decl
+    (22) expression -> . ID
+    (23) expression -> . NUMBER
+    (24) expression -> . CHR
+    (25) expression -> . STR
+    (8) decl -> . type declarators
+    (9) decl -> . new_type_dec
+    (43) type -> . VOID
+    (44) type -> . CHAR
+    (45) type -> . SHORT
+    (46) type -> . INT
+    (47) type -> . LONG
+    (48) type -> . FLOAT
+    (49) type -> . DOUBLE
+    (26) new_type_dec -> . new_type ID { new_type_params } ;
+    (27) new_type -> . STRUCT
+    (28) new_type -> . CLASS
+
+    }               shift and go to state 75
+    ID              shift and go to state 36
+    NUMBER          shift and go to state 39
+    CHR             shift and go to state 40
+    STR             shift and go to state 41
+    VOID            shift and go to state 9
+    CHAR            shift and go to state 10
+    SHORT           shift and go to state 11
+    INT             shift and go to state 12
+    LONG            shift and go to state 13
+    FLOAT           shift and go to state 14
+    DOUBLE          shift and go to state 15
+    STRUCT          shift and go to state 17
+    CLASS           shift and go to state 18
+
+    type                           shift and go to state 62
+    statements                     shift and go to state 74
+    statement                      shift and go to state 65
+    expression                     shift and go to state 66
+    decl                           shift and go to state 67
+    new_type_dec                   shift and go to state 8
+    new_type                       shift and go to state 16
+
+state 62
+
+    (8) decl -> type . declarators
+    (10) declarators -> . declarator_1 , declarators
+    (11) declarators -> . declarator_1
+    (12) declarator_1 -> . declarator_2
+    (13) declarator_1 -> . declarator_2 = initializer
+    (14) declarator_2 -> . ID
+    (15) declarator_2 -> . ID ( )
+    (16) declarator_2 -> . ID [ ]
+    (17) declarator_2 -> . ID [ expression ]
+
+    ID              shift and go to state 43
+
+    declarators                    shift and go to state 22
+    declarator_1                   shift and go to state 24
+    declarator_2                   shift and go to state 25
+
+state 63
+
+    (33) func_def -> type ID ( ) { statements . }
+
+    }               shift and go to state 76
+
+
+state 64
+
+    (35) func_def -> type ID ( ) { } .
+
+    INCLUDE         reduce using rule 35 (func_def -> type ID ( ) { } .)
+    VOID            reduce using rule 35 (func_def -> type ID ( ) { } .)
+    CHAR            reduce using rule 35 (func_def -> type ID ( ) { } .)
+    SHORT           reduce using rule 35 (func_def -> type ID ( ) { } .)
+    INT             reduce using rule 35 (func_def -> type ID ( ) { } .)
+    LONG            reduce using rule 35 (func_def -> type ID ( ) { } .)
+    FLOAT           reduce using rule 35 (func_def -> type ID ( ) { } .)
+    DOUBLE          reduce using rule 35 (func_def -> type ID ( ) { } .)
+    STRUCT          reduce using rule 35 (func_def -> type ID ( ) { } .)
+    CLASS           reduce using rule 35 (func_def -> type ID ( ) { } .)
+    $end            reduce using rule 35 (func_def -> type ID ( ) { } .)
+
+
+state 65
+
+    (39) statements -> statement . ; statements
+    (40) statements -> statement . ;
+
+    ;               shift and go to state 77
+
+
+state 66
+
+    (41) statement -> expression .
+
+    ;               reduce using rule 41 (statement -> expression .)
+
+
+state 67
+
+    (42) statement -> decl .
+
+    ;               reduce using rule 42 (statement -> decl .)
+
+
+state 68
+
+    (36) params -> param , params .
+
+    )               reduce using rule 36 (params -> param , params .)
+
+
+state 69
 
     (15) declarator_2 -> ID ( ) .
 
@@ -851,50 +1088,169 @@ state 57
     )               reduce using rule 15 (declarator_2 -> ID ( ) .)
 
 
-state 58
+state 70
 
-    (20) new_type_dec -> new_type ID { new_type_params } ; .
+    (19) initializer -> { expressions } .
 
-    INCLUDE         reduce using rule 20 (new_type_dec -> new_type ID { new_type_params } ; .)
-    VOID            reduce using rule 20 (new_type_dec -> new_type ID { new_type_params } ; .)
-    CHAR            reduce using rule 20 (new_type_dec -> new_type ID { new_type_params } ; .)
-    SHORT           reduce using rule 20 (new_type_dec -> new_type ID { new_type_params } ; .)
-    INT             reduce using rule 20 (new_type_dec -> new_type ID { new_type_params } ; .)
-    LONG            reduce using rule 20 (new_type_dec -> new_type ID { new_type_params } ; .)
-    FLOAT           reduce using rule 20 (new_type_dec -> new_type ID { new_type_params } ; .)
-    DOUBLE          reduce using rule 20 (new_type_dec -> new_type ID { new_type_params } ; .)
-    STRUCT          reduce using rule 20 (new_type_dec -> new_type ID { new_type_params } ; .)
-    CLASS           reduce using rule 20 (new_type_dec -> new_type ID { new_type_params } ; .)
-    $end            reduce using rule 20 (new_type_dec -> new_type ID { new_type_params } ; .)
+    ,               reduce using rule 19 (initializer -> { expressions } .)
+    ;               reduce using rule 19 (initializer -> { expressions } .)
 
 
-state 59
+state 71
 
-    (25) new_type_param -> type declarators ; .
+    (20) expressions -> expression , . expressions
+    (20) expressions -> . expression , expressions
+    (21) expressions -> . expression
+    (22) expression -> . ID
+    (23) expression -> . NUMBER
+    (24) expression -> . CHR
+    (25) expression -> . STR
 
-    VOID            reduce using rule 25 (new_type_param -> type declarators ; .)
-    CHAR            reduce using rule 25 (new_type_param -> type declarators ; .)
-    SHORT           reduce using rule 25 (new_type_param -> type declarators ; .)
-    INT             reduce using rule 25 (new_type_param -> type declarators ; .)
-    LONG            reduce using rule 25 (new_type_param -> type declarators ; .)
-    FLOAT           reduce using rule 25 (new_type_param -> type declarators ; .)
-    DOUBLE          reduce using rule 25 (new_type_param -> type declarators ; .)
-    }               reduce using rule 25 (new_type_param -> type declarators ; .)
+    ID              shift and go to state 36
+    NUMBER          shift and go to state 39
+    CHR             shift and go to state 40
+    STR             shift and go to state 41
+
+    expression                     shift and go to state 57
+    expressions                    shift and go to state 78
+
+state 72
+
+    (26) new_type_dec -> new_type ID { new_type_params } ; .
+
+    ;               reduce using rule 26 (new_type_dec -> new_type ID { new_type_params } ; .)
 
 
-state 60
+state 73
 
-    (26) func_def -> type ID ( params ) { } .
+    (31) new_type_param -> type declarators ; .
 
-    INCLUDE         reduce using rule 26 (func_def -> type ID ( params ) { } .)
-    VOID            reduce using rule 26 (func_def -> type ID ( params ) { } .)
-    CHAR            reduce using rule 26 (func_def -> type ID ( params ) { } .)
-    SHORT           reduce using rule 26 (func_def -> type ID ( params ) { } .)
-    INT             reduce using rule 26 (func_def -> type ID ( params ) { } .)
-    LONG            reduce using rule 26 (func_def -> type ID ( params ) { } .)
-    FLOAT           reduce using rule 26 (func_def -> type ID ( params ) { } .)
-    DOUBLE          reduce using rule 26 (func_def -> type ID ( params ) { } .)
-    STRUCT          reduce using rule 26 (func_def -> type ID ( params ) { } .)
-    CLASS           reduce using rule 26 (func_def -> type ID ( params ) { } .)
-    $end            reduce using rule 26 (func_def -> type ID ( params ) { } .)
+    VOID            reduce using rule 31 (new_type_param -> type declarators ; .)
+    CHAR            reduce using rule 31 (new_type_param -> type declarators ; .)
+    SHORT           reduce using rule 31 (new_type_param -> type declarators ; .)
+    INT             reduce using rule 31 (new_type_param -> type declarators ; .)
+    LONG            reduce using rule 31 (new_type_param -> type declarators ; .)
+    FLOAT           reduce using rule 31 (new_type_param -> type declarators ; .)
+    DOUBLE          reduce using rule 31 (new_type_param -> type declarators ; .)
+    }               reduce using rule 31 (new_type_param -> type declarators ; .)
+
+
+state 74
+
+    (32) func_def -> type ID ( params ) { statements . }
+
+    }               shift and go to state 79
+
+
+state 75
+
+    (34) func_def -> type ID ( params ) { } .
+
+    INCLUDE         reduce using rule 34 (func_def -> type ID ( params ) { } .)
+    VOID            reduce using rule 34 (func_def -> type ID ( params ) { } .)
+    CHAR            reduce using rule 34 (func_def -> type ID ( params ) { } .)
+    SHORT           reduce using rule 34 (func_def -> type ID ( params ) { } .)
+    INT             reduce using rule 34 (func_def -> type ID ( params ) { } .)
+    LONG            reduce using rule 34 (func_def -> type ID ( params ) { } .)
+    FLOAT           reduce using rule 34 (func_def -> type ID ( params ) { } .)
+    DOUBLE          reduce using rule 34 (func_def -> type ID ( params ) { } .)
+    STRUCT          reduce using rule 34 (func_def -> type ID ( params ) { } .)
+    CLASS           reduce using rule 34 (func_def -> type ID ( params ) { } .)
+    $end            reduce using rule 34 (func_def -> type ID ( params ) { } .)
+
+
+state 76
+
+    (33) func_def -> type ID ( ) { statements } .
+
+    INCLUDE         reduce using rule 33 (func_def -> type ID ( ) { statements } .)
+    VOID            reduce using rule 33 (func_def -> type ID ( ) { statements } .)
+    CHAR            reduce using rule 33 (func_def -> type ID ( ) { statements } .)
+    SHORT           reduce using rule 33 (func_def -> type ID ( ) { statements } .)
+    INT             reduce using rule 33 (func_def -> type ID ( ) { statements } .)
+    LONG            reduce using rule 33 (func_def -> type ID ( ) { statements } .)
+    FLOAT           reduce using rule 33 (func_def -> type ID ( ) { statements } .)
+    DOUBLE          reduce using rule 33 (func_def -> type ID ( ) { statements } .)
+    STRUCT          reduce using rule 33 (func_def -> type ID ( ) { statements } .)
+    CLASS           reduce using rule 33 (func_def -> type ID ( ) { statements } .)
+    $end            reduce using rule 33 (func_def -> type ID ( ) { statements } .)
+
+
+state 77
+
+    (39) statements -> statement ; . statements
+    (40) statements -> statement ; .
+    (39) statements -> . statement ; statements
+    (40) statements -> . statement ;
+    (41) statement -> . expression
+    (42) statement -> . decl
+    (22) expression -> . ID
+    (23) expression -> . NUMBER
+    (24) expression -> . CHR
+    (25) expression -> . STR
+    (8) decl -> . type declarators
+    (9) decl -> . new_type_dec
+    (43) type -> . VOID
+    (44) type -> . CHAR
+    (45) type -> . SHORT
+    (46) type -> . INT
+    (47) type -> . LONG
+    (48) type -> . FLOAT
+    (49) type -> . DOUBLE
+    (26) new_type_dec -> . new_type ID { new_type_params } ;
+    (27) new_type -> . STRUCT
+    (28) new_type -> . CLASS
+
+    }               reduce using rule 40 (statements -> statement ; .)
+    ID              shift and go to state 36
+    NUMBER          shift and go to state 39
+    CHR             shift and go to state 40
+    STR             shift and go to state 41
+    VOID            shift and go to state 9
+    CHAR            shift and go to state 10
+    SHORT           shift and go to state 11
+    INT             shift and go to state 12
+    LONG            shift and go to state 13
+    FLOAT           shift and go to state 14
+    DOUBLE          shift and go to state 15
+    STRUCT          shift and go to state 17
+    CLASS           shift and go to state 18
+
+    statement                      shift and go to state 65
+    statements                     shift and go to state 80
+    expression                     shift and go to state 66
+    decl                           shift and go to state 67
+    type                           shift and go to state 62
+    new_type_dec                   shift and go to state 8
+    new_type                       shift and go to state 16
+
+state 78
+
+    (20) expressions -> expression , expressions .
+
+    }               reduce using rule 20 (expressions -> expression , expressions .)
+
+
+state 79
+
+    (32) func_def -> type ID ( params ) { statements } .
+
+    INCLUDE         reduce using rule 32 (func_def -> type ID ( params ) { statements } .)
+    VOID            reduce using rule 32 (func_def -> type ID ( params ) { statements } .)
+    CHAR            reduce using rule 32 (func_def -> type ID ( params ) { statements } .)
+    SHORT           reduce using rule 32 (func_def -> type ID ( params ) { statements } .)
+    INT             reduce using rule 32 (func_def -> type ID ( params ) { statements } .)
+    LONG            reduce using rule 32 (func_def -> type ID ( params ) { statements } .)
+    FLOAT           reduce using rule 32 (func_def -> type ID ( params ) { statements } .)
+    DOUBLE          reduce using rule 32 (func_def -> type ID ( params ) { statements } .)
+    STRUCT          reduce using rule 32 (func_def -> type ID ( params ) { statements } .)
+    CLASS           reduce using rule 32 (func_def -> type ID ( params ) { statements } .)
+    $end            reduce using rule 32 (func_def -> type ID ( params ) { statements } .)
+
+
+state 80
+
+    (39) statements -> statement ; statements .
+
+    }               reduce using rule 39 (statements -> statement ; statements .)
 

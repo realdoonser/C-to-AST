@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = "BREAK CHAR CHR CLASS DOUBLE ELSE FLOAT GEQ ID IF INCLUDE INT LEQ LONG NUMBER RETURN SHORT STR STRUCT THEN VOID WHILE\n        program : include program\n                | external_decl program\n    \n        program : include\n                | external_decl\n    \n        include : INCLUDE\n    \n        external_decl   : decl\n                        | func_def\n    \n        decl : type declarators ';'\n    \n        decl : new_type_dec\n    \n        declarators : declarator_1 ',' declarators\n    \n        declarators : declarator_1\n    \n        declarator_1    : declarator_2\n    \n        declarator_1    : declarator_2 '=' initializer\n    \n        declarator_2    : ID\n    \n        declarator_2    : ID '(' ')'\n    \n        declarator_2    : ID '[' ']'\n    \n        initializer : NUMBER\n                    | CHR\n                    | STR\n    \n        new_type_dec    : new_type ID '{' new_type_params '}' ';'\n    \n        new_type    : STRUCT\n                    | CLASS\n    \n        new_type_params : new_type_param new_type_params \n    \n        new_type_params : new_type_param\n    \n        new_type_param : type declarators ';'\n    \n        func_def : type ID '(' params ')' '{' '}'\n    \n        func_def : type ID '(' ')' '{' '}'\n    \n        params : param ',' params\n    \n        params : param\n    \n        param : type declarator_2\n    \n        type    : VOID \n                | CHAR \n                | SHORT \n                | INT \n                | LONG \n                | FLOAT \n                | DOUBLE\n    "
+_lr_signature = "BREAK CHAR CHR CLASS DOUBLE ELSE FLOAT GEQ ID IF INCLUDE INT LEQ LONG NUMBER RETURN SHORT STR STRUCT THEN VOID WHILE\n        program : include program\n                | external_decl program\n    \n        program : include\n                | external_decl\n    \n        include : INCLUDE\n    \n        external_decl   : decl ';'\n                        | func_def\n    \n        decl : type declarators\n    \n        decl : new_type_dec\n    \n        declarators : declarator_1 ',' declarators\n    \n        declarators : declarator_1\n    \n        declarator_1    : declarator_2\n    \n        declarator_1    : declarator_2 '=' initializer\n    \n        declarator_2    : ID\n    \n        declarator_2    : ID '(' ')'\n    \n        declarator_2    : ID '[' ']'\n    \n        declarator_2    : ID '[' expression ']'\n    \n        initializer : expression\n                    | '{' expressions '}'\n    \n        expressions : expression ',' expressions\n    \n        expressions : expression\n    \n        expression  : ID\n                    | NUMBER\n                    | CHR\n                    | STR\n    \n        new_type_dec    : new_type ID '{' new_type_params '}' ';'\n    \n        new_type    : STRUCT\n                    | CLASS\n    \n        new_type_params : new_type_param new_type_params \n    \n        new_type_params : new_type_param\n    \n        new_type_param : type declarators ';'\n    \n        func_def : type ID '(' params ')' '{' statements '}'\n    \n        func_def : type ID '(' ')' '{' statements '}'\n    \n        func_def : type ID '(' params ')' '{' '}'\n    \n        func_def : type ID '(' ')' '{' '}'\n    \n        params : param ',' params\n    \n        params : param\n    \n        param : type declarator_2\n    \n        statements : statement ';' statements\n    \n        statements : statement ';'\n    \n        statement   : expression\n                    | decl\n    \n        type    : VOID \n                | CHAR \n                | SHORT \n                | INT \n                | LONG \n                | FLOAT \n                | DOUBLE\n    "
     
-_lr_action_items = {'INCLUDE':([0,2,3,4,5,6,8,26,55,58,60,],[4,4,4,-5,-6,-7,-9,-8,-27,-20,-26,]),'VOID':([0,2,3,4,5,6,8,26,27,31,44,49,55,58,59,60,],[9,9,9,-5,-6,-7,-9,-8,9,9,9,9,-27,-20,-25,-26,]),'CHAR':([0,2,3,4,5,6,8,26,27,31,44,49,55,58,59,60,],[10,10,10,-5,-6,-7,-9,-8,10,10,10,10,-27,-20,-25,-26,]),'SHORT':([0,2,3,4,5,6,8,26,27,31,44,49,55,58,59,60,],[11,11,11,-5,-6,-7,-9,-8,11,11,11,11,-27,-20,-25,-26,]),'INT':([0,2,3,4,5,6,8,26,27,31,44,49,55,58,59,60,],[12,12,12,-5,-6,-7,-9,-8,12,12,12,12,-27,-20,-25,-26,]),'LONG':([0,2,3,4,5,6,8,26,27,31,44,49,55,58,59,60,],[13,13,13,-5,-6,-7,-9,-8,13,13,13,13,-27,-20,-25,-26,]),'FLOAT':([0,2,3,4,5,6,8,26,27,31,44,49,55,58,59,60,],[14,14,14,-5,-6,-7,-9,-8,14,14,14,14,-27,-20,-25,-26,]),'DOUBLE':([0,2,3,4,5,6,8,26,27,31,44,49,55,58,59,60,],[15,15,15,-5,-6,-7,-9,-8,15,15,15,15,-27,-20,-25,-26,]),'STRUCT':([0,2,3,4,5,6,8,26,55,58,60,],[17,17,17,-5,-6,-7,-9,-8,-27,-20,-26,]),'CLASS':([0,2,3,4,5,6,8,26,55,58,60,],[18,18,18,-5,-6,-7,-9,-8,-27,-20,-26,]),'$end':([1,2,3,4,5,6,8,19,20,26,55,58,60,],[0,-3,-4,-5,-6,-7,-9,-1,-2,-8,-27,-20,-26,]),'ID':([7,9,10,11,12,13,14,15,16,17,18,29,32,45,],[22,-31,-32,-33,-34,-35,-36,-37,25,-21,-22,38,38,38,]),';':([21,22,23,24,34,36,37,38,39,40,41,42,51,53,57,],[26,-14,-11,-12,-15,-16,-10,-14,-13,-17,-18,-19,58,59,-15,]),'(':([22,38,],[27,50,]),'=':([22,24,34,36,38,57,],[-14,30,-15,-16,-14,-15,]),',':([22,23,24,34,35,36,38,39,40,41,42,46,57,],[-14,29,-12,-15,49,-16,-14,-13,-17,-18,-19,-30,-15,]),'[':([22,38,],[28,28,]),'{':([25,34,47,],[31,48,54,]),')':([27,33,35,36,38,46,50,56,57,],[34,47,-29,-16,-14,-30,57,-28,-15,]),']':([28,],[36,]),'NUMBER':([30,],[40,]),'CHR':([30,],[41,]),'STR':([30,],[42,]),'}':([43,44,48,52,54,59,],[51,-24,55,-23,60,-25,]),}
+_lr_action_items = {'INCLUDE':([0,2,3,4,6,21,64,75,76,79,],[4,4,4,-5,-7,-6,-35,-34,-33,-32,]),'VOID':([0,2,3,4,6,21,27,31,48,52,53,61,64,73,75,76,77,79,],[9,9,9,-5,-7,-6,9,9,9,9,9,9,-35,-31,-34,-33,9,-32,]),'CHAR':([0,2,3,4,6,21,27,31,48,52,53,61,64,73,75,76,77,79,],[10,10,10,-5,-7,-6,10,10,10,10,10,10,-35,-31,-34,-33,10,-32,]),'SHORT':([0,2,3,4,6,21,27,31,48,52,53,61,64,73,75,76,77,79,],[11,11,11,-5,-7,-6,11,11,11,11,11,11,-35,-31,-34,-33,11,-32,]),'INT':([0,2,3,4,6,21,27,31,48,52,53,61,64,73,75,76,77,79,],[12,12,12,-5,-7,-6,12,12,12,12,12,12,-35,-31,-34,-33,12,-32,]),'LONG':([0,2,3,4,6,21,27,31,48,52,53,61,64,73,75,76,77,79,],[13,13,13,-5,-7,-6,13,13,13,13,13,13,-35,-31,-34,-33,13,-32,]),'FLOAT':([0,2,3,4,6,21,27,31,48,52,53,61,64,73,75,76,77,79,],[14,14,14,-5,-7,-6,14,14,14,14,14,14,-35,-31,-34,-33,14,-32,]),'DOUBLE':([0,2,3,4,6,21,27,31,48,52,53,61,64,73,75,76,77,79,],[15,15,15,-5,-7,-6,15,15,15,15,15,15,-35,-31,-34,-33,15,-32,]),'STRUCT':([0,2,3,4,6,21,52,61,64,75,76,77,79,],[17,17,17,-5,-7,-6,17,17,-35,-34,-33,17,-32,]),'CLASS':([0,2,3,4,6,21,52,61,64,75,76,77,79,],[18,18,18,-5,-7,-6,18,18,-35,-34,-33,18,-32,]),'$end':([1,2,3,4,6,19,20,21,64,75,76,79,],[0,-3,-4,-5,-7,-1,-2,-6,-35,-34,-33,-32,]),';':([5,8,22,23,24,25,34,36,37,39,40,41,42,43,44,45,54,58,60,65,66,67,69,70,72,],[21,-9,-8,-14,-11,-12,-15,-22,-16,-23,-24,-25,-10,-14,-13,-18,-17,72,73,77,-41,-42,-15,-19,-26,]),'ID':([7,9,10,11,12,13,14,15,16,17,18,28,29,30,32,46,49,52,61,62,71,77,],[23,-43,-44,-45,-46,-47,-48,-49,26,-27,-28,36,43,36,43,36,43,36,36,43,36,36,]),'(':([23,43,],[27,55,]),'=':([23,25,34,37,43,54,69,],[-14,30,-15,-16,-14,-17,-15,]),',':([23,24,25,34,35,36,37,39,40,41,43,44,45,50,54,57,69,70,],[-14,29,-12,-15,53,-22,-16,-23,-24,-25,-14,-13,-18,-38,-17,71,-15,-19,]),'[':([23,43,],[28,28,]),'{':([26,30,34,51,],[31,46,52,61,]),')':([27,33,35,37,43,50,54,55,68,69,],[34,51,-37,-16,-14,-38,-17,69,-36,-15,]),']':([28,36,38,39,40,41,],[37,-22,54,-23,-24,-25,]),'NUMBER':([28,30,46,52,61,71,77,],[39,39,39,39,39,39,39,]),'CHR':([28,30,46,52,61,71,77,],[40,40,40,40,40,40,40,]),'STR':([28,30,46,52,61,71,77,],[41,41,41,41,41,41,41,]),'}':([36,39,40,41,47,48,52,56,57,59,61,63,73,74,77,78,80,],[-22,-23,-24,-25,58,-30,64,70,-21,-29,75,76,-31,79,-40,-20,-39,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'program':([0,2,3,],[1,19,20,]),'include':([0,2,3,],[2,2,2,]),'external_decl':([0,2,3,],[3,3,3,]),'decl':([0,2,3,],[5,5,5,]),'func_def':([0,2,3,],[6,6,6,]),'type':([0,2,3,27,31,44,49,],[7,7,7,32,45,45,32,]),'new_type_dec':([0,2,3,],[8,8,8,]),'new_type':([0,2,3,],[16,16,16,]),'declarators':([7,29,45,],[21,37,53,]),'declarator_1':([7,29,45,],[23,23,23,]),'declarator_2':([7,29,32,45,],[24,24,46,24,]),'params':([27,49,],[33,56,]),'param':([27,49,],[35,35,]),'initializer':([30,],[39,]),'new_type_params':([31,44,],[43,52,]),'new_type_param':([31,44,],[44,44,]),}
+_lr_goto_items = {'program':([0,2,3,],[1,19,20,]),'include':([0,2,3,],[2,2,2,]),'external_decl':([0,2,3,],[3,3,3,]),'decl':([0,2,3,52,61,77,],[5,5,5,67,67,67,]),'func_def':([0,2,3,],[6,6,6,]),'type':([0,2,3,27,31,48,52,53,61,77,],[7,7,7,32,49,49,62,32,62,62,]),'new_type_dec':([0,2,3,52,61,77,],[8,8,8,8,8,8,]),'new_type':([0,2,3,52,61,77,],[16,16,16,16,16,16,]),'declarators':([7,29,49,62,],[22,42,60,22,]),'declarator_1':([7,29,49,62,],[24,24,24,24,]),'declarator_2':([7,29,32,49,62,],[25,25,50,25,25,]),'params':([27,53,],[33,68,]),'param':([27,53,],[35,35,]),'expression':([28,30,46,52,61,71,77,],[38,45,57,66,66,57,66,]),'initializer':([30,],[44,]),'new_type_params':([31,48,],[47,59,]),'new_type_param':([31,48,],[48,48,]),'expressions':([46,71,],[56,78,]),'statements':([52,61,77,],[63,74,80,]),'statement':([52,61,77,],[65,65,65,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -32,9 +32,9 @@ _lr_productions = [
   ('program -> include','program',1,'p_program_end','parser.py',37),
   ('program -> external_decl','program',1,'p_program_end','parser.py',38),
   ('include -> INCLUDE','include',1,'p_include','parser.py',49),
-  ('external_decl -> decl','external_decl',1,'p_external_declaration','parser.py',58),
+  ('external_decl -> decl ;','external_decl',2,'p_external_declaration','parser.py',58),
   ('external_decl -> func_def','external_decl',1,'p_external_declaration','parser.py',59),
-  ('decl -> type declarators ;','decl',3,'p_decl','parser.py',66),
+  ('decl -> type declarators','decl',2,'p_decl','parser.py',66),
   ('decl -> new_type_dec','decl',1,'p_decl_struct','parser.py',73),
   ('declarators -> declarator_1 , declarators','declarators',3,'p_declarators','parser.py',82),
   ('declarators -> declarator_1','declarators',1,'p_declarator_end','parser.py',89),
@@ -43,25 +43,37 @@ _lr_productions = [
   ('declarator_2 -> ID','declarator_2',1,'p_declarator_2_single','parser.py',110),
   ('declarator_2 -> ID ( )','declarator_2',3,'p_declarator_2_func','parser.py',117),
   ('declarator_2 -> ID [ ]','declarator_2',3,'p_declarator_2_array','parser.py',124),
-  ('initializer -> NUMBER','initializer',1,'p_initializer','parser.py',131),
-  ('initializer -> CHR','initializer',1,'p_initializer','parser.py',132),
-  ('initializer -> STR','initializer',1,'p_initializer','parser.py',133),
-  ('new_type_dec -> new_type ID { new_type_params } ;','new_type_dec',6,'p_new_type_dec','parser.py',145),
-  ('new_type -> STRUCT','new_type',1,'p_new_type','parser.py',152),
-  ('new_type -> CLASS','new_type',1,'p_new_type','parser.py',153),
-  ('new_type_params -> new_type_param new_type_params','new_type_params',2,'p_new_type_params','parser.py',160),
-  ('new_type_params -> new_type_param','new_type_params',1,'p_new_type_params_end','parser.py',167),
-  ('new_type_param -> type declarators ;','new_type_param',3,'p_new_type_param','parser.py',174),
-  ('func_def -> type ID ( params ) { }','func_def',7,'p_function_definition','parser.py',183),
-  ('func_def -> type ID ( ) { }','func_def',6,'p_function_defintion_noparam','parser.py',190),
-  ('params -> param , params','params',3,'p_params','parser.py',197),
-  ('params -> param','params',1,'p_params_end','parser.py',204),
-  ('param -> type declarator_2','param',2,'p_param','parser.py',211),
-  ('type -> VOID','type',1,'p_type','parser.py',218),
-  ('type -> CHAR','type',1,'p_type','parser.py',219),
-  ('type -> SHORT','type',1,'p_type','parser.py',220),
-  ('type -> INT','type',1,'p_type','parser.py',221),
-  ('type -> LONG','type',1,'p_type','parser.py',222),
-  ('type -> FLOAT','type',1,'p_type','parser.py',223),
-  ('type -> DOUBLE','type',1,'p_type','parser.py',224),
+  ('declarator_2 -> ID [ expression ]','declarator_2',4,'p_declarator_2_arrray','parser.py',131),
+  ('initializer -> expression','initializer',1,'p_initializer','parser.py',138),
+  ('initializer -> { expressions }','initializer',3,'p_initializer','parser.py',139),
+  ('expressions -> expression , expressions','expressions',3,'p_expressions','parser.py',149),
+  ('expressions -> expression','expressions',1,'p_expressions_end','parser.py',156),
+  ('expression -> ID','expression',1,'p_expression','parser.py',163),
+  ('expression -> NUMBER','expression',1,'p_expression','parser.py',164),
+  ('expression -> CHR','expression',1,'p_expression','parser.py',165),
+  ('expression -> STR','expression',1,'p_expression','parser.py',166),
+  ('new_type_dec -> new_type ID { new_type_params } ;','new_type_dec',6,'p_new_type_dec','parser.py',177),
+  ('new_type -> STRUCT','new_type',1,'p_new_type','parser.py',184),
+  ('new_type -> CLASS','new_type',1,'p_new_type','parser.py',185),
+  ('new_type_params -> new_type_param new_type_params','new_type_params',2,'p_new_type_params','parser.py',192),
+  ('new_type_params -> new_type_param','new_type_params',1,'p_new_type_params_end','parser.py',199),
+  ('new_type_param -> type declarators ;','new_type_param',3,'p_new_type_param','parser.py',206),
+  ('func_def -> type ID ( params ) { statements }','func_def',8,'p_function_definition','parser.py',215),
+  ('func_def -> type ID ( ) { statements }','func_def',7,'p_function_defintion_noparam','parser.py',222),
+  ('func_def -> type ID ( params ) { }','func_def',7,'p_function_defintion_nostatement','parser.py',229),
+  ('func_def -> type ID ( ) { }','func_def',6,'p_function_definition_nothing','parser.py',236),
+  ('params -> param , params','params',3,'p_params','parser.py',243),
+  ('params -> param','params',1,'p_params_end','parser.py',250),
+  ('param -> type declarator_2','param',2,'p_param','parser.py',257),
+  ('statements -> statement ; statements','statements',3,'p_statements','parser.py',266),
+  ('statements -> statement ;','statements',2,'p_statements_end','parser.py',273),
+  ('statement -> expression','statement',1,'p_statement','parser.py',280),
+  ('statement -> decl','statement',1,'p_statement','parser.py',281),
+  ('type -> VOID','type',1,'p_type','parser.py',291),
+  ('type -> CHAR','type',1,'p_type','parser.py',292),
+  ('type -> SHORT','type',1,'p_type','parser.py',293),
+  ('type -> INT','type',1,'p_type','parser.py',294),
+  ('type -> LONG','type',1,'p_type','parser.py',295),
+  ('type -> FLOAT','type',1,'p_type','parser.py',296),
+  ('type -> DOUBLE','type',1,'p_type','parser.py',297),
 ]

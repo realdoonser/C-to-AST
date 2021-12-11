@@ -71,7 +71,7 @@ param   : type declarator_2
 initializer : expression
             | { expressions }
 
-expressions : expressions expression
+expressions : expression , expressions
             | expression
 
 /* function definition */
@@ -83,8 +83,8 @@ func_def        : type ID ( params ) { statements }
 
 // c statements
 
-statements  : statement ; statements
-            | statement ;
+statements  : statement statements
+            | statement
 
 statement       : expression ; // a+1*10
                 | assignment_expr ; // a *= b + c;

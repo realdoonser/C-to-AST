@@ -19,7 +19,7 @@ class n:
         self.info = info
 
     def __repr__(self) -> str:
-        return pprint.pformat({"type": self.type, "children": self.children, "info": self.info}, width=500, sort_dicts=False)
+        return pprint.pformat({"type": self.type, "info": self.info, "children": self.children}, width=500, sort_dicts=False)
 
 # =========== For the whole program ===========
 
@@ -55,7 +55,7 @@ def p_include(p):
 
 def p_external_declaration(p):
     """
-        external_decl   : decl
+        external_decl   : decl ';'
                         | func_def
     """
     p[0] = n("external_decl", [p[1]])
@@ -63,9 +63,9 @@ def p_external_declaration(p):
 
 def p_decl(p):
     """
-        decl : type declarators ';'
+        decl : type declarators
     """
-    p[0] = n("decl", [p[2]], (p[1],))
+    p[0] = n("decl", [p[2]], p[1])
 
 
 def p_decl_struct(p):
@@ -116,28 +116,60 @@ def p_declarator_2_func(p):
     """
         declarator_2    : ID '(' ')'
     """
-    p[0] = n("func_decl", [], info=(p[1],))
+    p[0] = n("func_decl", [], info=p[1])
 
 
 def p_declarator_2_array(p):
     """
         declarator_2    : ID '[' ']'
     """
-    p[0] = n("arr_decl", [], info=(p[1],))
+    p[0] = n("arr_decl", [], info=p[1])
+
+
+def p_declarator_2_arrray(p):
+    """
+        declarator_2    : ID '[' expression ']'
+    """
+    p[0] = n("arr_decl", [p[3]], info=p[1])
 
 
 def p_initializer(p):
     """
-        initializer : NUMBER
+        initializer : expression
+                    | '{' expressions '}'
+    """
+    if (len(p) == 2):
+        p[0] = n("initializer", [p[1]])
+    else:
+        p[0] = n("initializer", [p[2]])
+
+
+def p_expressions(p):
+    """
+        expressions : expression ',' expressions
+    """
+    p[0] = n("expressions", [p[1]] + p[3].children)
+
+
+def p_expressions_end(p):
+    """
+        expressions : expression
+    """
+    p[0] = n("expressions", [p[1]])
+
+
+def p_expression(p):
+    """
+        expression  : ID
+                    | NUMBER
                     | CHR
                     | STR
     """
-    p[0] = n("const", [], (p[1],))
+    p[0] = n("expression", [], info=p[1])
 
-# ---------------- declarators end -----------------
+    # ---------------- declarators end -----------------
 
-
-# ================= new_type ======================
+    # ================= new_type ======================
 
 
 def p_new_type_dec(p):
@@ -173,23 +205,37 @@ def p_new_type_param(p):
     """
         new_type_param : type declarators ';'
     """
-    p[0] = n("param", [p[2]], (p[1],))
+    p[0] = n("param", [p[2]], p[1])
 
 # ------------------ new types end -------------------
 
 
 def p_function_definition(p):
     """
-        func_def : type ID '(' params ')' '{' '}'
+        func_def : type ID '(' params ')' '{' statements '}'
     """
-    p[0] = n("func_def", [], p[3])
+    p[0] = n("func_def", [p[7]], (p[1], p[2], p[3]))
 
 
 def p_function_defintion_noparam(p):
     """
+        func_def : type ID '(' ')' '{' statements '}'
+    """
+    p[0] = n("func_def", [p[6]], (p[1], p[2]))
+
+
+def p_function_defintion_nostatement(p):
+    """
+        func_def : type ID '(' params ')' '{' '}'
+    """
+    p[0] = n("func_def", [], (p[1], p[2], p[4]))
+
+
+def p_function_definition_nothing(p):
+    """
         func_def : type ID '(' ')' '{' '}'
     """
-    p[0] = n("func_def", [])
+    p[0] = n("func_def", [], (p[1], p[2]))
 
 
 def p_params(p):
@@ -212,6 +258,33 @@ def p_param(p):
     """
     p[0] = n("param", [p[2]], p[1])
 
+# =================== statement start ======================
+
+
+def p_statements(p):
+    """
+        statements : statement ';' statements
+    """
+    p[0] = n("statements", [p[1]] + p[3].children)
+
+
+def p_statements_end(p):
+    """
+        statements : statement ';'
+    """
+    p[0] = n("statements", [p[1]])
+
+
+def p_statement(p):
+    """
+        statement   : expression
+                    | decl
+    """
+    p[0] = p[1]
+
+
+# -------------------- statement end ------------------------
+
 
 def p_type(p):
     """
@@ -223,7 +296,7 @@ def p_type(p):
                 | FLOAT 
                 | DOUBLE
     """
-    p[0] = n(p[1])
+    p[0] = p[1]
 
 
 parser = yacc.yacc()
