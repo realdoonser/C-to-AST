@@ -188,4 +188,5 @@ if (a = b)
     do stuff // if/for/while statements without {}
 while ((c = getchar()) != EOF) // assignments in expressions
 a | b // bitwise operations
+switch () // switch statements
 ```
