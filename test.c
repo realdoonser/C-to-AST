@@ -1,9 +1,4 @@
 int main()
 {
-    for (int i = 0; i; b)
-    {
-    };
-    ;
-    ;
-    return 0;
+    int a, b[10] = {1, 2}, c;
 }

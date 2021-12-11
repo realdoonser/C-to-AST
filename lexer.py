@@ -24,12 +24,18 @@ reserved = {
 }
 
 literals = ['+', '-', '*', '/',
-            '(', ')', '{', '}', '>', '<', ';', '=', '[', ']', '#', '.', ',']
+            '(', ')', '{', '}', '>', '<', ';', '=', '[', ']', '#', '.', ',', '?', ':', '|']
 
 assigneq_token = ['MULTEQ', 'DIVEQ', 'MODEQ', 'ADDEQ', 'SUBEQ']
 
+logical_operator_token = ['LOGEQ', 'LOGNEQ', 'LOGOR', 'LOGAND']
+
+bitwise_operator_token = ['LSHIFT', 'RSHIFT']
+
+unary_operator_token = ['PLUSPLUS', 'MINUSMINUS', 'RARROW']
+
 tokens = ["INCLUDE", "ID", "NUMBER", "GEQ", "LEQ", "STR",
-          "CHR"] + assigneq_token + list(reserved.values())
+          "CHR", ] + assigneq_token + logical_operator_token + bitwise_operator_token + unary_operator_token + list(reserved.values())
 
 t_GEQ = r'>='
 t_LEQ = r'<='
@@ -40,6 +46,15 @@ t_DIVEQ = r'/='
 t_MODEQ = r'%='
 t_ADDEQ = r'\+='
 t_SUBEQ = r'-='
+t_LOGNEQ = r'!='
+t_LOGEQ = r'=='
+t_LOGOR = r'\|\|'
+t_LOGAND = r'&&'
+t_LSHIFT = r'<<'
+t_RSHIFT = r'>>'
+t_PLUSPLUS = r'\+\+'
+t_MINUSMINUS = r'--'
+t_RARROW = r'->'
 
 
 def t_ID(t):
@@ -49,8 +64,8 @@ def t_ID(t):
 
 
 def t_INCLUDE(t):
-    r'\#include[ \t]*(:?<|")\w*.h(:?>|")'
-    t.value = re.search('(:?<|")\w*.h(:?>|")', t.value).group()[1:-1]
+    r'\#include[ \t]*(?:<|")\w+\.\w+(?:>|")'
+    t.value = re.search('(?:<|")\w+\.\w+(?:>|")', t.value).group()[1:-1]
     return t
 
 
@@ -65,8 +80,11 @@ def t_LONGCOMMENT(t):
 
 
 def t_NUMBER(t):
-    r'[0-9]+'
-    t.value = int(t.value)
+    r'([0-9]+\.[0-9]*|[0-9]*\.[0-9]+|[0-9]+)'
+    if ('.' in t.value):
+        t.value = float(t.value)
+    else:
+        t.value = int(t.value)
     return t
 
 

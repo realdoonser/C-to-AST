@@ -4,12 +4,19 @@ import sys
 import pprint
 
 
-# precedence = (
-#     ('left', '+', '-'),
-#     ('left', '*', '/'),
-#     ('right', 'UMINUS'),
-#     ('right', 'LPLUS', 'LMINUS')
-# )
+precedence = (
+    ('left', '?', ':'),
+    ('left', 'LOGOR'),
+    ('left', 'LOGAND'),
+    ('left', '^'),
+    ('left', 'LOGEQ', 'LOGNEQ'),
+    ('left', '<', '>', 'LEQ', 'GEQ'),
+    ('left', 'LSHIFT', 'RSHIFT'),
+    ('left', '+', '-'),
+    ('left', '*', '/'),
+    ('right', 'LPLUSPLUS', 'LMINUSMINUS', 'LPOS', 'LNEG', 'LNOT'),
+    ('left', 'RPLUSPLUS', 'RMINUSMINUS', '.', 'RARROW')
+)
 
 
 class n:
@@ -145,30 +152,6 @@ def p_initializer(p):
     else:
         p[0] = n("initializer", [p[2]])
 
-
-def p_expressions(p):
-    """
-        expressions : expression ',' expressions
-    """
-    p[0] = n("expressions", [p[1]] + p[3].children)
-
-
-def p_expressions_end(p):
-    """
-        expressions : expression
-    """
-    p[0] = n("expressions", [p[1]])
-
-
-def p_expression(p):
-    """
-        expression  : ID
-                    | NUMBER
-                    | CHR
-                    | STR
-                    | assignment_expr
-    """
-    p[0] = n("expression", [], info=p[1])
 
 # ---------------- declarators end -----------------
 
@@ -408,7 +391,7 @@ def p_jump(p):
     p[0] = n(p[1])
 
 
-def p_jump(p):
+def p_jump_wvalue(p):
     """
         jump : RETURN expression
     """
@@ -419,7 +402,149 @@ def p_jump(p):
 
 # ===================== expression =========================
 
+def p_expressions(p):
+    """
+        expressions : expression ',' expressions
+    """
+    p[0] = n("expressions", [p[1]] + p[3].children)
+
+
+def p_expressions_end(p):
+    """
+        expressions : expression
+    """
+    p[0] = n("expressions", [p[1]])
+
+
+def p_expression(p):
+    """
+        expression  : bin_expr
+                    | assignment_expr
+    """
+    p[0] = p[1]
+
+
+def p_expression_wternary(p):
+    """
+        expression  : bin_expr '?' bin_expr ':' bin_expr
+    """
+    p[0] = n("expr_ternary", [p[1], p[3], p[5]])
+
+
+def p_binary_expr(p):
+    """
+        bin_expr    : pre_unary_expr bin_op bin_expr
+    """
+    p[0] = n("binary_expression", [p[1], p[3]], p[2])
+
+
+def p_binary_to_unary(p):
+    """
+        bin_expr    : pre_unary_expr
+    """
+    p[0] = p[1]
+
+
+def p_binary_operator(p):
+    """
+        bin_op      : '+'
+                    | '-'
+                    | '*'
+                    | '/'
+                    | LOGAND
+                    | LOGOR
+                    | LOGEQ
+                    | LOGNEQ
+                    | LSHIFT
+                    | RSHIFT
+                    | '<'
+                    | '>'
+                    | LEQ
+                    | GEQ
+                    | '^'	
+    """
+    p[0] = p[1]
+
+
+def p_pre_unary_expr(p):
+    """
+        pre_unary_expr  : PLUSPLUS pre_unary_expr %prec LPLUSPLUS
+                        | MINUSMINUS pre_unary_expr %prec LMINUSMINUS
+                        | '+' pre_unary_expr %prec LPOS
+                        | '-' pre_unary_expr %prec LNEG
+                        | '!' pre_unary_expr %prec LNOT
+    """
+    p[0] = n("pre_unary", [p[2]], p[1])
+
+
+def p_pre_unary_to_post(p):
+    """
+        pre_unary_expr : post_unary_expr
+    """
+    p[0] = p[1]
+
+
+def p_post_unary_expr_array(p):
+    """
+        post_unary_expr : post_unary_expr '[' expression ']'
+    """
+    p[0] = n("post_unary", [p[1], p[3]], "array_access")
+
+
+def p_post_unary_fncall_empty(p):
+    """
+        post_unary_expr : post_unary_expr '(' ')'
+    """
+    p[0] = n("post_unary", [p[1]], "fncall")
+
+
+def p_post_unary_fncall(p):
+    """
+        post_unary_expr : post_unary_expr '(' expressions ')'
+    """
+    p[0] = n("post_unary", [p[1], p[3]], "fncall")
+
+
+def p_post_unary_ppmm(p):
+    """
+        post_unary_expr : post_unary_expr PLUSPLUS %prec RPLUSPLUS
+                        | post_unary_expr MINUSMINUS %prec RMINUSMINUS
+    """
+    p[0] = n("post_unary", [p[1]], p[2])
+
+
+def p_post_unary_access_member(p):
+    """
+        post_unary_expr : post_unary_expr '.' ID
+                        | post_unary_expr RARROW ID
+    """
+    p[0] = n("post_unary", [p[1], p[3]], p[2])
+
+
+def p_post_unary_to_element(p):
+    """
+        post_unary_expr : element
+    """
+    p[0] = p[1]
+
+
+def p_element(p):
+    """
+        element : ID
+    """
+    p[0] = n("var", [], p[1])
+
+
+def p_element_const(p):
+    """
+        element : NUMBER
+                | CHR
+                | STR
+    """
+    p[0] = n("const", [], p[1])
+
 # ------------------- expression end -----------------------
+
 
 def p_type(p):
     """
