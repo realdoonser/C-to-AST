@@ -1,9 +1,8 @@
-from lexer import *
+from parser import *
+import sys
 
 if __name__ == "__main__":
     with open(sys.argv[-1]) as f:
         data = f.read()
-    lexer = make_lexer()
-    lexer.input(data)
-    for tok in lexer:
-        print(tok)
+    result: n = make_parser().parse(data)
+    print(result)

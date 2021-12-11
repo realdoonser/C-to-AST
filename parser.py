@@ -1,3 +1,4 @@
+import ply.lex as lex
 import ply.yacc as yacc
 from lexer import *
 import sys
@@ -567,6 +568,7 @@ def p_empty(p):
 
 
 def make_parser():
+    make_lexer()
     parser = yacc.yacc()
     return parser
 
