@@ -96,13 +96,13 @@ statement       : expression ; // a+1*10
 
 block           : { stats_or_null } // block statements
 
-conditional     : if ( expression ) block_or_stat
-                | if ( expression ) block_or_stat else conditional // higher precedence
-                | if ( expression ) block_or_stat else block_or_stat // lower precedence
+conditional     : if ( expression ) statement
+                | if ( expression ) statement else conditional // higher precedence
+                | if ( expression ) statement else statement // lower precedence
 
-iteration       : while ( expression ) block_or_stat
-                | do block_or_stat while ( expression ) ;
-                | for ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) block_or_stat
+iteration       : while ( expression ) statement
+                | do statement while ( expression ) ;
+                | for ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement
 
 stats_or_null : statements // statements or empty
                 | empty
@@ -112,9 +112,6 @@ expr_or_null    : expression
 
 expr_or_null_or_init    : expr_or_null
                         | usual_dec
-
-block_or_stat   : block // a block or a single statement, usually seen in if( ... )\n"oneline if"
-                | statement
 
 jump            : break
                 | continue
