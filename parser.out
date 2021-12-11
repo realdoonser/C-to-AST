@@ -7727,7 +7727,6 @@ state 199
     (46) conditional -> IF ( expression ) statement .
     (47) conditional -> IF ( expression ) statement . ELSE statement
 
-  ! shift/reduce conflict for ELSE resolved as shift
     ;               reduce using rule 46 (conditional -> IF ( expression ) statement .)
     {               reduce using rule 46 (conditional -> IF ( expression ) statement .)
     IF              reduce using rule 46 (conditional -> IF ( expression ) statement .)
@@ -8271,7 +8270,3 @@ state 210
     }               reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
     ELSE            reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
 
-WARNING: 
-WARNING: Conflicts:
-WARNING: 
-WARNING: shift/reduce conflict for ELSE in state 199 resolved as shift

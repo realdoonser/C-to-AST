@@ -1,6 +1,6 @@
 # Subset C's CFG (BNF)
 
-Syntax rules for subset of C we are working with.
+## Syntax rules for subset of C we are working with.
 
 ```c
 program : include program
@@ -179,7 +179,7 @@ element : ID
         | ( expression )
 ```
 
-Currently not supprted styles (that i know of):
+## Currently not supprted styles (that i know of):
 
 ```c
 #define
@@ -192,4 +192,66 @@ int foo(float a, ...) // stdarg style three dots ...
 a | b // bitwise operations
 switch () // switch statements
 goto // will not plan on adding
+```
+
+## Comments
+
+The production:
+
+```c
+statement       : ....
+                | conditional
+                | block // { ....;....; }
+conditional     : if ( expression ) statement
+                | if ( expression ) statement else statement
+```
+
+generated 1 parse reduce warning:
+
+```
+$ python3 parser.py test.c
+WARNING: no p_error() function is defined
+Generating LALR tables
+WARNING: 1 shift/reduce conflict
+```
+
+this is because when the parser encounters an `else`, it doesn't know whether to reduce the last `if` and leave the `else` for the last last `if`:
+
+```c
+        if ------------- combined
+->      if --- reduce
+        else ----------- combined
+```
+
+or reduce the last `if` with the `else`.
+
+```c
+        if ---- waiting
+->      if ------------- combined
+        else ----------- combined
+```
+
+By default it will do the correct thing (combine with current if) since by default it favors shifting, so it will shift to the end and then pop everything out, which is equivalent to stack operation (popping). We can get rid of the conflict by specifying reduce precedence:
+
+```python
+precedence = (
+        ...,
+        ('left', "THEN"),
+        ('left', 'ELSE'),
+)
+
+...
+
+def p_conditional(p):
+    """
+        conditional : IF '(' expression ')' statement %prec THEN
+    """
+    p[0] = n("conditional", [p[3], p[5]])
+
+
+def p_conditional_else(p):
+    """
+        conditional : IF '(' expression ')' statement ELSE statement
+    """
+    p[0] = n("conditional", [p[3], p[5], p[7]], "else")
 ```

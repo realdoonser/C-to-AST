@@ -18,6 +18,8 @@ precedence = (
     ('left', '*', '/'),
     ('right', 'LPLUSPLUS', 'LMINUSMINUS', 'LPOS', 'LNEG', 'LNOT', 'LAT'),
     ('left', 'RPLUSPLUS', 'RMINUSMINUS', '.', 'RARROW'),
+    ('left', "THEN"),
+    ('left', 'ELSE'),
 )
 
 
@@ -309,7 +311,7 @@ def p_statement_extra_semicolon(p):
 
 def p_conditional(p):
     """
-        conditional : IF '(' expression ')' statement
+        conditional : IF '(' expression ')' statement %prec THEN
     """
     p[0] = n("conditional", [p[3], p[5]])
 
@@ -319,6 +321,7 @@ def p_conditional_else(p):
         conditional : IF '(' expression ')' statement ELSE statement
     """
     p[0] = n("conditional", [p[3], p[5], p[7]], "else")
+
 
 # -------------------- conditional end -------------------
 
