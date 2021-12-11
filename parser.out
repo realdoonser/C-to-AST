@@ -1,0 +1,343 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    ELSE
+    GEQ
+    IF
+    LEQ
+    RETURN
+    STR
+    THEN
+    WHILE
+    break
+    struct
+
+Grammar
+
+Rule 0     S' -> program
+Rule 1     program -> include program
+Rule 2     program -> external_decl program
+Rule 3     program -> include
+Rule 4     program -> external_decl
+Rule 5     include -> INCLUDE
+Rule 6     external_decl -> type ID ;
+Rule 7     external_decl -> type ID = NUMBER ;
+Rule 8     external_decl -> type ID = CHR ;
+Rule 9     type -> VOID
+Rule 10    type -> CHAR
+Rule 11    type -> SHORT
+Rule 12    type -> INT
+Rule 13    type -> LONG
+Rule 14    type -> FLOAT
+Rule 15    type -> DOUBLE
+
+Terminals, with rules where they appear
+
+;                    : 6 7 8
+=                    : 7 8
+CHAR                 : 10
+CHR                  : 8
+DOUBLE               : 15
+ELSE                 : 
+FLOAT                : 14
+GEQ                  : 
+ID                   : 6 7 8
+IF                   : 
+INCLUDE              : 5
+INT                  : 12
+LEQ                  : 
+LONG                 : 13
+NUMBER               : 7
+RETURN               : 
+SHORT                : 11
+STR                  : 
+THEN                 : 
+VOID                 : 9
+WHILE                : 
+break                : 
+error                : 
+struct               : 
+
+Nonterminals, with rules where they appear
+
+external_decl        : 2 4
+include              : 1 3
+program              : 1 2 0
+type                 : 6 7 8
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . program
+    (1) program -> . include program
+    (2) program -> . external_decl program
+    (3) program -> . include
+    (4) program -> . external_decl
+    (5) include -> . INCLUDE
+    (6) external_decl -> . type ID ;
+    (7) external_decl -> . type ID = NUMBER ;
+    (8) external_decl -> . type ID = CHR ;
+    (9) type -> . VOID
+    (10) type -> . CHAR
+    (11) type -> . SHORT
+    (12) type -> . INT
+    (13) type -> . LONG
+    (14) type -> . FLOAT
+    (15) type -> . DOUBLE
+
+    INCLUDE         shift and go to state 4
+    VOID            shift and go to state 6
+    CHAR            shift and go to state 7
+    SHORT           shift and go to state 8
+    INT             shift and go to state 9
+    LONG            shift and go to state 10
+    FLOAT           shift and go to state 11
+    DOUBLE          shift and go to state 12
+
+    program                        shift and go to state 1
+    include                        shift and go to state 2
+    external_decl                  shift and go to state 3
+    type                           shift and go to state 5
+
+state 1
+
+    (0) S' -> program .
+
+
+
+state 2
+
+    (1) program -> include . program
+    (3) program -> include .
+    (1) program -> . include program
+    (2) program -> . external_decl program
+    (3) program -> . include
+    (4) program -> . external_decl
+    (5) include -> . INCLUDE
+    (6) external_decl -> . type ID ;
+    (7) external_decl -> . type ID = NUMBER ;
+    (8) external_decl -> . type ID = CHR ;
+    (9) type -> . VOID
+    (10) type -> . CHAR
+    (11) type -> . SHORT
+    (12) type -> . INT
+    (13) type -> . LONG
+    (14) type -> . FLOAT
+    (15) type -> . DOUBLE
+
+    $end            reduce using rule 3 (program -> include .)
+    INCLUDE         shift and go to state 4
+    VOID            shift and go to state 6
+    CHAR            shift and go to state 7
+    SHORT           shift and go to state 8
+    INT             shift and go to state 9
+    LONG            shift and go to state 10
+    FLOAT           shift and go to state 11
+    DOUBLE          shift and go to state 12
+
+    include                        shift and go to state 2
+    program                        shift and go to state 13
+    external_decl                  shift and go to state 3
+    type                           shift and go to state 5
+
+state 3
+
+    (2) program -> external_decl . program
+    (4) program -> external_decl .
+    (1) program -> . include program
+    (2) program -> . external_decl program
+    (3) program -> . include
+    (4) program -> . external_decl
+    (5) include -> . INCLUDE
+    (6) external_decl -> . type ID ;
+    (7) external_decl -> . type ID = NUMBER ;
+    (8) external_decl -> . type ID = CHR ;
+    (9) type -> . VOID
+    (10) type -> . CHAR
+    (11) type -> . SHORT
+    (12) type -> . INT
+    (13) type -> . LONG
+    (14) type -> . FLOAT
+    (15) type -> . DOUBLE
+
+    $end            reduce using rule 4 (program -> external_decl .)
+    INCLUDE         shift and go to state 4
+    VOID            shift and go to state 6
+    CHAR            shift and go to state 7
+    SHORT           shift and go to state 8
+    INT             shift and go to state 9
+    LONG            shift and go to state 10
+    FLOAT           shift and go to state 11
+    DOUBLE          shift and go to state 12
+
+    external_decl                  shift and go to state 3
+    program                        shift and go to state 14
+    include                        shift and go to state 2
+    type                           shift and go to state 5
+
+state 4
+
+    (5) include -> INCLUDE .
+
+    INCLUDE         reduce using rule 5 (include -> INCLUDE .)
+    VOID            reduce using rule 5 (include -> INCLUDE .)
+    CHAR            reduce using rule 5 (include -> INCLUDE .)
+    SHORT           reduce using rule 5 (include -> INCLUDE .)
+    INT             reduce using rule 5 (include -> INCLUDE .)
+    LONG            reduce using rule 5 (include -> INCLUDE .)
+    FLOAT           reduce using rule 5 (include -> INCLUDE .)
+    DOUBLE          reduce using rule 5 (include -> INCLUDE .)
+    $end            reduce using rule 5 (include -> INCLUDE .)
+
+
+state 5
+
+    (6) external_decl -> type . ID ;
+    (7) external_decl -> type . ID = NUMBER ;
+    (8) external_decl -> type . ID = CHR ;
+
+    ID              shift and go to state 15
+
+
+state 6
+
+    (9) type -> VOID .
+
+    ID              reduce using rule 9 (type -> VOID .)
+
+
+state 7
+
+    (10) type -> CHAR .
+
+    ID              reduce using rule 10 (type -> CHAR .)
+
+
+state 8
+
+    (11) type -> SHORT .
+
+    ID              reduce using rule 11 (type -> SHORT .)
+
+
+state 9
+
+    (12) type -> INT .
+
+    ID              reduce using rule 12 (type -> INT .)
+
+
+state 10
+
+    (13) type -> LONG .
+
+    ID              reduce using rule 13 (type -> LONG .)
+
+
+state 11
+
+    (14) type -> FLOAT .
+
+    ID              reduce using rule 14 (type -> FLOAT .)
+
+
+state 12
+
+    (15) type -> DOUBLE .
+
+    ID              reduce using rule 15 (type -> DOUBLE .)
+
+
+state 13
+
+    (1) program -> include program .
+
+    $end            reduce using rule 1 (program -> include program .)
+
+
+state 14
+
+    (2) program -> external_decl program .
+
+    $end            reduce using rule 2 (program -> external_decl program .)
+
+
+state 15
+
+    (6) external_decl -> type ID . ;
+    (7) external_decl -> type ID . = NUMBER ;
+    (8) external_decl -> type ID . = CHR ;
+
+    ;               shift and go to state 16
+    =               shift and go to state 17
+
+
+state 16
+
+    (6) external_decl -> type ID ; .
+
+    INCLUDE         reduce using rule 6 (external_decl -> type ID ; .)
+    VOID            reduce using rule 6 (external_decl -> type ID ; .)
+    CHAR            reduce using rule 6 (external_decl -> type ID ; .)
+    SHORT           reduce using rule 6 (external_decl -> type ID ; .)
+    INT             reduce using rule 6 (external_decl -> type ID ; .)
+    LONG            reduce using rule 6 (external_decl -> type ID ; .)
+    FLOAT           reduce using rule 6 (external_decl -> type ID ; .)
+    DOUBLE          reduce using rule 6 (external_decl -> type ID ; .)
+    $end            reduce using rule 6 (external_decl -> type ID ; .)
+
+
+state 17
+
+    (7) external_decl -> type ID = . NUMBER ;
+    (8) external_decl -> type ID = . CHR ;
+
+    NUMBER          shift and go to state 18
+    CHR             shift and go to state 19
+
+
+state 18
+
+    (7) external_decl -> type ID = NUMBER . ;
+
+    ;               shift and go to state 20
+
+
+state 19
+
+    (8) external_decl -> type ID = CHR . ;
+
+    ;               shift and go to state 21
+
+
+state 20
+
+    (7) external_decl -> type ID = NUMBER ; .
+
+    INCLUDE         reduce using rule 7 (external_decl -> type ID = NUMBER ; .)
+    VOID            reduce using rule 7 (external_decl -> type ID = NUMBER ; .)
+    CHAR            reduce using rule 7 (external_decl -> type ID = NUMBER ; .)
+    SHORT           reduce using rule 7 (external_decl -> type ID = NUMBER ; .)
+    INT             reduce using rule 7 (external_decl -> type ID = NUMBER ; .)
+    LONG            reduce using rule 7 (external_decl -> type ID = NUMBER ; .)
+    FLOAT           reduce using rule 7 (external_decl -> type ID = NUMBER ; .)
+    DOUBLE          reduce using rule 7 (external_decl -> type ID = NUMBER ; .)
+    $end            reduce using rule 7 (external_decl -> type ID = NUMBER ; .)
+
+
+state 21
+
+    (8) external_decl -> type ID = CHR ; .
+
+    INCLUDE         reduce using rule 8 (external_decl -> type ID = CHR ; .)
+    VOID            reduce using rule 8 (external_decl -> type ID = CHR ; .)
+    CHAR            reduce using rule 8 (external_decl -> type ID = CHR ; .)
+    SHORT           reduce using rule 8 (external_decl -> type ID = CHR ; .)
+    INT             reduce using rule 8 (external_decl -> type ID = CHR ; .)
+    LONG            reduce using rule 8 (external_decl -> type ID = CHR ; .)
+    FLOAT           reduce using rule 8 (external_decl -> type ID = CHR ; .)
+    DOUBLE          reduce using rule 8 (external_decl -> type ID = CHR ; .)
+    $end            reduce using rule 8 (external_decl -> type ID = CHR ; .)
+

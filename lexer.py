@@ -1,5 +1,6 @@
 import ply.lex as lex
-
+import sys
+import re
 # Tokens
 
 reserved = {
@@ -7,27 +8,50 @@ reserved = {
     "then": "THEN",
     "else": "ELSE",
     "while": "WHILE",
+    "int": "INT",
+    "char": "CHAR",
+    "void": "VOID",
+    "short": "SHORT",
+    "long": "LONG",
+    "float": "FLOAT",
+    "double": "DOUBLE",
+    "return": "RETURN",
+    "break": "break",
+    "struct": "struct",
 }
 
-tokens = ["NAME", "NUMBER", "PLUS", "MINUS",
-          "TIMES", "DIVIDE", "EQUALS", "LPAREN", "RPAREN", "LBRACE", "RBRACE", "SEMICOLON", "ID"] + list(reserved.values())
+literals = ['+', '-', '*', '/',
+            '(', ')', '{', '}', '>', '<', ';', '=', '[', ']', '#', '.']
 
-t_PLUS = r'\+'
-t_MINUS = r'\-'
-t_TIMES = r'\*'
-t_DIVIDE = r'\/'
-t_EQUALS = r'='
-t_LPAREN = r'\('
-t_RPAREN = r'\)'
-t_LBRACE = r'\{'
-t_RBRACE = r'\}'
-t_SEMICOLON = r';'
+tokens = ["INCLUDE", "ID", "NUMBER", "GEQ", "LEQ", "STR",
+          "CHR"] + list(reserved.values())
+
+t_GEQ = r'>='
+t_LEQ = r'<='
+t_CHR = r"'.'"
+t_STR = r'".*"'
 
 
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
     t.type = reserved.get(t.value, 'ID')
     return t
+
+
+def t_INCLUDE(t):
+    r'\#include[ \t]*(:?<|")\w*.h(:?>|")'
+    t.value = re.search('(:?<|")\w*.h(:?>|")', t.value).group()[1:-1]
+    return t
+
+
+def t_COMMENT(t):
+    r'//.*'
+    pass
+
+
+def t_LONGCOMMENT(t):
+    r'/\*(.|\n)*\*/'
+    pass
 
 
 def t_NUMBER(t):
@@ -46,11 +70,13 @@ def t_error(t):
     t.lexer.skip(1)
 
 
-def t_COMMENT(t):
-    r'\#.*'
-    pass
-
-
 t_ignore = ' \t'
 
 lexer = lex.lex()
+
+if __name__ == "__main__":
+    with open(sys.argv[-1]) as f:
+        data = f.read()
+    lexer.input(data)
+    for tok in lexer:
+        print(tok)
