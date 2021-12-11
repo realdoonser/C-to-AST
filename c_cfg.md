@@ -12,11 +12,11 @@ include : # ID < ID . ID >
 
 /* External Declarations (函数外声明) */
 exernal_decl    : decl // int a = 10; etc.
-                | func_def // f(){ ... }
+                | func_def // void f(){ ... }
 
 /* decl */
 
-decl    : type declarators ; // int a, b=2, d;
+decl    : type declarators ; // int a, b=2, d, g();
         | new_type_dec // new class or struct
 
 type    : VOID | CHAR | SHORT | INT | LONG | FLOAT | DOUBLE
@@ -42,7 +42,7 @@ new_type_inits  : ID , new_type_inits
 
 // can can many declarator (eg. int a,b,c,d,e )
 declarators : declarator_1
-            | declarator_1 declarators
+            | declarator_1 , declarators
 
 // level 1 of declaration, assign or not
 declarator_1    : declarator_2 = initializer // pointers

@@ -21,21 +21,27 @@ class n:
     def __repr__(self) -> str:
         return pprint.pformat({"type": self.type, "children": self.children, "info": self.info}, width=500, sort_dicts=False)
 
+# =========== For the whole program ===========
+
 
 def p_program(p):
     """
         program : include program
                 | external_decl program
-                | include
+    """
+    p[0] = n("program", [p[1]] + p[2].children)
+
+
+def p_program_end(p):
+    """
+        program : include
                 | external_decl
     """
-    if (len(p) == 3):
-        # has program
-        p[0] = n("program", [p[1]] + p[2].children)
-    elif (len(p) == 2):
-        p[0] = n("program", [p[1]])
-    else:
-        raise "Error at program"
+    p[0] = n("program", [p[1]])
+
+# ----------------- program end -------------------
+
+# =================== include =====================
 
 
 def p_include(p):
@@ -44,19 +50,129 @@ def p_include(p):
     """
     p[0] = n("include", [], p[1])
 
+# ---------------- include end -------------------
+
 
 def p_external_declaration(p):
     """
-        external_decl   : type ID ';'
-                        | type ID '=' NUMBER ';'
-                        | type ID '=' CHR ';'
+        external_decl   : decl
     """
-    var = n("var", [], (p[1].type, p[2]))
-    if (len(p) == 6):
-        num = n("num", [], (p[4]))
-        p[0] = n("assign", [var, num])
-    elif (len(p) == 4):
-        p[0] = n("decl", [var])
+    p[0] = n("external_decl", [p[1]])
+
+
+def p_decl(p):
+    """
+        decl : type declarators ';'
+    """
+    p[0] = n("decl", [p[2]], (p[1],))
+
+
+def p_decl_struct(p):
+    """
+        decl : new_type_dec
+    """
+    p[0] = p[1]
+
+# ================ declarators ==================
+
+
+def p_declarators(p):
+    """
+        declarators : declarator_1 ',' declarators
+    """
+    p[0] = n("declarators", [p[1]] + p[3].children)
+
+
+def p_declarator_end(p):
+    """
+        declarators : declarator_1
+    """
+    p[0] = n("declarators", [p[1]])
+
+
+def p_declarator_1(p):
+    """
+        declarator_1    : declarator_2
+    """
+    p[0] = p[1]
+
+
+def p_declarator_1_winit(p):
+    """
+        declarator_1    : declarator_2 '=' initializer
+    """
+    p[0] = n("init", [p[1], p[3]])
+
+
+def p_declarator_2_single(p):
+    """
+        declarator_2    : ID
+    """
+    p[0] = n("var", [], (p[1], ))
+
+
+def p_declarator_2_func(p):
+    """
+        declarator_2    : ID '(' ')'
+    """
+    p[0] = n("func_decl", [], info=(p[1],))
+
+
+def p_declarator_2_array(p):
+    """
+        declarator_2    : ID '[' ']'
+    """
+    p[0] = n("arr_decl", [], info=(p[1],))
+
+
+def p_initializer(p):
+    """
+        initializer : NUMBER
+                    | CHR
+                    | STR
+    """
+    p[0] = n("const", [], (p[1],))
+
+# ---------------- declarators end -----------------
+
+
+# ================= new_type ======================
+
+
+def p_new_type_dec(p):
+    """
+        new_type_dec    : new_type ID '{' new_type_params '}' ';'
+    """
+    p[0] = n(p[1], p[4], p[2])
+
+
+def p_new_type(p):
+    """
+        new_type    : STRUCT
+                    | CLASS
+    """
+    p[0] = p[1]
+
+
+def p_new_type_params(p):
+    """
+        new_type_params : new_type_param new_type_params 
+    """
+    p[0] = [p[1]] + p[2]
+
+
+def p_new_type_params_end(p):
+    """
+        new_type_params : new_type_param
+    """
+    p[0] = [p[1]]
+
+
+def p_new_type_param(p):
+    """
+        new_type_param : type declarators ';'
+    """
+    p[0] = n("decl", [p[2]], (p[1],))
 
 
 def p_type(p):

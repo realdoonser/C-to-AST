@@ -16,12 +16,13 @@ reserved = {
     "float": "FLOAT",
     "double": "DOUBLE",
     "return": "RETURN",
-    "break": "break",
-    "struct": "struct",
+    "break": "BREAK",
+    "struct": "STRUCT",
+    "class": "CLASS"
 }
 
 literals = ['+', '-', '*', '/',
-            '(', ')', '{', '}', '>', '<', ';', '=', '[', ']', '#', '.']
+            '(', ')', '{', '}', '>', '<', ';', '=', '[', ']', '#', '.', ',']
 
 tokens = ["INCLUDE", "ID", "NUMBER", "GEQ", "LEQ", "STR",
           "CHR"] + list(reserved.values())
