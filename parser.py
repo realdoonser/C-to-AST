@@ -251,7 +251,7 @@ def p_params(p):
     """
         params : param ',' params
     """
-    p[0] = n("params", p[1] + p[3].children)
+    p[0] = n("params", [p[1]] + p[3].children)
 
 
 def p_params_end(p):
