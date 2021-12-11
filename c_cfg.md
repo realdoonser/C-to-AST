@@ -99,13 +99,16 @@ assignment_expr : ID assignment_op expression
 assignment_op   : = | *= | /= | %= | += | -= | <<=
                 | >>= | $= | ^= | |=
 
-conditional     : if ( expression ) { statements }
-                | if ( expression ) else conditional
-                | if ( expression ) else { statements }
+conditional     : if ( expression ) { statmts_or_null }
+                | if ( expression ) else conditional // higher precedence
+                | if ( expression ) { statmts_or_null } else { statmts_or_null } // lower precedence
 
-iteration       : while ( expression ) { statements }
-                | do { statements } while ( expression ) ;
-                | for ( expr_or_null ; expr_or_null ; expr_or_null ) { statements }
+iteration       : while ( expression ) { statmts_or_null }
+                | do { statmts_or_null } while ( expression ) ;
+                | for ( expr_or_null ; expr_or_null ; expr_or_null ) { statmts_or_null }
+
+statmts_or_null : statements // statements or empty
+                | empty
 
 expr_or_null    : expression
                 | empty
