@@ -16,7 +16,7 @@ precedence = (
     ('left', 'LSHIFT', 'RSHIFT'),
     ('left', '+', '-'),
     ('left', '*', '/'),
-    ('right', 'LPLUSPLUS', 'LMINUSMINUS', 'LPOS', 'LNEG', 'LNOT'),
+    ('right', 'LPLUSPLUS', 'LMINUSMINUS', 'LPOS', 'LNEG', 'LNOT', 'LAT'),
     ('left', 'RPLUSPLUS', 'RMINUSMINUS', '.', 'RARROW'),
 )
 
@@ -28,9 +28,8 @@ class n:
         self.info = info
 
     def __repr__(self) -> str:
-        return pprint.pformat({"type": self.type, "info": self.info, "children": self.children}, width=500, sort_dicts=False)
-
-
+        # return pprint.pformat({"type": self.type, "info": self.info, "children": self.children}, width=500, sort_dicts=False)
+        return repr({"type": self.type, "info": self.info, "children": self.children})
 # =========== For the whole program ===========
 
 
@@ -486,6 +485,7 @@ def p_pre_unary_expr(p):
                         | '+' pre_unary_expr %prec LPOS
                         | '-' pre_unary_expr %prec LNEG
                         | '!' pre_unary_expr %prec LNOT
+                        | '&' pre_unary_expr %prec LAT
     """
     p[0] = n("pre_unary", [p[2]], p[1])
 

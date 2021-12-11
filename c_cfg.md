@@ -159,6 +159,7 @@ pre_unary_expr  : post_unary_expr
                 | +  pre_unary_expr
                 | -  pre_unary_expr
                 | !  pre_unary_expr
+                | &  pre_unary_expr
 
 post_unary_expr : element
                 | post_unary_expr [ expression ]
