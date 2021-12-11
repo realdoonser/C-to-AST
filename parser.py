@@ -21,6 +21,7 @@ class n:
     def __repr__(self) -> str:
         return pprint.pformat({"type": self.type, "info": self.info, "children": self.children}, width=500, sort_dicts=False)
 
+
 # =========== For the whole program ===========
 
 
@@ -109,7 +110,7 @@ def p_declarator_2_single(p):
     """
         declarator_2    : ID
     """
-    p[0] = n("var", [], (p[1], ))
+    p[0] = n("var", [], p[1])
 
 
 def p_declarator_2_func(p):
@@ -263,25 +264,82 @@ def p_param(p):
 
 def p_statements(p):
     """
-        statements : statement ';' statements
+        statements : statement statements
     """
-    p[0] = n("statements", [p[1]] + p[3].children)
+    p[0] = n("statements", [p[1]] + p[2].children)
 
 
 def p_statements_end(p):
     """
-        statements : statement ';'
+        statements : statement
     """
     p[0] = n("statements", [p[1]])
 
 
 def p_statement(p):
     """
-        statement   : expression
-                    | decl
+        statement   : expression ';'
+                    | decl ';'
+                    | assignment_expr ';'
+                    | conditional
     """
     p[0] = p[1]
 
+
+def p_conditional(p):
+    """
+        conditional : IF '(' expression ')' '{' stats_or_null '}'
+    """
+    p[0] = n("conditional", [p[3], p[6]])
+
+
+def p_conditional_elseif(p):
+    """
+        conditional : IF '(' expression ')' ELSE conditional
+    """
+    p[0] = n("conditional", [p[3], p[6]], "else")
+
+
+def p_conditional_else(p):
+    """
+        conditional : IF '(' expression ')' '{' stats_or_null '}' ELSE '{' stats_or_null '}'
+    """
+    p[0] = n("conditional", [p[3], p[10]], "else")
+
+
+def p_statement_or_null(p):
+    """
+        stats_or_null   : statements
+                        | empty
+    """
+    if (len(p) == 2):
+        p[0] = p[1]
+
+
+def p_block(p):
+    """
+        statement : '{' stats_or_null '}'
+    """
+    p[0] = n("block", p[2])
+
+
+def p_assignment_expr(p):
+    """
+        assignment_expr : ID assignmenteq_op expression
+    """
+    var = n("var", [], p[1])
+    p[0] = n("assignemnteq_expr", [var, p[3]], p[2])
+
+
+def p_assignment_op(p):
+    """
+        assignmenteq_op     : MULTEQ
+                            | ADDEQ
+                            | SUBEQ
+                            | MODEQ
+                            | DIVEQ
+    """
+    p[0] = p[1]
 
 # -------------------- statement end ------------------------
 
@@ -297,6 +355,13 @@ def p_type(p):
                 | DOUBLE
     """
     p[0] = p[1]
+
+
+def p_empty(p):
+    """
+        empty :
+    """
+    pass
 
 
 parser = yacc.yacc()

@@ -24,13 +24,20 @@ reserved = {
 literals = ['+', '-', '*', '/',
             '(', ')', '{', '}', '>', '<', ';', '=', '[', ']', '#', '.', ',']
 
+assigneq_token = ['MULTEQ', 'DIVEQ', 'MODEQ', 'ADDEQ', 'SUBEQ']
+
 tokens = ["INCLUDE", "ID", "NUMBER", "GEQ", "LEQ", "STR",
-          "CHR"] + list(reserved.values())
+          "CHR"] + assigneq_token + list(reserved.values())
 
 t_GEQ = r'>='
 t_LEQ = r'<='
 t_CHR = r"'.'"
 t_STR = r'".*"'
+t_MULTEQ = r'\*='
+t_DIVEQ = r'/='
+t_MODEQ = r'%='
+t_ADDEQ = r'\+='
+t_SUBEQ = r'-='
 
 
 def t_ID(t):
