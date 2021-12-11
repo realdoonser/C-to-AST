@@ -95,7 +95,7 @@ statement       : expression ; // a+1*10
                 | ; // many ;'s
 
 conditional     : if ( expression ) { stats_or_null }
-                | if ( expression ) else conditional // higher precedence
+                | if ( expression ) { stats_or_null } else conditional // higher precedence
                 | if ( expression ) { stats_or_null } else { stats_or_null } // lower precedence
 
 iteration       : while ( expression ) { stats_or_null }
