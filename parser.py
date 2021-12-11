@@ -64,16 +64,17 @@ def p_external_declaration(p):
 
 def p_decl(p):
     """
-        decl : type declarators
-    """
-    p[0] = n("decl", [p[2]], p[1])
-
-
-def p_decl_struct(p):
-    """
-        decl : new_type_dec
+        decl    : usual_dec
+                | new_type_dec
     """
     p[0] = p[1]
+
+
+def p_usual_decl(p):
+    """
+        usual_dec : type declarators
+    """
+    p[0] = n("usual_decl", [p[2]], p[1])
 
 # ================ declarators ==================
 
@@ -165,12 +166,13 @@ def p_expression(p):
                     | NUMBER
                     | CHR
                     | STR
+                    | assignment_expr
     """
     p[0] = n("expression", [], info=p[1])
 
-    # ---------------- declarators end -----------------
+# ---------------- declarators end -----------------
 
-    # ================= new_type ======================
+# ================= new_type ======================
 
 
 def p_new_type_dec(p):
@@ -190,7 +192,7 @@ def p_new_type(p):
 
 def p_new_type_params(p):
     """
-        new_type_params : new_type_param new_type_params 
+        new_type_params : new_type_param new_type_params
     """
     p[0] = [p[1]] + p[2]
 
@@ -266,7 +268,10 @@ def p_statements(p):
     """
         statements : statement statements
     """
-    p[0] = n("statements", [p[1]] + p[2].children)
+    if (p[1] != None):
+        p[0] = n("statements", [p[1]] + p[2].children)
+    else:
+        p[0] = n("statements", p[2].children)
 
 
 def p_statements_end(p):
@@ -280,10 +285,20 @@ def p_statement(p):
     """
         statement   : expression ';'
                     | decl ';'
-                    | assignment_expr ';'
                     | conditional
+                    | iteration
+                    | jump ';'
     """
     p[0] = p[1]
+
+
+def p_statement_extra_semicolon(p):
+    """
+        statement : ';'
+    """
+    pass
+
+# ================== conditional statement ==================
 
 
 def p_conditional(p):
@@ -306,6 +321,15 @@ def p_conditional_else(p):
     """
     p[0] = n("conditional", [p[3], p[10]], "else")
 
+# -------------------- conditional end -------------------
+
+
+def p_block(p):
+    """
+        statement : '{' stats_or_null '}'
+    """
+    p[0] = n("block", p[2])
+
 
 def p_statement_or_null(p):
     """
@@ -315,12 +339,44 @@ def p_statement_or_null(p):
     if (len(p) == 2):
         p[0] = p[1]
 
+# ===================== iteration =========================
 
-def p_block(p):
+
+def p_iteration(p):
     """
-        statement : '{' stats_or_null '}'
+        iteration : WHILE '(' expression ')' '{' stats_or_null '}'
     """
-    p[0] = n("block", p[2])
+    p[0] = n(p[1], [p[3], p[6]])
+
+
+def p_iteration_do_while(p):
+    """
+        iteration : DO '{' stats_or_null '}' WHILE '(' expression ')' ';'
+    """
+    p[0] = n("dowhile", [p[3], p[7]])
+
+
+def p_iteration_for(p):
+    """
+        iteration : FOR '(' expr_or_null_or_init ';' expr_or_null ';' expr_or_null ')' '{' stats_or_null '}'
+    """
+    p[0] = n("for", [p[3], p[5], p[7], p[10]])
+
+
+def p_expr_or_null(p):
+    """
+        expr_or_null    : expression
+                        | empty
+    """
+    p[0] = p[1]
+
+
+def p_expr_or_null_or_init(p):
+    """
+        expr_or_null_or_init    : expr_or_null
+                                | usual_dec
+    """
+    p[0] = p[1]
 
 
 def p_assignment_expr(p):
@@ -333,7 +389,8 @@ def p_assignment_expr(p):
 
 def p_assignment_op(p):
     """
-        assignmenteq_op     : MULTEQ
+        assignmenteq_op     : '='
+                            | MULTEQ
                             | ADDEQ
                             | SUBEQ
                             | MODEQ
@@ -341,17 +398,37 @@ def p_assignment_op(p):
     """
     p[0] = p[1]
 
+
+def p_jump(p):
+    """
+        jump    : BREAK
+                | CONTINUE
+                | RETURN
+    """
+    p[0] = n(p[1])
+
+
+def p_jump(p):
+    """
+        jump : RETURN expression
+    """
+    p[0] = n(p[1], [p[2]])
+
 # -------------------- statement end ------------------------
 
 
+# ===================== expression =========================
+
+# ------------------- expression end -----------------------
+
 def p_type(p):
     """
-        type    : VOID 
-                | CHAR 
-                | SHORT 
-                | INT 
-                | LONG 
-                | FLOAT 
+        type    : VOID
+                | CHAR
+                | SHORT
+                | INT
+                | LONG
+                | FLOAT
                 | DOUBLE
     """
     p[0] = p[1]

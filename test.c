@@ -1,10 +1,9 @@
 int main()
 {
-    if (a)
+    for (int i = 0; i; b)
     {
-        int c;
-    }
-    else
-    {
-    }
+    };
+    ;
+    ;
+    return 0;
 }

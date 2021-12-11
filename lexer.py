@@ -5,9 +5,10 @@ import re
 
 reserved = {
     "if": "IF",
-    "then": "THEN",
+    "do": "DO",
     "else": "ELSE",
     "while": "WHILE",
+    "for": "FOR",
     "int": "INT",
     "char": "CHAR",
     "void": "VOID",
@@ -17,8 +18,9 @@ reserved = {
     "double": "DOUBLE",
     "return": "RETURN",
     "break": "BREAK",
+    "continue": "CONTINUE",
     "struct": "STRUCT",
-    "class": "CLASS"
+    "class": "CLASS",
 }
 
 literals = ['+', '-', '*', '/',
