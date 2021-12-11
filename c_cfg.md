@@ -88,19 +88,21 @@ statements  : statement statements
 
 statement       : expression ; // a+1*10
                 | decl ; // int a = 10;
-                | { statements } // block statements
+                | block
                 | conditional // if () {} else {}
                 | iteration // while () {}
                 | jump ;
                 | ; // many ;'s
 
-conditional     : if ( expression ) { stats_or_null }
-                | if ( expression ) { stats_or_null } else conditional // higher precedence
-                | if ( expression ) { stats_or_null } else { stats_or_null } // lower precedence
+block           : { stats_or_null } // block statements
 
-iteration       : while ( expression ) { stats_or_null }
-                | do { stats_or_null } while ( expression ) ;
-                | for ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null }
+conditional     : if ( expression ) block_or_stat
+                | if ( expression ) block_or_stat else conditional // higher precedence
+                | if ( expression ) block_or_stat else block_or_stat // lower precedence
+
+iteration       : while ( expression ) block_or_stat
+                | do block_or_stat while ( expression ) ;
+                | for ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) block_or_stat
 
 stats_or_null : statements // statements or empty
                 | empty
@@ -110,6 +112,9 @@ expr_or_null    : expression
 
 expr_or_null_or_init    : expr_or_null
                         | usual_dec
+
+block_or_stat   : block // a block or a single statement, usually seen in if( ... )\n"oneline if"
+                | statement
 
 jump            : break
                 | continue
@@ -187,8 +192,6 @@ int * bar(); // functions that return complex types
 struct ... {... } *i_1, i_2[10], *i_3[20]; // struct with complex initializations (eg. *i_1 )
 int foo(int, float, int) // function definition with type but no var name
 int foo(float a, ...) // stdarg style three dots ...
-if (a = b)
-    do stuff // if/for/while statements without {}
 a | b // bitwise operations
 switch () // switch statements
 goto // will not plan on adding
