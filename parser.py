@@ -290,6 +290,7 @@ def p_statement(p):
     """
         statement   : expression ';'
                     | decl ';'
+                    | block
                     | conditional
                     | iteration
                     | jump ';'
@@ -308,30 +309,23 @@ def p_statement_extra_semicolon(p):
 
 def p_conditional(p):
     """
-        conditional : IF '(' expression ')' '{' stats_or_null '}'
+        conditional : IF '(' expression ')' statement
     """
-    p[0] = n("conditional", [p[3], p[6]])
-
-
-def p_conditional_elseif(p):
-    """
-        conditional : IF '(' expression ')' '{' stats_or_null '}' ELSE conditional
-    """
-    p[0] = n("conditional", [p[3], p[6]], "else")
+    p[0] = n("conditional", [p[3], p[5]])
 
 
 def p_conditional_else(p):
     """
-        conditional : IF '(' expression ')' '{' stats_or_null '}' ELSE '{' stats_or_null '}'
+        conditional : IF '(' expression ')' statement ELSE statement
     """
-    p[0] = n("conditional", [p[3], p[10]], "else")
+    p[0] = n("conditional", [p[3], p[5], p[7]], "else")
 
 # -------------------- conditional end -------------------
 
 
 def p_block(p):
     """
-        statement : '{' stats_or_null '}'
+        block : '{' stats_or_null '}'
     """
     p[0] = n("block", p[2])
 
@@ -351,28 +345,28 @@ def p_statement_or_null(p):
 
 def p_iteration(p):
     """
-        iteration : WHILE '(' expression ')' '{' stats_or_null '}'
+        iteration : WHILE '(' expression ')' statement
     """
-    p[0] = n(p[1], [p[3], p[6]])
+    p[0] = n("while", [p[3], p[5]])
 
 
 def p_iteration_do_while(p):
     """
-        iteration : DO '{' stats_or_null '}' WHILE '(' expression ')' ';'
+        iteration : DO statement WHILE '(' expression ')' ';'
     """
-    p[0] = n("dowhile", [p[3], p[7]])
+    p[0] = n("dowhile", [p[2], p[5]])
 
 
 def p_iteration_for(p):
     """
-        iteration : FOR '(' expr_or_null_or_init ';' expr_or_null ';' expr_or_null ')' '{' stats_or_null '}'
+        iteration : FOR '(' expr_or_null_or_init ';' expr_or_null ';' expr_or_null ')' statement
     """
-    p[0] = n("for", [p[3], p[5], p[7], p[10]])
+    p[0] = n("for", [p[3], p[5], p[7], p[9]])
 
 
 def p_expr_or_null(p):
     """
-        expr_or_null    : expression
+        expr_or_null    : expressions
                         | empty
     """
     if p[1] == None:

@@ -43,20 +43,20 @@ Rule 37    statements -> statement statements
 Rule 38    statements -> statement
 Rule 39    statement -> expression ;
 Rule 40    statement -> decl ;
-Rule 41    statement -> conditional
-Rule 42    statement -> iteration
-Rule 43    statement -> jump ;
-Rule 44    statement -> ;
-Rule 45    conditional -> IF ( expression ) { stats_or_null }
-Rule 46    conditional -> IF ( expression ) { stats_or_null } ELSE conditional
-Rule 47    conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null }
-Rule 48    statement -> { stats_or_null }
+Rule 41    statement -> block
+Rule 42    statement -> conditional
+Rule 43    statement -> iteration
+Rule 44    statement -> jump ;
+Rule 45    statement -> ;
+Rule 46    conditional -> IF ( expression ) statement
+Rule 47    conditional -> IF ( expression ) statement ELSE statement
+Rule 48    block -> { stats_or_null }
 Rule 49    stats_or_null -> statements
 Rule 50    stats_or_null -> empty
-Rule 51    iteration -> WHILE ( expression ) { stats_or_null }
-Rule 52    iteration -> DO { stats_or_null } WHILE ( expression ) ;
-Rule 53    iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null }
-Rule 54    expr_or_null -> expression
+Rule 51    iteration -> WHILE ( expression ) statement
+Rule 52    iteration -> DO statement WHILE ( expression ) ;
+Rule 53    iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement
+Rule 54    expr_or_null -> expressions
 Rule 55    expr_or_null -> empty
 Rule 56    expr_or_null_or_init -> expr_or_null
 Rule 57    expr_or_null_or_init -> usual_dec
@@ -124,8 +124,8 @@ Terminals, with rules where they appear
 
 !                    : 93
 &                    : 94
-(                    : 17 30 31 32 33 45 46 47 51 52 53 97 98 108
-)                    : 17 30 31 32 33 45 46 47 51 52 53 97 98 108
+(                    : 17 30 31 32 33 46 47 51 52 53 97 98 108
+)                    : 17 30 31 32 33 46 47 51 52 53 97 98 108
 *                    : 69
 +                    : 67 91
 ,                    : 12 34 62
@@ -133,7 +133,7 @@ Terminals, with rules where they appear
 .                    : 101
 /                    : 70
 :                    : 65
-;                    : 6 8 29 39 40 43 44 52 53 53
+;                    : 6 8 29 39 40 44 45 52 53 53
 <                    : 73
 =                    : 15 82
 >                    : 72
@@ -147,12 +147,12 @@ CONTINUE             : 59
 DIVEQ                : 86
 DO                   : 52
 DOUBLE               : 115
-ELSE                 : 46 47
+ELSE                 : 47
 FLOAT                : 114
 FOR                  : 53
 GEQ                  : 79
 ID                   : 16 17 18 19 22 23 24 30 31 32 33 101 102 104
-IF                   : 45 46 47
+IF                   : 46 47
 INCLUDE              : 5
 INT                  : 112
 LEQ                  : 78
@@ -180,13 +180,14 @@ WHILE                : 51 52
 ]                    : 18 19 96
 ^                    : 71
 error                : 
-{                    : 21 22 23 30 31 32 33 45 46 47 47 48 51 52 53
-}                    : 21 22 23 30 31 32 33 45 46 47 47 48 51 52 53
+{                    : 21 22 23 30 31 32 33 48
+}                    : 21 22 23 30 31 32 33 48
 
 Nonterminals, with rules where they appear
 
 bin_expr             : 66 67 67 68 68 69 69 70 70 71 71 72 72 73 73 74 74 75 75 76 76 77 77 78 78 79 79 80 80 81 81 82 82 83 83 84 84 85 85 86 86 87 87
-conditional          : 41 46
+block                : 41
+conditional          : 42
 decl                 : 6 40
 declarator_1         : 12 13
 declarator_2         : 14 15 36
@@ -195,14 +196,14 @@ element              : 103
 empty                : 50 55
 expr_or_null         : 53 53 56
 expr_or_null_or_init : 53
-expression           : 19 20 39 45 46 47 51 52 54 61 62 63 96 108
-expressions          : 21 62 98
+expression           : 19 20 39 46 47 51 52 61 62 63 96 108
+expressions          : 21 54 62 98
 external_decl        : 2 4
 func_def             : 7
 include              : 1 3
 initializer          : 15
-iteration            : 42
-jump                 : 43
+iteration            : 43
+jump                 : 44
 new_type             : 22 23 24
 new_type_dec         : 10
 new_type_param       : 27 28
@@ -212,9 +213,9 @@ params               : 30 32 34
 post_unary_expr      : 95 96 97 98 99 100 101 102
 pre_unary_expr       : 88 89 90 91 92 93 94
 program              : 1 2 0
-statement            : 37 38
+statement            : 37 38 46 47 47 51 52 53
 statements           : 30 31 37 49
-stats_or_null        : 45 46 47 47 48 51 52 53
+stats_or_null        : 48
 tern_expr            : 64 65 65 65
 type                 : 11 29 30 31 32 33 36
 usual_dec            : 9 57
@@ -1790,20 +1791,20 @@ state 68
     (38) statements -> . statement
     (39) statement -> . expression ;
     (40) statement -> . decl ;
-    (41) statement -> . conditional
-    (42) statement -> . iteration
-    (43) statement -> . jump ;
-    (44) statement -> . ;
-    (48) statement -> . { stats_or_null }
+    (41) statement -> . block
+    (42) statement -> . conditional
+    (43) statement -> . iteration
+    (44) statement -> . jump ;
+    (45) statement -> . ;
     (64) expression -> . tern_expr
     (9) decl -> . usual_dec
     (10) decl -> . new_type_dec
-    (45) conditional -> . IF ( expression ) { stats_or_null }
-    (46) conditional -> . IF ( expression ) { stats_or_null } ELSE conditional
-    (47) conditional -> . IF ( expression ) { stats_or_null } ELSE { stats_or_null }
-    (51) iteration -> . WHILE ( expression ) { stats_or_null }
-    (52) iteration -> . DO { stats_or_null } WHILE ( expression ) ;
-    (53) iteration -> . FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null }
+    (48) block -> . { stats_or_null }
+    (46) conditional -> . IF ( expression ) statement
+    (47) conditional -> . IF ( expression ) statement ELSE statement
+    (51) iteration -> . WHILE ( expression ) statement
+    (52) iteration -> . DO statement WHILE ( expression ) ;
+    (53) iteration -> . FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement
     (58) jump -> . BREAK
     (59) jump -> . CONTINUE
     (60) jump -> . RETURN
@@ -1869,13 +1870,13 @@ state 68
     }               shift and go to state 116
     ;               shift and go to state 119
     {               shift and go to state 114
-    IF              shift and go to state 124
-    WHILE           shift and go to state 125
-    DO              shift and go to state 126
-    FOR             shift and go to state 127
-    BREAK           shift and go to state 128
-    CONTINUE        shift and go to state 129
-    RETURN          shift and go to state 130
+    IF              shift and go to state 125
+    WHILE           shift and go to state 126
+    DO              shift and go to state 127
+    FOR             shift and go to state 128
+    BREAK           shift and go to state 129
+    CONTINUE        shift and go to state 130
+    RETURN          shift and go to state 131
     VOID            shift and go to state 12
     CHAR            shift and go to state 13
     SHORT           shift and go to state 14
@@ -1902,9 +1903,10 @@ state 68
     statement                      shift and go to state 117
     expression                     shift and go to state 118
     decl                           shift and go to state 120
-    conditional                    shift and go to state 121
-    iteration                      shift and go to state 122
-    jump                           shift and go to state 123
+    block                          shift and go to state 121
+    conditional                    shift and go to state 122
+    iteration                      shift and go to state 123
+    jump                           shift and go to state 124
     tern_expr                      shift and go to state 43
     usual_dec                      shift and go to state 8
     new_type_dec                   shift and go to state 9
@@ -1937,7 +1939,7 @@ state 69
     DOUBLE          shift and go to state 18
 
     param                          shift and go to state 39
-    params                         shift and go to state 131
+    params                         shift and go to state 132
     type                           shift and go to state 36
 
 state 70
@@ -2010,7 +2012,7 @@ state 71
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    tern_expr                      shift and go to state 132
+    tern_expr                      shift and go to state 133
     bin_expr                       shift and go to state 44
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
@@ -2074,7 +2076,7 @@ state 72
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    bin_expr                       shift and go to state 133
+    bin_expr                       shift and go to state 134
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
@@ -2137,7 +2139,7 @@ state 73
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    bin_expr                       shift and go to state 134
+    bin_expr                       shift and go to state 135
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
@@ -2200,7 +2202,7 @@ state 74
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    bin_expr                       shift and go to state 135
+    bin_expr                       shift and go to state 136
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
@@ -2263,7 +2265,7 @@ state 75
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    bin_expr                       shift and go to state 136
+    bin_expr                       shift and go to state 137
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
@@ -2326,7 +2328,7 @@ state 76
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    bin_expr                       shift and go to state 137
+    bin_expr                       shift and go to state 138
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
@@ -2389,7 +2391,7 @@ state 77
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    bin_expr                       shift and go to state 138
+    bin_expr                       shift and go to state 139
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
@@ -2452,7 +2454,7 @@ state 78
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    bin_expr                       shift and go to state 139
+    bin_expr                       shift and go to state 140
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
@@ -2515,7 +2517,7 @@ state 79
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    bin_expr                       shift and go to state 140
+    bin_expr                       shift and go to state 141
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
@@ -2578,7 +2580,7 @@ state 80
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    bin_expr                       shift and go to state 141
+    bin_expr                       shift and go to state 142
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
@@ -2641,7 +2643,7 @@ state 81
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    bin_expr                       shift and go to state 142
+    bin_expr                       shift and go to state 143
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
@@ -2704,7 +2706,7 @@ state 82
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    bin_expr                       shift and go to state 143
+    bin_expr                       shift and go to state 144
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
@@ -2767,7 +2769,7 @@ state 83
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    bin_expr                       shift and go to state 144
+    bin_expr                       shift and go to state 145
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
@@ -2830,7 +2832,7 @@ state 84
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    bin_expr                       shift and go to state 145
+    bin_expr                       shift and go to state 146
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
@@ -2893,7 +2895,7 @@ state 85
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    bin_expr                       shift and go to state 146
+    bin_expr                       shift and go to state 147
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
@@ -2956,7 +2958,7 @@ state 86
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    bin_expr                       shift and go to state 147
+    bin_expr                       shift and go to state 148
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
@@ -3019,7 +3021,7 @@ state 87
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    bin_expr                       shift and go to state 148
+    bin_expr                       shift and go to state 149
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
@@ -3082,7 +3084,7 @@ state 88
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    bin_expr                       shift and go to state 149
+    bin_expr                       shift and go to state 150
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
@@ -3145,7 +3147,7 @@ state 89
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    bin_expr                       shift and go to state 150
+    bin_expr                       shift and go to state 151
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
@@ -3208,7 +3210,7 @@ state 90
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    bin_expr                       shift and go to state 151
+    bin_expr                       shift and go to state 152
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
@@ -3271,7 +3273,7 @@ state 91
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    bin_expr                       shift and go to state 152
+    bin_expr                       shift and go to state 153
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
@@ -3334,7 +3336,7 @@ state 92
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    bin_expr                       shift and go to state 153
+    bin_expr                       shift and go to state 154
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
@@ -3605,7 +3607,7 @@ state 99
     (               shift and go to state 53
 
     post_unary_expr                shift and go to state 52
-    expression                     shift and go to state 154
+    expression                     shift and go to state 155
     tern_expr                      shift and go to state 43
     bin_expr                       shift and go to state 44
     pre_unary_expr                 shift and go to state 47
@@ -3663,7 +3665,7 @@ state 100
     (107) element -> . STR
     (108) element -> . ( expression )
 
-    )               shift and go to state 155
+    )               shift and go to state 156
     PLUSPLUS        shift and go to state 48
     MINUSMINUS      shift and go to state 49
     +               shift and go to state 45
@@ -3677,7 +3679,7 @@ state 100
     (               shift and go to state 53
 
     post_unary_expr                shift and go to state 52
-    expressions                    shift and go to state 156
+    expressions                    shift and go to state 157
     expression                     shift and go to state 107
     tern_expr                      shift and go to state 43
     bin_expr                       shift and go to state 44
@@ -3768,28 +3770,28 @@ state 103
 
     (101) post_unary_expr -> post_unary_expr . . ID
 
-    ID              shift and go to state 157
+    ID              shift and go to state 158
 
 
 state 104
 
     (102) post_unary_expr -> post_unary_expr RARROW . ID
 
-    ID              shift and go to state 158
+    ID              shift and go to state 159
 
 
 state 105
 
     (108) element -> ( expression . )
 
-    )               shift and go to state 159
+    )               shift and go to state 160
 
 
 state 106
 
     (21) initializer -> { expressions . }
 
-    }               shift and go to state 160
+    }               shift and go to state 161
 
 
 state 107
@@ -3797,9 +3799,10 @@ state 107
     (62) expressions -> expression . , expressions
     (63) expressions -> expression .
 
-    ,               shift and go to state 161
+    ,               shift and go to state 162
     }               reduce using rule 63 (expressions -> expression .)
     )               reduce using rule 63 (expressions -> expression .)
+    ;               reduce using rule 63 (expressions -> expression .)
 
 
 state 108
@@ -3828,7 +3831,7 @@ state 109
     ;               reduce using rule 22 (new_type_dec -> new_type ID { new_type_params } .)
     ID              shift and go to state 33
 
-    declarators                    shift and go to state 162
+    declarators                    shift and go to state 163
     declarator_1                   shift and go to state 26
     declarator_2                   shift and go to state 27
 
@@ -3843,7 +3846,7 @@ state 111
 
     (29) new_type_param -> type declarators . ;
 
-    ;               shift and go to state 163
+    ;               shift and go to state 164
 
 
 state 112
@@ -3854,20 +3857,20 @@ state 112
     (38) statements -> . statement
     (39) statement -> . expression ;
     (40) statement -> . decl ;
-    (41) statement -> . conditional
-    (42) statement -> . iteration
-    (43) statement -> . jump ;
-    (44) statement -> . ;
-    (48) statement -> . { stats_or_null }
+    (41) statement -> . block
+    (42) statement -> . conditional
+    (43) statement -> . iteration
+    (44) statement -> . jump ;
+    (45) statement -> . ;
     (64) expression -> . tern_expr
     (9) decl -> . usual_dec
     (10) decl -> . new_type_dec
-    (45) conditional -> . IF ( expression ) { stats_or_null }
-    (46) conditional -> . IF ( expression ) { stats_or_null } ELSE conditional
-    (47) conditional -> . IF ( expression ) { stats_or_null } ELSE { stats_or_null }
-    (51) iteration -> . WHILE ( expression ) { stats_or_null }
-    (52) iteration -> . DO { stats_or_null } WHILE ( expression ) ;
-    (53) iteration -> . FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null }
+    (48) block -> . { stats_or_null }
+    (46) conditional -> . IF ( expression ) statement
+    (47) conditional -> . IF ( expression ) statement ELSE statement
+    (51) iteration -> . WHILE ( expression ) statement
+    (52) iteration -> . DO statement WHILE ( expression ) ;
+    (53) iteration -> . FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement
     (58) jump -> . BREAK
     (59) jump -> . CONTINUE
     (60) jump -> . RETURN
@@ -3930,16 +3933,16 @@ state 112
     (107) element -> . STR
     (108) element -> . ( expression )
 
-    }               shift and go to state 165
+    }               shift and go to state 166
     ;               shift and go to state 119
     {               shift and go to state 114
-    IF              shift and go to state 124
-    WHILE           shift and go to state 125
-    DO              shift and go to state 126
-    FOR             shift and go to state 127
-    BREAK           shift and go to state 128
-    CONTINUE        shift and go to state 129
-    RETURN          shift and go to state 130
+    IF              shift and go to state 125
+    WHILE           shift and go to state 126
+    DO              shift and go to state 127
+    FOR             shift and go to state 128
+    BREAK           shift and go to state 129
+    CONTINUE        shift and go to state 130
+    RETURN          shift and go to state 131
     VOID            shift and go to state 12
     CHAR            shift and go to state 13
     SHORT           shift and go to state 14
@@ -3962,13 +3965,14 @@ state 112
     (               shift and go to state 53
 
     type                           shift and go to state 113
-    statements                     shift and go to state 164
+    statements                     shift and go to state 165
     statement                      shift and go to state 117
     expression                     shift and go to state 118
     decl                           shift and go to state 120
-    conditional                    shift and go to state 121
-    iteration                      shift and go to state 122
-    jump                           shift and go to state 123
+    block                          shift and go to state 121
+    conditional                    shift and go to state 122
+    iteration                      shift and go to state 123
+    jump                           shift and go to state 124
     tern_expr                      shift and go to state 43
     usual_dec                      shift and go to state 8
     new_type_dec                   shift and go to state 9
@@ -3998,7 +4002,7 @@ state 113
 
 state 114
 
-    (48) statement -> { . stats_or_null }
+    (48) block -> { . stats_or_null }
     (49) stats_or_null -> . statements
     (50) stats_or_null -> . empty
     (37) statements -> . statement statements
@@ -4006,20 +4010,20 @@ state 114
     (116) empty -> .
     (39) statement -> . expression ;
     (40) statement -> . decl ;
-    (41) statement -> . conditional
-    (42) statement -> . iteration
-    (43) statement -> . jump ;
-    (44) statement -> . ;
-    (48) statement -> . { stats_or_null }
+    (41) statement -> . block
+    (42) statement -> . conditional
+    (43) statement -> . iteration
+    (44) statement -> . jump ;
+    (45) statement -> . ;
     (64) expression -> . tern_expr
     (9) decl -> . usual_dec
     (10) decl -> . new_type_dec
-    (45) conditional -> . IF ( expression ) { stats_or_null }
-    (46) conditional -> . IF ( expression ) { stats_or_null } ELSE conditional
-    (47) conditional -> . IF ( expression ) { stats_or_null } ELSE { stats_or_null }
-    (51) iteration -> . WHILE ( expression ) { stats_or_null }
-    (52) iteration -> . DO { stats_or_null } WHILE ( expression ) ;
-    (53) iteration -> . FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null }
+    (48) block -> . { stats_or_null }
+    (46) conditional -> . IF ( expression ) statement
+    (47) conditional -> . IF ( expression ) statement ELSE statement
+    (51) iteration -> . WHILE ( expression ) statement
+    (52) iteration -> . DO statement WHILE ( expression ) ;
+    (53) iteration -> . FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement
     (58) jump -> . BREAK
     (59) jump -> . CONTINUE
     (60) jump -> . RETURN
@@ -4085,13 +4089,13 @@ state 114
     }               reduce using rule 116 (empty -> .)
     ;               shift and go to state 119
     {               shift and go to state 114
-    IF              shift and go to state 124
-    WHILE           shift and go to state 125
-    DO              shift and go to state 126
-    FOR             shift and go to state 127
-    BREAK           shift and go to state 128
-    CONTINUE        shift and go to state 129
-    RETURN          shift and go to state 130
+    IF              shift and go to state 125
+    WHILE           shift and go to state 126
+    DO              shift and go to state 127
+    FOR             shift and go to state 128
+    BREAK           shift and go to state 129
+    CONTINUE        shift and go to state 130
+    RETURN          shift and go to state 131
     VOID            shift and go to state 12
     CHAR            shift and go to state 13
     SHORT           shift and go to state 14
@@ -4113,15 +4117,16 @@ state 114
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    stats_or_null                  shift and go to state 166
-    statements                     shift and go to state 167
-    empty                          shift and go to state 168
+    stats_or_null                  shift and go to state 167
+    statements                     shift and go to state 168
+    empty                          shift and go to state 169
     statement                      shift and go to state 117
     expression                     shift and go to state 118
     decl                           shift and go to state 120
-    conditional                    shift and go to state 121
-    iteration                      shift and go to state 122
-    jump                           shift and go to state 123
+    block                          shift and go to state 121
+    conditional                    shift and go to state 122
+    iteration                      shift and go to state 123
+    jump                           shift and go to state 124
     tern_expr                      shift and go to state 43
     usual_dec                      shift and go to state 8
     new_type_dec                   shift and go to state 9
@@ -4136,7 +4141,7 @@ state 115
 
     (31) func_def -> type ID ( ) { statements . }
 
-    }               shift and go to state 169
+    }               shift and go to state 170
 
 
 state 116
@@ -4165,20 +4170,20 @@ state 117
     (38) statements -> . statement
     (39) statement -> . expression ;
     (40) statement -> . decl ;
-    (41) statement -> . conditional
-    (42) statement -> . iteration
-    (43) statement -> . jump ;
-    (44) statement -> . ;
-    (48) statement -> . { stats_or_null }
+    (41) statement -> . block
+    (42) statement -> . conditional
+    (43) statement -> . iteration
+    (44) statement -> . jump ;
+    (45) statement -> . ;
     (64) expression -> . tern_expr
     (9) decl -> . usual_dec
     (10) decl -> . new_type_dec
-    (45) conditional -> . IF ( expression ) { stats_or_null }
-    (46) conditional -> . IF ( expression ) { stats_or_null } ELSE conditional
-    (47) conditional -> . IF ( expression ) { stats_or_null } ELSE { stats_or_null }
-    (51) iteration -> . WHILE ( expression ) { stats_or_null }
-    (52) iteration -> . DO { stats_or_null } WHILE ( expression ) ;
-    (53) iteration -> . FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null }
+    (48) block -> . { stats_or_null }
+    (46) conditional -> . IF ( expression ) statement
+    (47) conditional -> . IF ( expression ) statement ELSE statement
+    (51) iteration -> . WHILE ( expression ) statement
+    (52) iteration -> . DO statement WHILE ( expression ) ;
+    (53) iteration -> . FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement
     (58) jump -> . BREAK
     (59) jump -> . CONTINUE
     (60) jump -> . RETURN
@@ -4244,13 +4249,13 @@ state 117
     }               reduce using rule 38 (statements -> statement .)
     ;               shift and go to state 119
     {               shift and go to state 114
-    IF              shift and go to state 124
-    WHILE           shift and go to state 125
-    DO              shift and go to state 126
-    FOR             shift and go to state 127
-    BREAK           shift and go to state 128
-    CONTINUE        shift and go to state 129
-    RETURN          shift and go to state 130
+    IF              shift and go to state 125
+    WHILE           shift and go to state 126
+    DO              shift and go to state 127
+    FOR             shift and go to state 128
+    BREAK           shift and go to state 129
+    CONTINUE        shift and go to state 130
+    RETURN          shift and go to state 131
     VOID            shift and go to state 12
     CHAR            shift and go to state 13
     SHORT           shift and go to state 14
@@ -4273,12 +4278,13 @@ state 117
     (               shift and go to state 53
 
     statement                      shift and go to state 117
-    statements                     shift and go to state 170
+    statements                     shift and go to state 171
     expression                     shift and go to state 118
     decl                           shift and go to state 120
-    conditional                    shift and go to state 121
-    iteration                      shift and go to state 122
-    jump                           shift and go to state 123
+    block                          shift and go to state 121
+    conditional                    shift and go to state 122
+    iteration                      shift and go to state 123
+    jump                           shift and go to state 124
     tern_expr                      shift and go to state 43
     usual_dec                      shift and go to state 8
     new_type_dec                   shift and go to state 9
@@ -4293,176 +4299,336 @@ state 118
 
     (39) statement -> expression . ;
 
-    ;               shift and go to state 171
+    ;               shift and go to state 172
 
 
 state 119
 
-    (44) statement -> ; .
+    (45) statement -> ; .
 
-    ;               reduce using rule 44 (statement -> ; .)
-    {               reduce using rule 44 (statement -> ; .)
-    IF              reduce using rule 44 (statement -> ; .)
-    WHILE           reduce using rule 44 (statement -> ; .)
-    DO              reduce using rule 44 (statement -> ; .)
-    FOR             reduce using rule 44 (statement -> ; .)
-    BREAK           reduce using rule 44 (statement -> ; .)
-    CONTINUE        reduce using rule 44 (statement -> ; .)
-    RETURN          reduce using rule 44 (statement -> ; .)
-    VOID            reduce using rule 44 (statement -> ; .)
-    CHAR            reduce using rule 44 (statement -> ; .)
-    SHORT           reduce using rule 44 (statement -> ; .)
-    INT             reduce using rule 44 (statement -> ; .)
-    LONG            reduce using rule 44 (statement -> ; .)
-    FLOAT           reduce using rule 44 (statement -> ; .)
-    DOUBLE          reduce using rule 44 (statement -> ; .)
-    STRUCT          reduce using rule 44 (statement -> ; .)
-    CLASS           reduce using rule 44 (statement -> ; .)
-    PLUSPLUS        reduce using rule 44 (statement -> ; .)
-    MINUSMINUS      reduce using rule 44 (statement -> ; .)
-    +               reduce using rule 44 (statement -> ; .)
-    -               reduce using rule 44 (statement -> ; .)
-    !               reduce using rule 44 (statement -> ; .)
-    &               reduce using rule 44 (statement -> ; .)
-    ID              reduce using rule 44 (statement -> ; .)
-    NUMBER          reduce using rule 44 (statement -> ; .)
-    CHR             reduce using rule 44 (statement -> ; .)
-    STR             reduce using rule 44 (statement -> ; .)
-    (               reduce using rule 44 (statement -> ; .)
-    }               reduce using rule 44 (statement -> ; .)
+    ;               reduce using rule 45 (statement -> ; .)
+    {               reduce using rule 45 (statement -> ; .)
+    IF              reduce using rule 45 (statement -> ; .)
+    WHILE           reduce using rule 45 (statement -> ; .)
+    DO              reduce using rule 45 (statement -> ; .)
+    FOR             reduce using rule 45 (statement -> ; .)
+    BREAK           reduce using rule 45 (statement -> ; .)
+    CONTINUE        reduce using rule 45 (statement -> ; .)
+    RETURN          reduce using rule 45 (statement -> ; .)
+    VOID            reduce using rule 45 (statement -> ; .)
+    CHAR            reduce using rule 45 (statement -> ; .)
+    SHORT           reduce using rule 45 (statement -> ; .)
+    INT             reduce using rule 45 (statement -> ; .)
+    LONG            reduce using rule 45 (statement -> ; .)
+    FLOAT           reduce using rule 45 (statement -> ; .)
+    DOUBLE          reduce using rule 45 (statement -> ; .)
+    STRUCT          reduce using rule 45 (statement -> ; .)
+    CLASS           reduce using rule 45 (statement -> ; .)
+    PLUSPLUS        reduce using rule 45 (statement -> ; .)
+    MINUSMINUS      reduce using rule 45 (statement -> ; .)
+    +               reduce using rule 45 (statement -> ; .)
+    -               reduce using rule 45 (statement -> ; .)
+    !               reduce using rule 45 (statement -> ; .)
+    &               reduce using rule 45 (statement -> ; .)
+    ID              reduce using rule 45 (statement -> ; .)
+    NUMBER          reduce using rule 45 (statement -> ; .)
+    CHR             reduce using rule 45 (statement -> ; .)
+    STR             reduce using rule 45 (statement -> ; .)
+    (               reduce using rule 45 (statement -> ; .)
+    }               reduce using rule 45 (statement -> ; .)
+    ELSE            reduce using rule 45 (statement -> ; .)
 
 
 state 120
 
     (40) statement -> decl . ;
 
-    ;               shift and go to state 172
+    ;               shift and go to state 173
 
 
 state 121
 
-    (41) statement -> conditional .
+    (41) statement -> block .
 
-    ;               reduce using rule 41 (statement -> conditional .)
-    {               reduce using rule 41 (statement -> conditional .)
-    IF              reduce using rule 41 (statement -> conditional .)
-    WHILE           reduce using rule 41 (statement -> conditional .)
-    DO              reduce using rule 41 (statement -> conditional .)
-    FOR             reduce using rule 41 (statement -> conditional .)
-    BREAK           reduce using rule 41 (statement -> conditional .)
-    CONTINUE        reduce using rule 41 (statement -> conditional .)
-    RETURN          reduce using rule 41 (statement -> conditional .)
-    VOID            reduce using rule 41 (statement -> conditional .)
-    CHAR            reduce using rule 41 (statement -> conditional .)
-    SHORT           reduce using rule 41 (statement -> conditional .)
-    INT             reduce using rule 41 (statement -> conditional .)
-    LONG            reduce using rule 41 (statement -> conditional .)
-    FLOAT           reduce using rule 41 (statement -> conditional .)
-    DOUBLE          reduce using rule 41 (statement -> conditional .)
-    STRUCT          reduce using rule 41 (statement -> conditional .)
-    CLASS           reduce using rule 41 (statement -> conditional .)
-    PLUSPLUS        reduce using rule 41 (statement -> conditional .)
-    MINUSMINUS      reduce using rule 41 (statement -> conditional .)
-    +               reduce using rule 41 (statement -> conditional .)
-    -               reduce using rule 41 (statement -> conditional .)
-    !               reduce using rule 41 (statement -> conditional .)
-    &               reduce using rule 41 (statement -> conditional .)
-    ID              reduce using rule 41 (statement -> conditional .)
-    NUMBER          reduce using rule 41 (statement -> conditional .)
-    CHR             reduce using rule 41 (statement -> conditional .)
-    STR             reduce using rule 41 (statement -> conditional .)
-    (               reduce using rule 41 (statement -> conditional .)
-    }               reduce using rule 41 (statement -> conditional .)
+    ;               reduce using rule 41 (statement -> block .)
+    {               reduce using rule 41 (statement -> block .)
+    IF              reduce using rule 41 (statement -> block .)
+    WHILE           reduce using rule 41 (statement -> block .)
+    DO              reduce using rule 41 (statement -> block .)
+    FOR             reduce using rule 41 (statement -> block .)
+    BREAK           reduce using rule 41 (statement -> block .)
+    CONTINUE        reduce using rule 41 (statement -> block .)
+    RETURN          reduce using rule 41 (statement -> block .)
+    VOID            reduce using rule 41 (statement -> block .)
+    CHAR            reduce using rule 41 (statement -> block .)
+    SHORT           reduce using rule 41 (statement -> block .)
+    INT             reduce using rule 41 (statement -> block .)
+    LONG            reduce using rule 41 (statement -> block .)
+    FLOAT           reduce using rule 41 (statement -> block .)
+    DOUBLE          reduce using rule 41 (statement -> block .)
+    STRUCT          reduce using rule 41 (statement -> block .)
+    CLASS           reduce using rule 41 (statement -> block .)
+    PLUSPLUS        reduce using rule 41 (statement -> block .)
+    MINUSMINUS      reduce using rule 41 (statement -> block .)
+    +               reduce using rule 41 (statement -> block .)
+    -               reduce using rule 41 (statement -> block .)
+    !               reduce using rule 41 (statement -> block .)
+    &               reduce using rule 41 (statement -> block .)
+    ID              reduce using rule 41 (statement -> block .)
+    NUMBER          reduce using rule 41 (statement -> block .)
+    CHR             reduce using rule 41 (statement -> block .)
+    STR             reduce using rule 41 (statement -> block .)
+    (               reduce using rule 41 (statement -> block .)
+    }               reduce using rule 41 (statement -> block .)
+    ELSE            reduce using rule 41 (statement -> block .)
 
 
 state 122
 
-    (42) statement -> iteration .
+    (42) statement -> conditional .
 
-    ;               reduce using rule 42 (statement -> iteration .)
-    {               reduce using rule 42 (statement -> iteration .)
-    IF              reduce using rule 42 (statement -> iteration .)
-    WHILE           reduce using rule 42 (statement -> iteration .)
-    DO              reduce using rule 42 (statement -> iteration .)
-    FOR             reduce using rule 42 (statement -> iteration .)
-    BREAK           reduce using rule 42 (statement -> iteration .)
-    CONTINUE        reduce using rule 42 (statement -> iteration .)
-    RETURN          reduce using rule 42 (statement -> iteration .)
-    VOID            reduce using rule 42 (statement -> iteration .)
-    CHAR            reduce using rule 42 (statement -> iteration .)
-    SHORT           reduce using rule 42 (statement -> iteration .)
-    INT             reduce using rule 42 (statement -> iteration .)
-    LONG            reduce using rule 42 (statement -> iteration .)
-    FLOAT           reduce using rule 42 (statement -> iteration .)
-    DOUBLE          reduce using rule 42 (statement -> iteration .)
-    STRUCT          reduce using rule 42 (statement -> iteration .)
-    CLASS           reduce using rule 42 (statement -> iteration .)
-    PLUSPLUS        reduce using rule 42 (statement -> iteration .)
-    MINUSMINUS      reduce using rule 42 (statement -> iteration .)
-    +               reduce using rule 42 (statement -> iteration .)
-    -               reduce using rule 42 (statement -> iteration .)
-    !               reduce using rule 42 (statement -> iteration .)
-    &               reduce using rule 42 (statement -> iteration .)
-    ID              reduce using rule 42 (statement -> iteration .)
-    NUMBER          reduce using rule 42 (statement -> iteration .)
-    CHR             reduce using rule 42 (statement -> iteration .)
-    STR             reduce using rule 42 (statement -> iteration .)
-    (               reduce using rule 42 (statement -> iteration .)
-    }               reduce using rule 42 (statement -> iteration .)
+    ;               reduce using rule 42 (statement -> conditional .)
+    {               reduce using rule 42 (statement -> conditional .)
+    IF              reduce using rule 42 (statement -> conditional .)
+    WHILE           reduce using rule 42 (statement -> conditional .)
+    DO              reduce using rule 42 (statement -> conditional .)
+    FOR             reduce using rule 42 (statement -> conditional .)
+    BREAK           reduce using rule 42 (statement -> conditional .)
+    CONTINUE        reduce using rule 42 (statement -> conditional .)
+    RETURN          reduce using rule 42 (statement -> conditional .)
+    VOID            reduce using rule 42 (statement -> conditional .)
+    CHAR            reduce using rule 42 (statement -> conditional .)
+    SHORT           reduce using rule 42 (statement -> conditional .)
+    INT             reduce using rule 42 (statement -> conditional .)
+    LONG            reduce using rule 42 (statement -> conditional .)
+    FLOAT           reduce using rule 42 (statement -> conditional .)
+    DOUBLE          reduce using rule 42 (statement -> conditional .)
+    STRUCT          reduce using rule 42 (statement -> conditional .)
+    CLASS           reduce using rule 42 (statement -> conditional .)
+    PLUSPLUS        reduce using rule 42 (statement -> conditional .)
+    MINUSMINUS      reduce using rule 42 (statement -> conditional .)
+    +               reduce using rule 42 (statement -> conditional .)
+    -               reduce using rule 42 (statement -> conditional .)
+    !               reduce using rule 42 (statement -> conditional .)
+    &               reduce using rule 42 (statement -> conditional .)
+    ID              reduce using rule 42 (statement -> conditional .)
+    NUMBER          reduce using rule 42 (statement -> conditional .)
+    CHR             reduce using rule 42 (statement -> conditional .)
+    STR             reduce using rule 42 (statement -> conditional .)
+    (               reduce using rule 42 (statement -> conditional .)
+    }               reduce using rule 42 (statement -> conditional .)
+    ELSE            reduce using rule 42 (statement -> conditional .)
 
 
 state 123
 
-    (43) statement -> jump . ;
+    (43) statement -> iteration .
 
-    ;               shift and go to state 173
+    ;               reduce using rule 43 (statement -> iteration .)
+    {               reduce using rule 43 (statement -> iteration .)
+    IF              reduce using rule 43 (statement -> iteration .)
+    WHILE           reduce using rule 43 (statement -> iteration .)
+    DO              reduce using rule 43 (statement -> iteration .)
+    FOR             reduce using rule 43 (statement -> iteration .)
+    BREAK           reduce using rule 43 (statement -> iteration .)
+    CONTINUE        reduce using rule 43 (statement -> iteration .)
+    RETURN          reduce using rule 43 (statement -> iteration .)
+    VOID            reduce using rule 43 (statement -> iteration .)
+    CHAR            reduce using rule 43 (statement -> iteration .)
+    SHORT           reduce using rule 43 (statement -> iteration .)
+    INT             reduce using rule 43 (statement -> iteration .)
+    LONG            reduce using rule 43 (statement -> iteration .)
+    FLOAT           reduce using rule 43 (statement -> iteration .)
+    DOUBLE          reduce using rule 43 (statement -> iteration .)
+    STRUCT          reduce using rule 43 (statement -> iteration .)
+    CLASS           reduce using rule 43 (statement -> iteration .)
+    PLUSPLUS        reduce using rule 43 (statement -> iteration .)
+    MINUSMINUS      reduce using rule 43 (statement -> iteration .)
+    +               reduce using rule 43 (statement -> iteration .)
+    -               reduce using rule 43 (statement -> iteration .)
+    !               reduce using rule 43 (statement -> iteration .)
+    &               reduce using rule 43 (statement -> iteration .)
+    ID              reduce using rule 43 (statement -> iteration .)
+    NUMBER          reduce using rule 43 (statement -> iteration .)
+    CHR             reduce using rule 43 (statement -> iteration .)
+    STR             reduce using rule 43 (statement -> iteration .)
+    (               reduce using rule 43 (statement -> iteration .)
+    }               reduce using rule 43 (statement -> iteration .)
+    ELSE            reduce using rule 43 (statement -> iteration .)
 
 
 state 124
 
-    (45) conditional -> IF . ( expression ) { stats_or_null }
-    (46) conditional -> IF . ( expression ) { stats_or_null } ELSE conditional
-    (47) conditional -> IF . ( expression ) { stats_or_null } ELSE { stats_or_null }
+    (44) statement -> jump . ;
 
-    (               shift and go to state 174
+    ;               shift and go to state 174
 
 
 state 125
 
-    (51) iteration -> WHILE . ( expression ) { stats_or_null }
+    (46) conditional -> IF . ( expression ) statement
+    (47) conditional -> IF . ( expression ) statement ELSE statement
 
     (               shift and go to state 175
 
 
 state 126
 
-    (52) iteration -> DO . { stats_or_null } WHILE ( expression ) ;
+    (51) iteration -> WHILE . ( expression ) statement
 
-    {               shift and go to state 176
+    (               shift and go to state 176
 
 
 state 127
 
-    (53) iteration -> FOR . ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null }
+    (52) iteration -> DO . statement WHILE ( expression ) ;
+    (39) statement -> . expression ;
+    (40) statement -> . decl ;
+    (41) statement -> . block
+    (42) statement -> . conditional
+    (43) statement -> . iteration
+    (44) statement -> . jump ;
+    (45) statement -> . ;
+    (64) expression -> . tern_expr
+    (9) decl -> . usual_dec
+    (10) decl -> . new_type_dec
+    (48) block -> . { stats_or_null }
+    (46) conditional -> . IF ( expression ) statement
+    (47) conditional -> . IF ( expression ) statement ELSE statement
+    (51) iteration -> . WHILE ( expression ) statement
+    (52) iteration -> . DO statement WHILE ( expression ) ;
+    (53) iteration -> . FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement
+    (58) jump -> . BREAK
+    (59) jump -> . CONTINUE
+    (60) jump -> . RETURN
+    (61) jump -> . RETURN expression
+    (65) tern_expr -> . tern_expr ? tern_expr : tern_expr
+    (66) tern_expr -> . bin_expr
+    (11) usual_dec -> . type declarators
+    (22) new_type_dec -> . new_type ID { new_type_params }
+    (23) new_type_dec -> . new_type ID { new_type_params } declarators
+    (24) new_type_dec -> . new_type ID declarators
+    (67) bin_expr -> . bin_expr + bin_expr
+    (68) bin_expr -> . bin_expr - bin_expr
+    (69) bin_expr -> . bin_expr * bin_expr
+    (70) bin_expr -> . bin_expr / bin_expr
+    (71) bin_expr -> . bin_expr ^ bin_expr
+    (72) bin_expr -> . bin_expr > bin_expr
+    (73) bin_expr -> . bin_expr < bin_expr
+    (74) bin_expr -> . bin_expr LOGAND bin_expr
+    (75) bin_expr -> . bin_expr LOGOR bin_expr
+    (76) bin_expr -> . bin_expr LOGEQ bin_expr
+    (77) bin_expr -> . bin_expr LOGNEQ bin_expr
+    (78) bin_expr -> . bin_expr LEQ bin_expr
+    (79) bin_expr -> . bin_expr GEQ bin_expr
+    (80) bin_expr -> . bin_expr LSHIFT bin_expr
+    (81) bin_expr -> . bin_expr RSHIFT bin_expr
+    (82) bin_expr -> . bin_expr = bin_expr
+    (83) bin_expr -> . bin_expr ADDEQ bin_expr
+    (84) bin_expr -> . bin_expr SUBEQ bin_expr
+    (85) bin_expr -> . bin_expr MULTEQ bin_expr
+    (86) bin_expr -> . bin_expr DIVEQ bin_expr
+    (87) bin_expr -> . bin_expr MODEQ bin_expr
+    (88) bin_expr -> . pre_unary_expr
+    (109) type -> . VOID
+    (110) type -> . CHAR
+    (111) type -> . SHORT
+    (112) type -> . INT
+    (113) type -> . LONG
+    (114) type -> . FLOAT
+    (115) type -> . DOUBLE
+    (25) new_type -> . STRUCT
+    (26) new_type -> . CLASS
+    (89) pre_unary_expr -> . PLUSPLUS pre_unary_expr
+    (90) pre_unary_expr -> . MINUSMINUS pre_unary_expr
+    (91) pre_unary_expr -> . + pre_unary_expr
+    (92) pre_unary_expr -> . - pre_unary_expr
+    (93) pre_unary_expr -> . ! pre_unary_expr
+    (94) pre_unary_expr -> . & pre_unary_expr
+    (95) pre_unary_expr -> . post_unary_expr
+    (96) post_unary_expr -> . post_unary_expr [ expression ]
+    (97) post_unary_expr -> . post_unary_expr ( )
+    (98) post_unary_expr -> . post_unary_expr ( expressions )
+    (99) post_unary_expr -> . post_unary_expr PLUSPLUS
+    (100) post_unary_expr -> . post_unary_expr MINUSMINUS
+    (101) post_unary_expr -> . post_unary_expr . ID
+    (102) post_unary_expr -> . post_unary_expr RARROW ID
+    (103) post_unary_expr -> . element
+    (104) element -> . ID
+    (105) element -> . NUMBER
+    (106) element -> . CHR
+    (107) element -> . STR
+    (108) element -> . ( expression )
 
-    (               shift and go to state 177
+    ;               shift and go to state 119
+    {               shift and go to state 114
+    IF              shift and go to state 125
+    WHILE           shift and go to state 126
+    DO              shift and go to state 127
+    FOR             shift and go to state 128
+    BREAK           shift and go to state 129
+    CONTINUE        shift and go to state 130
+    RETURN          shift and go to state 131
+    VOID            shift and go to state 12
+    CHAR            shift and go to state 13
+    SHORT           shift and go to state 14
+    INT             shift and go to state 15
+    LONG            shift and go to state 16
+    FLOAT           shift and go to state 17
+    DOUBLE          shift and go to state 18
+    STRUCT          shift and go to state 19
+    CLASS           shift and go to state 20
+    PLUSPLUS        shift and go to state 48
+    MINUSMINUS      shift and go to state 49
+    +               shift and go to state 45
+    -               shift and go to state 46
+    !               shift and go to state 50
+    &               shift and go to state 51
+    ID              shift and go to state 40
+    NUMBER          shift and go to state 55
+    CHR             shift and go to state 56
+    STR             shift and go to state 57
+    (               shift and go to state 53
 
+    statement                      shift and go to state 177
+    expression                     shift and go to state 118
+    decl                           shift and go to state 120
+    block                          shift and go to state 121
+    conditional                    shift and go to state 122
+    iteration                      shift and go to state 123
+    jump                           shift and go to state 124
+    tern_expr                      shift and go to state 43
+    usual_dec                      shift and go to state 8
+    new_type_dec                   shift and go to state 9
+    bin_expr                       shift and go to state 44
+    type                           shift and go to state 113
+    new_type                       shift and go to state 11
+    pre_unary_expr                 shift and go to state 47
+    post_unary_expr                shift and go to state 52
+    element                        shift and go to state 54
 
 state 128
+
+    (53) iteration -> FOR . ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement
+
+    (               shift and go to state 178
+
+
+state 129
 
     (58) jump -> BREAK .
 
     ;               reduce using rule 58 (jump -> BREAK .)
 
 
-state 129
+state 130
 
     (59) jump -> CONTINUE .
 
     ;               reduce using rule 59 (jump -> CONTINUE .)
 
 
-state 130
+state 131
 
     (60) jump -> RETURN .
     (61) jump -> RETURN . expression
@@ -4525,30 +4691,30 @@ state 130
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    expression                     shift and go to state 178
+    expression                     shift and go to state 179
     tern_expr                      shift and go to state 43
     bin_expr                       shift and go to state 44
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
 
-state 131
+state 132
 
     (34) params -> param , params .
 
     )               reduce using rule 34 (params -> param , params .)
 
 
-state 132
+state 133
 
     (65) tern_expr -> tern_expr ? tern_expr . : tern_expr
     (65) tern_expr -> tern_expr . ? tern_expr : tern_expr
 
-    :               shift and go to state 179
+    :               shift and go to state 180
     ?               shift and go to state 71
 
 
-state 133
+state 134
 
     (67) bin_expr -> bin_expr + bin_expr .
     (67) bin_expr -> bin_expr . + bin_expr
@@ -4625,7 +4791,7 @@ state 133
   ! MODEQ           [ shift and go to state 92 ]
 
 
-state 134
+state 135
 
     (68) bin_expr -> bin_expr - bin_expr .
     (67) bin_expr -> bin_expr . + bin_expr
@@ -4702,7 +4868,7 @@ state 134
   ! MODEQ           [ shift and go to state 92 ]
 
 
-state 135
+state 136
 
     (69) bin_expr -> bin_expr * bin_expr .
     (67) bin_expr -> bin_expr . + bin_expr
@@ -4779,7 +4945,7 @@ state 135
   ! MODEQ           [ shift and go to state 92 ]
 
 
-state 136
+state 137
 
     (70) bin_expr -> bin_expr / bin_expr .
     (67) bin_expr -> bin_expr . + bin_expr
@@ -4856,7 +5022,7 @@ state 136
   ! MODEQ           [ shift and go to state 92 ]
 
 
-state 137
+state 138
 
     (71) bin_expr -> bin_expr ^ bin_expr .
     (67) bin_expr -> bin_expr . + bin_expr
@@ -4933,7 +5099,7 @@ state 137
   ! MODEQ           [ shift and go to state 92 ]
 
 
-state 138
+state 139
 
     (72) bin_expr -> bin_expr > bin_expr .
     (67) bin_expr -> bin_expr . + bin_expr
@@ -5010,7 +5176,7 @@ state 138
   ! MODEQ           [ shift and go to state 92 ]
 
 
-state 139
+state 140
 
     (73) bin_expr -> bin_expr < bin_expr .
     (67) bin_expr -> bin_expr . + bin_expr
@@ -5087,7 +5253,7 @@ state 139
   ! MODEQ           [ shift and go to state 92 ]
 
 
-state 140
+state 141
 
     (74) bin_expr -> bin_expr LOGAND bin_expr .
     (67) bin_expr -> bin_expr . + bin_expr
@@ -5164,7 +5330,7 @@ state 140
   ! MODEQ           [ shift and go to state 92 ]
 
 
-state 141
+state 142
 
     (75) bin_expr -> bin_expr LOGOR bin_expr .
     (67) bin_expr -> bin_expr . + bin_expr
@@ -5241,7 +5407,7 @@ state 141
   ! MODEQ           [ shift and go to state 92 ]
 
 
-state 142
+state 143
 
     (76) bin_expr -> bin_expr LOGEQ bin_expr .
     (67) bin_expr -> bin_expr . + bin_expr
@@ -5318,7 +5484,7 @@ state 142
   ! MODEQ           [ shift and go to state 92 ]
 
 
-state 143
+state 144
 
     (77) bin_expr -> bin_expr LOGNEQ bin_expr .
     (67) bin_expr -> bin_expr . + bin_expr
@@ -5395,7 +5561,7 @@ state 143
   ! MODEQ           [ shift and go to state 92 ]
 
 
-state 144
+state 145
 
     (78) bin_expr -> bin_expr LEQ bin_expr .
     (67) bin_expr -> bin_expr . + bin_expr
@@ -5472,7 +5638,7 @@ state 144
   ! MODEQ           [ shift and go to state 92 ]
 
 
-state 145
+state 146
 
     (79) bin_expr -> bin_expr GEQ bin_expr .
     (67) bin_expr -> bin_expr . + bin_expr
@@ -5549,7 +5715,7 @@ state 145
   ! MODEQ           [ shift and go to state 92 ]
 
 
-state 146
+state 147
 
     (80) bin_expr -> bin_expr LSHIFT bin_expr .
     (67) bin_expr -> bin_expr . + bin_expr
@@ -5626,7 +5792,7 @@ state 146
   ! MODEQ           [ shift and go to state 92 ]
 
 
-state 147
+state 148
 
     (81) bin_expr -> bin_expr RSHIFT bin_expr .
     (67) bin_expr -> bin_expr . + bin_expr
@@ -5703,7 +5869,7 @@ state 147
   ! MODEQ           [ shift and go to state 92 ]
 
 
-state 148
+state 149
 
     (82) bin_expr -> bin_expr = bin_expr .
     (67) bin_expr -> bin_expr . + bin_expr
@@ -5780,7 +5946,7 @@ state 148
   ! MODEQ           [ shift and go to state 92 ]
 
 
-state 149
+state 150
 
     (83) bin_expr -> bin_expr ADDEQ bin_expr .
     (67) bin_expr -> bin_expr . + bin_expr
@@ -5857,7 +6023,7 @@ state 149
   ! MODEQ           [ shift and go to state 92 ]
 
 
-state 150
+state 151
 
     (84) bin_expr -> bin_expr SUBEQ bin_expr .
     (67) bin_expr -> bin_expr . + bin_expr
@@ -5934,7 +6100,7 @@ state 150
   ! MODEQ           [ shift and go to state 92 ]
 
 
-state 151
+state 152
 
     (85) bin_expr -> bin_expr MULTEQ bin_expr .
     (67) bin_expr -> bin_expr . + bin_expr
@@ -6011,7 +6177,7 @@ state 151
   ! MODEQ           [ shift and go to state 92 ]
 
 
-state 152
+state 153
 
     (86) bin_expr -> bin_expr DIVEQ bin_expr .
     (67) bin_expr -> bin_expr . + bin_expr
@@ -6088,7 +6254,7 @@ state 152
   ! MODEQ           [ shift and go to state 92 ]
 
 
-state 153
+state 154
 
     (87) bin_expr -> bin_expr MODEQ bin_expr .
     (67) bin_expr -> bin_expr . + bin_expr
@@ -6165,14 +6331,14 @@ state 153
   ! MODEQ           [ shift and go to state 92 ]
 
 
-state 154
+state 155
 
     (96) post_unary_expr -> post_unary_expr [ expression . ]
 
-    ]               shift and go to state 180
+    ]               shift and go to state 181
 
 
-state 155
+state 156
 
     (97) post_unary_expr -> post_unary_expr ( ) .
 
@@ -6212,14 +6378,14 @@ state 155
     :               reduce using rule 97 (post_unary_expr -> post_unary_expr ( ) .)
 
 
-state 156
+state 157
 
     (98) post_unary_expr -> post_unary_expr ( expressions . )
 
-    )               shift and go to state 181
+    )               shift and go to state 182
 
 
-state 157
+state 158
 
     (101) post_unary_expr -> post_unary_expr . ID .
 
@@ -6259,7 +6425,7 @@ state 157
     :               reduce using rule 101 (post_unary_expr -> post_unary_expr . ID .)
 
 
-state 158
+state 159
 
     (102) post_unary_expr -> post_unary_expr RARROW ID .
 
@@ -6299,7 +6465,7 @@ state 158
     :               reduce using rule 102 (post_unary_expr -> post_unary_expr RARROW ID .)
 
 
-state 159
+state 160
 
     (108) element -> ( expression ) .
 
@@ -6339,7 +6505,7 @@ state 159
     :               reduce using rule 108 (element -> ( expression ) .)
 
 
-state 160
+state 161
 
     (21) initializer -> { expressions } .
 
@@ -6347,7 +6513,7 @@ state 160
     ;               reduce using rule 21 (initializer -> { expressions } .)
 
 
-state 161
+state 162
 
     (62) expressions -> expression , . expressions
     (62) expressions -> . expression , expressions
@@ -6411,21 +6577,21 @@ state 161
     (               shift and go to state 53
 
     expression                     shift and go to state 107
-    expressions                    shift and go to state 182
+    expressions                    shift and go to state 183
     tern_expr                      shift and go to state 43
     bin_expr                       shift and go to state 44
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
 
-state 162
+state 163
 
     (23) new_type_dec -> new_type ID { new_type_params } declarators .
 
     ;               reduce using rule 23 (new_type_dec -> new_type ID { new_type_params } declarators .)
 
 
-state 163
+state 164
 
     (29) new_type_param -> type declarators ; .
 
@@ -6439,14 +6605,14 @@ state 163
     }               reduce using rule 29 (new_type_param -> type declarators ; .)
 
 
-state 164
+state 165
 
     (30) func_def -> type ID ( params ) { statements . }
 
-    }               shift and go to state 183
+    }               shift and go to state 184
 
 
-state 165
+state 166
 
     (32) func_def -> type ID ( params ) { } .
 
@@ -6464,28 +6630,28 @@ state 165
     $end            reduce using rule 32 (func_def -> type ID ( params ) { } .)
 
 
-state 166
-
-    (48) statement -> { stats_or_null . }
-
-    }               shift and go to state 184
-
-
 state 167
+
+    (48) block -> { stats_or_null . }
+
+    }               shift and go to state 185
+
+
+state 168
 
     (49) stats_or_null -> statements .
 
     }               reduce using rule 49 (stats_or_null -> statements .)
 
 
-state 168
+state 169
 
     (50) stats_or_null -> empty .
 
     }               reduce using rule 50 (stats_or_null -> empty .)
 
 
-state 169
+state 170
 
     (31) func_def -> type ID ( ) { statements } .
 
@@ -6503,14 +6669,14 @@ state 169
     $end            reduce using rule 31 (func_def -> type ID ( ) { statements } .)
 
 
-state 170
+state 171
 
     (37) statements -> statement statements .
 
     }               reduce using rule 37 (statements -> statement statements .)
 
 
-state 171
+state 172
 
     (39) statement -> expression ; .
 
@@ -6544,9 +6710,10 @@ state 171
     STR             reduce using rule 39 (statement -> expression ; .)
     (               reduce using rule 39 (statement -> expression ; .)
     }               reduce using rule 39 (statement -> expression ; .)
+    ELSE            reduce using rule 39 (statement -> expression ; .)
 
 
-state 172
+state 173
 
     (40) statement -> decl ; .
 
@@ -6580,117 +6747,50 @@ state 172
     STR             reduce using rule 40 (statement -> decl ; .)
     (               reduce using rule 40 (statement -> decl ; .)
     }               reduce using rule 40 (statement -> decl ; .)
-
-
-state 173
-
-    (43) statement -> jump ; .
-
-    ;               reduce using rule 43 (statement -> jump ; .)
-    {               reduce using rule 43 (statement -> jump ; .)
-    IF              reduce using rule 43 (statement -> jump ; .)
-    WHILE           reduce using rule 43 (statement -> jump ; .)
-    DO              reduce using rule 43 (statement -> jump ; .)
-    FOR             reduce using rule 43 (statement -> jump ; .)
-    BREAK           reduce using rule 43 (statement -> jump ; .)
-    CONTINUE        reduce using rule 43 (statement -> jump ; .)
-    RETURN          reduce using rule 43 (statement -> jump ; .)
-    VOID            reduce using rule 43 (statement -> jump ; .)
-    CHAR            reduce using rule 43 (statement -> jump ; .)
-    SHORT           reduce using rule 43 (statement -> jump ; .)
-    INT             reduce using rule 43 (statement -> jump ; .)
-    LONG            reduce using rule 43 (statement -> jump ; .)
-    FLOAT           reduce using rule 43 (statement -> jump ; .)
-    DOUBLE          reduce using rule 43 (statement -> jump ; .)
-    STRUCT          reduce using rule 43 (statement -> jump ; .)
-    CLASS           reduce using rule 43 (statement -> jump ; .)
-    PLUSPLUS        reduce using rule 43 (statement -> jump ; .)
-    MINUSMINUS      reduce using rule 43 (statement -> jump ; .)
-    +               reduce using rule 43 (statement -> jump ; .)
-    -               reduce using rule 43 (statement -> jump ; .)
-    !               reduce using rule 43 (statement -> jump ; .)
-    &               reduce using rule 43 (statement -> jump ; .)
-    ID              reduce using rule 43 (statement -> jump ; .)
-    NUMBER          reduce using rule 43 (statement -> jump ; .)
-    CHR             reduce using rule 43 (statement -> jump ; .)
-    STR             reduce using rule 43 (statement -> jump ; .)
-    (               reduce using rule 43 (statement -> jump ; .)
-    }               reduce using rule 43 (statement -> jump ; .)
+    ELSE            reduce using rule 40 (statement -> decl ; .)
 
 
 state 174
 
-    (45) conditional -> IF ( . expression ) { stats_or_null }
-    (46) conditional -> IF ( . expression ) { stats_or_null } ELSE conditional
-    (47) conditional -> IF ( . expression ) { stats_or_null } ELSE { stats_or_null }
-    (64) expression -> . tern_expr
-    (65) tern_expr -> . tern_expr ? tern_expr : tern_expr
-    (66) tern_expr -> . bin_expr
-    (67) bin_expr -> . bin_expr + bin_expr
-    (68) bin_expr -> . bin_expr - bin_expr
-    (69) bin_expr -> . bin_expr * bin_expr
-    (70) bin_expr -> . bin_expr / bin_expr
-    (71) bin_expr -> . bin_expr ^ bin_expr
-    (72) bin_expr -> . bin_expr > bin_expr
-    (73) bin_expr -> . bin_expr < bin_expr
-    (74) bin_expr -> . bin_expr LOGAND bin_expr
-    (75) bin_expr -> . bin_expr LOGOR bin_expr
-    (76) bin_expr -> . bin_expr LOGEQ bin_expr
-    (77) bin_expr -> . bin_expr LOGNEQ bin_expr
-    (78) bin_expr -> . bin_expr LEQ bin_expr
-    (79) bin_expr -> . bin_expr GEQ bin_expr
-    (80) bin_expr -> . bin_expr LSHIFT bin_expr
-    (81) bin_expr -> . bin_expr RSHIFT bin_expr
-    (82) bin_expr -> . bin_expr = bin_expr
-    (83) bin_expr -> . bin_expr ADDEQ bin_expr
-    (84) bin_expr -> . bin_expr SUBEQ bin_expr
-    (85) bin_expr -> . bin_expr MULTEQ bin_expr
-    (86) bin_expr -> . bin_expr DIVEQ bin_expr
-    (87) bin_expr -> . bin_expr MODEQ bin_expr
-    (88) bin_expr -> . pre_unary_expr
-    (89) pre_unary_expr -> . PLUSPLUS pre_unary_expr
-    (90) pre_unary_expr -> . MINUSMINUS pre_unary_expr
-    (91) pre_unary_expr -> . + pre_unary_expr
-    (92) pre_unary_expr -> . - pre_unary_expr
-    (93) pre_unary_expr -> . ! pre_unary_expr
-    (94) pre_unary_expr -> . & pre_unary_expr
-    (95) pre_unary_expr -> . post_unary_expr
-    (96) post_unary_expr -> . post_unary_expr [ expression ]
-    (97) post_unary_expr -> . post_unary_expr ( )
-    (98) post_unary_expr -> . post_unary_expr ( expressions )
-    (99) post_unary_expr -> . post_unary_expr PLUSPLUS
-    (100) post_unary_expr -> . post_unary_expr MINUSMINUS
-    (101) post_unary_expr -> . post_unary_expr . ID
-    (102) post_unary_expr -> . post_unary_expr RARROW ID
-    (103) post_unary_expr -> . element
-    (104) element -> . ID
-    (105) element -> . NUMBER
-    (106) element -> . CHR
-    (107) element -> . STR
-    (108) element -> . ( expression )
+    (44) statement -> jump ; .
 
-    PLUSPLUS        shift and go to state 48
-    MINUSMINUS      shift and go to state 49
-    +               shift and go to state 45
-    -               shift and go to state 46
-    !               shift and go to state 50
-    &               shift and go to state 51
-    ID              shift and go to state 40
-    NUMBER          shift and go to state 55
-    CHR             shift and go to state 56
-    STR             shift and go to state 57
-    (               shift and go to state 53
+    ;               reduce using rule 44 (statement -> jump ; .)
+    {               reduce using rule 44 (statement -> jump ; .)
+    IF              reduce using rule 44 (statement -> jump ; .)
+    WHILE           reduce using rule 44 (statement -> jump ; .)
+    DO              reduce using rule 44 (statement -> jump ; .)
+    FOR             reduce using rule 44 (statement -> jump ; .)
+    BREAK           reduce using rule 44 (statement -> jump ; .)
+    CONTINUE        reduce using rule 44 (statement -> jump ; .)
+    RETURN          reduce using rule 44 (statement -> jump ; .)
+    VOID            reduce using rule 44 (statement -> jump ; .)
+    CHAR            reduce using rule 44 (statement -> jump ; .)
+    SHORT           reduce using rule 44 (statement -> jump ; .)
+    INT             reduce using rule 44 (statement -> jump ; .)
+    LONG            reduce using rule 44 (statement -> jump ; .)
+    FLOAT           reduce using rule 44 (statement -> jump ; .)
+    DOUBLE          reduce using rule 44 (statement -> jump ; .)
+    STRUCT          reduce using rule 44 (statement -> jump ; .)
+    CLASS           reduce using rule 44 (statement -> jump ; .)
+    PLUSPLUS        reduce using rule 44 (statement -> jump ; .)
+    MINUSMINUS      reduce using rule 44 (statement -> jump ; .)
+    +               reduce using rule 44 (statement -> jump ; .)
+    -               reduce using rule 44 (statement -> jump ; .)
+    !               reduce using rule 44 (statement -> jump ; .)
+    &               reduce using rule 44 (statement -> jump ; .)
+    ID              reduce using rule 44 (statement -> jump ; .)
+    NUMBER          reduce using rule 44 (statement -> jump ; .)
+    CHR             reduce using rule 44 (statement -> jump ; .)
+    STR             reduce using rule 44 (statement -> jump ; .)
+    (               reduce using rule 44 (statement -> jump ; .)
+    }               reduce using rule 44 (statement -> jump ; .)
+    ELSE            reduce using rule 44 (statement -> jump ; .)
 
-    expression                     shift and go to state 185
-    tern_expr                      shift and go to state 43
-    bin_expr                       shift and go to state 44
-    pre_unary_expr                 shift and go to state 47
-    post_unary_expr                shift and go to state 52
-    element                        shift and go to state 54
 
 state 175
 
-    (51) iteration -> WHILE ( . expression ) { stats_or_null }
+    (46) conditional -> IF ( . expression ) statement
+    (47) conditional -> IF ( . expression ) statement ELSE statement
     (64) expression -> . tern_expr
     (65) tern_expr -> . tern_expr ? tern_expr : tern_expr
     (66) tern_expr -> . bin_expr
@@ -6758,38 +6858,10 @@ state 175
 
 state 176
 
-    (52) iteration -> DO { . stats_or_null } WHILE ( expression ) ;
-    (49) stats_or_null -> . statements
-    (50) stats_or_null -> . empty
-    (37) statements -> . statement statements
-    (38) statements -> . statement
-    (116) empty -> .
-    (39) statement -> . expression ;
-    (40) statement -> . decl ;
-    (41) statement -> . conditional
-    (42) statement -> . iteration
-    (43) statement -> . jump ;
-    (44) statement -> . ;
-    (48) statement -> . { stats_or_null }
+    (51) iteration -> WHILE ( . expression ) statement
     (64) expression -> . tern_expr
-    (9) decl -> . usual_dec
-    (10) decl -> . new_type_dec
-    (45) conditional -> . IF ( expression ) { stats_or_null }
-    (46) conditional -> . IF ( expression ) { stats_or_null } ELSE conditional
-    (47) conditional -> . IF ( expression ) { stats_or_null } ELSE { stats_or_null }
-    (51) iteration -> . WHILE ( expression ) { stats_or_null }
-    (52) iteration -> . DO { stats_or_null } WHILE ( expression ) ;
-    (53) iteration -> . FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null }
-    (58) jump -> . BREAK
-    (59) jump -> . CONTINUE
-    (60) jump -> . RETURN
-    (61) jump -> . RETURN expression
     (65) tern_expr -> . tern_expr ? tern_expr : tern_expr
     (66) tern_expr -> . bin_expr
-    (11) usual_dec -> . type declarators
-    (22) new_type_dec -> . new_type ID { new_type_params }
-    (23) new_type_dec -> . new_type ID { new_type_params } declarators
-    (24) new_type_dec -> . new_type ID declarators
     (67) bin_expr -> . bin_expr + bin_expr
     (68) bin_expr -> . bin_expr - bin_expr
     (69) bin_expr -> . bin_expr * bin_expr
@@ -6812,15 +6884,6 @@ state 176
     (86) bin_expr -> . bin_expr DIVEQ bin_expr
     (87) bin_expr -> . bin_expr MODEQ bin_expr
     (88) bin_expr -> . pre_unary_expr
-    (109) type -> . VOID
-    (110) type -> . CHAR
-    (111) type -> . SHORT
-    (112) type -> . INT
-    (113) type -> . LONG
-    (114) type -> . FLOAT
-    (115) type -> . DOUBLE
-    (25) new_type -> . STRUCT
-    (26) new_type -> . CLASS
     (89) pre_unary_expr -> . PLUSPLUS pre_unary_expr
     (90) pre_unary_expr -> . MINUSMINUS pre_unary_expr
     (91) pre_unary_expr -> . + pre_unary_expr
@@ -6842,25 +6905,6 @@ state 176
     (107) element -> . STR
     (108) element -> . ( expression )
 
-    }               reduce using rule 116 (empty -> .)
-    ;               shift and go to state 119
-    {               shift and go to state 114
-    IF              shift and go to state 124
-    WHILE           shift and go to state 125
-    DO              shift and go to state 126
-    FOR             shift and go to state 127
-    BREAK           shift and go to state 128
-    CONTINUE        shift and go to state 129
-    RETURN          shift and go to state 130
-    VOID            shift and go to state 12
-    CHAR            shift and go to state 13
-    SHORT           shift and go to state 14
-    INT             shift and go to state 15
-    LONG            shift and go to state 16
-    FLOAT           shift and go to state 17
-    DOUBLE          shift and go to state 18
-    STRUCT          shift and go to state 19
-    CLASS           shift and go to state 20
     PLUSPLUS        shift and go to state 48
     MINUSMINUS      shift and go to state 49
     +               shift and go to state 45
@@ -6873,34 +6917,30 @@ state 176
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    stats_or_null                  shift and go to state 187
-    expression                     shift and go to state 118
-    statements                     shift and go to state 167
-    empty                          shift and go to state 168
-    statement                      shift and go to state 117
-    decl                           shift and go to state 120
-    conditional                    shift and go to state 121
-    iteration                      shift and go to state 122
-    jump                           shift and go to state 123
+    expression                     shift and go to state 187
     tern_expr                      shift and go to state 43
-    usual_dec                      shift and go to state 8
-    new_type_dec                   shift and go to state 9
     bin_expr                       shift and go to state 44
-    type                           shift and go to state 113
-    new_type                       shift and go to state 11
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
 
 state 177
 
-    (53) iteration -> FOR ( . expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null }
+    (52) iteration -> DO statement . WHILE ( expression ) ;
+
+    WHILE           shift and go to state 188
+
+
+state 178
+
+    (53) iteration -> FOR ( . expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement
     (56) expr_or_null_or_init -> . expr_or_null
     (57) expr_or_null_or_init -> . usual_dec
-    (54) expr_or_null -> . expression
+    (54) expr_or_null -> . expressions
     (55) expr_or_null -> . empty
     (11) usual_dec -> . type declarators
-    (64) expression -> . tern_expr
+    (62) expressions -> . expression , expressions
+    (63) expressions -> . expression
     (116) empty -> .
     (109) type -> . VOID
     (110) type -> . CHAR
@@ -6909,6 +6949,7 @@ state 177
     (113) type -> . LONG
     (114) type -> . FLOAT
     (115) type -> . DOUBLE
+    (64) expression -> . tern_expr
     (65) tern_expr -> . tern_expr ? tern_expr : tern_expr
     (66) tern_expr -> . bin_expr
     (67) bin_expr -> . bin_expr + bin_expr
@@ -6974,26 +7015,27 @@ state 177
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    expr_or_null_or_init           shift and go to state 188
-    expr_or_null                   shift and go to state 189
-    usual_dec                      shift and go to state 190
-    expression                     shift and go to state 191
-    empty                          shift and go to state 192
+    expr_or_null_or_init           shift and go to state 189
+    expr_or_null                   shift and go to state 190
+    usual_dec                      shift and go to state 191
+    expressions                    shift and go to state 192
+    empty                          shift and go to state 193
     type                           shift and go to state 113
+    expression                     shift and go to state 107
     tern_expr                      shift and go to state 43
     bin_expr                       shift and go to state 44
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
 
-state 178
+state 179
 
     (61) jump -> RETURN expression .
 
     ;               reduce using rule 61 (jump -> RETURN expression .)
 
 
-state 179
+state 180
 
     (65) tern_expr -> tern_expr ? tern_expr : . tern_expr
     (65) tern_expr -> . tern_expr ? tern_expr : tern_expr
@@ -7053,13 +7095,13 @@ state 179
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    tern_expr                      shift and go to state 193
+    tern_expr                      shift and go to state 194
     bin_expr                       shift and go to state 44
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
 
-state 180
+state 181
 
     (96) post_unary_expr -> post_unary_expr [ expression ] .
 
@@ -7099,7 +7141,7 @@ state 180
     :               reduce using rule 96 (post_unary_expr -> post_unary_expr [ expression ] .)
 
 
-state 181
+state 182
 
     (98) post_unary_expr -> post_unary_expr ( expressions ) .
 
@@ -7139,15 +7181,16 @@ state 181
     :               reduce using rule 98 (post_unary_expr -> post_unary_expr ( expressions ) .)
 
 
-state 182
+state 183
 
     (62) expressions -> expression , expressions .
 
     }               reduce using rule 62 (expressions -> expression , expressions .)
     )               reduce using rule 62 (expressions -> expression , expressions .)
+    ;               reduce using rule 62 (expressions -> expression , expressions .)
 
 
-state 183
+state 184
 
     (30) func_def -> type ID ( params ) { statements } .
 
@@ -7165,95 +7208,95 @@ state 183
     $end            reduce using rule 30 (func_def -> type ID ( params ) { statements } .)
 
 
-state 184
-
-    (48) statement -> { stats_or_null } .
-
-    ;               reduce using rule 48 (statement -> { stats_or_null } .)
-    {               reduce using rule 48 (statement -> { stats_or_null } .)
-    IF              reduce using rule 48 (statement -> { stats_or_null } .)
-    WHILE           reduce using rule 48 (statement -> { stats_or_null } .)
-    DO              reduce using rule 48 (statement -> { stats_or_null } .)
-    FOR             reduce using rule 48 (statement -> { stats_or_null } .)
-    BREAK           reduce using rule 48 (statement -> { stats_or_null } .)
-    CONTINUE        reduce using rule 48 (statement -> { stats_or_null } .)
-    RETURN          reduce using rule 48 (statement -> { stats_or_null } .)
-    VOID            reduce using rule 48 (statement -> { stats_or_null } .)
-    CHAR            reduce using rule 48 (statement -> { stats_or_null } .)
-    SHORT           reduce using rule 48 (statement -> { stats_or_null } .)
-    INT             reduce using rule 48 (statement -> { stats_or_null } .)
-    LONG            reduce using rule 48 (statement -> { stats_or_null } .)
-    FLOAT           reduce using rule 48 (statement -> { stats_or_null } .)
-    DOUBLE          reduce using rule 48 (statement -> { stats_or_null } .)
-    STRUCT          reduce using rule 48 (statement -> { stats_or_null } .)
-    CLASS           reduce using rule 48 (statement -> { stats_or_null } .)
-    PLUSPLUS        reduce using rule 48 (statement -> { stats_or_null } .)
-    MINUSMINUS      reduce using rule 48 (statement -> { stats_or_null } .)
-    +               reduce using rule 48 (statement -> { stats_or_null } .)
-    -               reduce using rule 48 (statement -> { stats_or_null } .)
-    !               reduce using rule 48 (statement -> { stats_or_null } .)
-    &               reduce using rule 48 (statement -> { stats_or_null } .)
-    ID              reduce using rule 48 (statement -> { stats_or_null } .)
-    NUMBER          reduce using rule 48 (statement -> { stats_or_null } .)
-    CHR             reduce using rule 48 (statement -> { stats_or_null } .)
-    STR             reduce using rule 48 (statement -> { stats_or_null } .)
-    (               reduce using rule 48 (statement -> { stats_or_null } .)
-    }               reduce using rule 48 (statement -> { stats_or_null } .)
-
-
 state 185
 
-    (45) conditional -> IF ( expression . ) { stats_or_null }
-    (46) conditional -> IF ( expression . ) { stats_or_null } ELSE conditional
-    (47) conditional -> IF ( expression . ) { stats_or_null } ELSE { stats_or_null }
+    (48) block -> { stats_or_null } .
 
-    )               shift and go to state 194
+    ;               reduce using rule 48 (block -> { stats_or_null } .)
+    {               reduce using rule 48 (block -> { stats_or_null } .)
+    IF              reduce using rule 48 (block -> { stats_or_null } .)
+    WHILE           reduce using rule 48 (block -> { stats_or_null } .)
+    DO              reduce using rule 48 (block -> { stats_or_null } .)
+    FOR             reduce using rule 48 (block -> { stats_or_null } .)
+    BREAK           reduce using rule 48 (block -> { stats_or_null } .)
+    CONTINUE        reduce using rule 48 (block -> { stats_or_null } .)
+    RETURN          reduce using rule 48 (block -> { stats_or_null } .)
+    VOID            reduce using rule 48 (block -> { stats_or_null } .)
+    CHAR            reduce using rule 48 (block -> { stats_or_null } .)
+    SHORT           reduce using rule 48 (block -> { stats_or_null } .)
+    INT             reduce using rule 48 (block -> { stats_or_null } .)
+    LONG            reduce using rule 48 (block -> { stats_or_null } .)
+    FLOAT           reduce using rule 48 (block -> { stats_or_null } .)
+    DOUBLE          reduce using rule 48 (block -> { stats_or_null } .)
+    STRUCT          reduce using rule 48 (block -> { stats_or_null } .)
+    CLASS           reduce using rule 48 (block -> { stats_or_null } .)
+    PLUSPLUS        reduce using rule 48 (block -> { stats_or_null } .)
+    MINUSMINUS      reduce using rule 48 (block -> { stats_or_null } .)
+    +               reduce using rule 48 (block -> { stats_or_null } .)
+    -               reduce using rule 48 (block -> { stats_or_null } .)
+    !               reduce using rule 48 (block -> { stats_or_null } .)
+    &               reduce using rule 48 (block -> { stats_or_null } .)
+    ID              reduce using rule 48 (block -> { stats_or_null } .)
+    NUMBER          reduce using rule 48 (block -> { stats_or_null } .)
+    CHR             reduce using rule 48 (block -> { stats_or_null } .)
+    STR             reduce using rule 48 (block -> { stats_or_null } .)
+    (               reduce using rule 48 (block -> { stats_or_null } .)
+    }               reduce using rule 48 (block -> { stats_or_null } .)
+    ELSE            reduce using rule 48 (block -> { stats_or_null } .)
 
 
 state 186
 
-    (51) iteration -> WHILE ( expression . ) { stats_or_null }
+    (46) conditional -> IF ( expression . ) statement
+    (47) conditional -> IF ( expression . ) statement ELSE statement
 
     )               shift and go to state 195
 
 
 state 187
 
-    (52) iteration -> DO { stats_or_null . } WHILE ( expression ) ;
+    (51) iteration -> WHILE ( expression . ) statement
 
-    }               shift and go to state 196
+    )               shift and go to state 196
 
 
 state 188
 
-    (53) iteration -> FOR ( expr_or_null_or_init . ; expr_or_null ; expr_or_null ) { stats_or_null }
+    (52) iteration -> DO statement WHILE . ( expression ) ;
 
-    ;               shift and go to state 197
+    (               shift and go to state 197
 
 
 state 189
+
+    (53) iteration -> FOR ( expr_or_null_or_init . ; expr_or_null ; expr_or_null ) statement
+
+    ;               shift and go to state 198
+
+
+state 190
 
     (56) expr_or_null_or_init -> expr_or_null .
 
     ;               reduce using rule 56 (expr_or_null_or_init -> expr_or_null .)
 
 
-state 190
+state 191
 
     (57) expr_or_null_or_init -> usual_dec .
 
     ;               reduce using rule 57 (expr_or_null_or_init -> usual_dec .)
 
 
-state 191
-
-    (54) expr_or_null -> expression .
-
-    ;               reduce using rule 54 (expr_or_null -> expression .)
-    )               reduce using rule 54 (expr_or_null -> expression .)
-
-
 state 192
+
+    (54) expr_or_null -> expressions .
+
+    ;               reduce using rule 54 (expr_or_null -> expressions .)
+    )               reduce using rule 54 (expr_or_null -> expressions .)
+
+
+state 193
 
     (55) expr_or_null -> empty .
 
@@ -7261,7 +7304,7 @@ state 192
     )               reduce using rule 55 (expr_or_null -> empty .)
 
 
-state 193
+state 194
 
     (65) tern_expr -> tern_expr ? tern_expr : tern_expr .
     (65) tern_expr -> tern_expr . ? tern_expr : tern_expr
@@ -7277,36 +7320,340 @@ state 193
   ! ?               [ shift and go to state 71 ]
 
 
-state 194
-
-    (45) conditional -> IF ( expression ) . { stats_or_null }
-    (46) conditional -> IF ( expression ) . { stats_or_null } ELSE conditional
-    (47) conditional -> IF ( expression ) . { stats_or_null } ELSE { stats_or_null }
-
-    {               shift and go to state 198
-
-
 state 195
 
-    (51) iteration -> WHILE ( expression ) . { stats_or_null }
+    (46) conditional -> IF ( expression ) . statement
+    (47) conditional -> IF ( expression ) . statement ELSE statement
+    (39) statement -> . expression ;
+    (40) statement -> . decl ;
+    (41) statement -> . block
+    (42) statement -> . conditional
+    (43) statement -> . iteration
+    (44) statement -> . jump ;
+    (45) statement -> . ;
+    (64) expression -> . tern_expr
+    (9) decl -> . usual_dec
+    (10) decl -> . new_type_dec
+    (48) block -> . { stats_or_null }
+    (46) conditional -> . IF ( expression ) statement
+    (47) conditional -> . IF ( expression ) statement ELSE statement
+    (51) iteration -> . WHILE ( expression ) statement
+    (52) iteration -> . DO statement WHILE ( expression ) ;
+    (53) iteration -> . FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement
+    (58) jump -> . BREAK
+    (59) jump -> . CONTINUE
+    (60) jump -> . RETURN
+    (61) jump -> . RETURN expression
+    (65) tern_expr -> . tern_expr ? tern_expr : tern_expr
+    (66) tern_expr -> . bin_expr
+    (11) usual_dec -> . type declarators
+    (22) new_type_dec -> . new_type ID { new_type_params }
+    (23) new_type_dec -> . new_type ID { new_type_params } declarators
+    (24) new_type_dec -> . new_type ID declarators
+    (67) bin_expr -> . bin_expr + bin_expr
+    (68) bin_expr -> . bin_expr - bin_expr
+    (69) bin_expr -> . bin_expr * bin_expr
+    (70) bin_expr -> . bin_expr / bin_expr
+    (71) bin_expr -> . bin_expr ^ bin_expr
+    (72) bin_expr -> . bin_expr > bin_expr
+    (73) bin_expr -> . bin_expr < bin_expr
+    (74) bin_expr -> . bin_expr LOGAND bin_expr
+    (75) bin_expr -> . bin_expr LOGOR bin_expr
+    (76) bin_expr -> . bin_expr LOGEQ bin_expr
+    (77) bin_expr -> . bin_expr LOGNEQ bin_expr
+    (78) bin_expr -> . bin_expr LEQ bin_expr
+    (79) bin_expr -> . bin_expr GEQ bin_expr
+    (80) bin_expr -> . bin_expr LSHIFT bin_expr
+    (81) bin_expr -> . bin_expr RSHIFT bin_expr
+    (82) bin_expr -> . bin_expr = bin_expr
+    (83) bin_expr -> . bin_expr ADDEQ bin_expr
+    (84) bin_expr -> . bin_expr SUBEQ bin_expr
+    (85) bin_expr -> . bin_expr MULTEQ bin_expr
+    (86) bin_expr -> . bin_expr DIVEQ bin_expr
+    (87) bin_expr -> . bin_expr MODEQ bin_expr
+    (88) bin_expr -> . pre_unary_expr
+    (109) type -> . VOID
+    (110) type -> . CHAR
+    (111) type -> . SHORT
+    (112) type -> . INT
+    (113) type -> . LONG
+    (114) type -> . FLOAT
+    (115) type -> . DOUBLE
+    (25) new_type -> . STRUCT
+    (26) new_type -> . CLASS
+    (89) pre_unary_expr -> . PLUSPLUS pre_unary_expr
+    (90) pre_unary_expr -> . MINUSMINUS pre_unary_expr
+    (91) pre_unary_expr -> . + pre_unary_expr
+    (92) pre_unary_expr -> . - pre_unary_expr
+    (93) pre_unary_expr -> . ! pre_unary_expr
+    (94) pre_unary_expr -> . & pre_unary_expr
+    (95) pre_unary_expr -> . post_unary_expr
+    (96) post_unary_expr -> . post_unary_expr [ expression ]
+    (97) post_unary_expr -> . post_unary_expr ( )
+    (98) post_unary_expr -> . post_unary_expr ( expressions )
+    (99) post_unary_expr -> . post_unary_expr PLUSPLUS
+    (100) post_unary_expr -> . post_unary_expr MINUSMINUS
+    (101) post_unary_expr -> . post_unary_expr . ID
+    (102) post_unary_expr -> . post_unary_expr RARROW ID
+    (103) post_unary_expr -> . element
+    (104) element -> . ID
+    (105) element -> . NUMBER
+    (106) element -> . CHR
+    (107) element -> . STR
+    (108) element -> . ( expression )
 
-    {               shift and go to state 199
+    ;               shift and go to state 119
+    {               shift and go to state 114
+    IF              shift and go to state 125
+    WHILE           shift and go to state 126
+    DO              shift and go to state 127
+    FOR             shift and go to state 128
+    BREAK           shift and go to state 129
+    CONTINUE        shift and go to state 130
+    RETURN          shift and go to state 131
+    VOID            shift and go to state 12
+    CHAR            shift and go to state 13
+    SHORT           shift and go to state 14
+    INT             shift and go to state 15
+    LONG            shift and go to state 16
+    FLOAT           shift and go to state 17
+    DOUBLE          shift and go to state 18
+    STRUCT          shift and go to state 19
+    CLASS           shift and go to state 20
+    PLUSPLUS        shift and go to state 48
+    MINUSMINUS      shift and go to state 49
+    +               shift and go to state 45
+    -               shift and go to state 46
+    !               shift and go to state 50
+    &               shift and go to state 51
+    ID              shift and go to state 40
+    NUMBER          shift and go to state 55
+    CHR             shift and go to state 56
+    STR             shift and go to state 57
+    (               shift and go to state 53
 
+    expression                     shift and go to state 118
+    statement                      shift and go to state 199
+    decl                           shift and go to state 120
+    block                          shift and go to state 121
+    conditional                    shift and go to state 122
+    iteration                      shift and go to state 123
+    jump                           shift and go to state 124
+    tern_expr                      shift and go to state 43
+    usual_dec                      shift and go to state 8
+    new_type_dec                   shift and go to state 9
+    bin_expr                       shift and go to state 44
+    type                           shift and go to state 113
+    new_type                       shift and go to state 11
+    pre_unary_expr                 shift and go to state 47
+    post_unary_expr                shift and go to state 52
+    element                        shift and go to state 54
 
 state 196
 
-    (52) iteration -> DO { stats_or_null } . WHILE ( expression ) ;
+    (51) iteration -> WHILE ( expression ) . statement
+    (39) statement -> . expression ;
+    (40) statement -> . decl ;
+    (41) statement -> . block
+    (42) statement -> . conditional
+    (43) statement -> . iteration
+    (44) statement -> . jump ;
+    (45) statement -> . ;
+    (64) expression -> . tern_expr
+    (9) decl -> . usual_dec
+    (10) decl -> . new_type_dec
+    (48) block -> . { stats_or_null }
+    (46) conditional -> . IF ( expression ) statement
+    (47) conditional -> . IF ( expression ) statement ELSE statement
+    (51) iteration -> . WHILE ( expression ) statement
+    (52) iteration -> . DO statement WHILE ( expression ) ;
+    (53) iteration -> . FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement
+    (58) jump -> . BREAK
+    (59) jump -> . CONTINUE
+    (60) jump -> . RETURN
+    (61) jump -> . RETURN expression
+    (65) tern_expr -> . tern_expr ? tern_expr : tern_expr
+    (66) tern_expr -> . bin_expr
+    (11) usual_dec -> . type declarators
+    (22) new_type_dec -> . new_type ID { new_type_params }
+    (23) new_type_dec -> . new_type ID { new_type_params } declarators
+    (24) new_type_dec -> . new_type ID declarators
+    (67) bin_expr -> . bin_expr + bin_expr
+    (68) bin_expr -> . bin_expr - bin_expr
+    (69) bin_expr -> . bin_expr * bin_expr
+    (70) bin_expr -> . bin_expr / bin_expr
+    (71) bin_expr -> . bin_expr ^ bin_expr
+    (72) bin_expr -> . bin_expr > bin_expr
+    (73) bin_expr -> . bin_expr < bin_expr
+    (74) bin_expr -> . bin_expr LOGAND bin_expr
+    (75) bin_expr -> . bin_expr LOGOR bin_expr
+    (76) bin_expr -> . bin_expr LOGEQ bin_expr
+    (77) bin_expr -> . bin_expr LOGNEQ bin_expr
+    (78) bin_expr -> . bin_expr LEQ bin_expr
+    (79) bin_expr -> . bin_expr GEQ bin_expr
+    (80) bin_expr -> . bin_expr LSHIFT bin_expr
+    (81) bin_expr -> . bin_expr RSHIFT bin_expr
+    (82) bin_expr -> . bin_expr = bin_expr
+    (83) bin_expr -> . bin_expr ADDEQ bin_expr
+    (84) bin_expr -> . bin_expr SUBEQ bin_expr
+    (85) bin_expr -> . bin_expr MULTEQ bin_expr
+    (86) bin_expr -> . bin_expr DIVEQ bin_expr
+    (87) bin_expr -> . bin_expr MODEQ bin_expr
+    (88) bin_expr -> . pre_unary_expr
+    (109) type -> . VOID
+    (110) type -> . CHAR
+    (111) type -> . SHORT
+    (112) type -> . INT
+    (113) type -> . LONG
+    (114) type -> . FLOAT
+    (115) type -> . DOUBLE
+    (25) new_type -> . STRUCT
+    (26) new_type -> . CLASS
+    (89) pre_unary_expr -> . PLUSPLUS pre_unary_expr
+    (90) pre_unary_expr -> . MINUSMINUS pre_unary_expr
+    (91) pre_unary_expr -> . + pre_unary_expr
+    (92) pre_unary_expr -> . - pre_unary_expr
+    (93) pre_unary_expr -> . ! pre_unary_expr
+    (94) pre_unary_expr -> . & pre_unary_expr
+    (95) pre_unary_expr -> . post_unary_expr
+    (96) post_unary_expr -> . post_unary_expr [ expression ]
+    (97) post_unary_expr -> . post_unary_expr ( )
+    (98) post_unary_expr -> . post_unary_expr ( expressions )
+    (99) post_unary_expr -> . post_unary_expr PLUSPLUS
+    (100) post_unary_expr -> . post_unary_expr MINUSMINUS
+    (101) post_unary_expr -> . post_unary_expr . ID
+    (102) post_unary_expr -> . post_unary_expr RARROW ID
+    (103) post_unary_expr -> . element
+    (104) element -> . ID
+    (105) element -> . NUMBER
+    (106) element -> . CHR
+    (107) element -> . STR
+    (108) element -> . ( expression )
 
-    WHILE           shift and go to state 200
+    ;               shift and go to state 119
+    {               shift and go to state 114
+    IF              shift and go to state 125
+    WHILE           shift and go to state 126
+    DO              shift and go to state 127
+    FOR             shift and go to state 128
+    BREAK           shift and go to state 129
+    CONTINUE        shift and go to state 130
+    RETURN          shift and go to state 131
+    VOID            shift and go to state 12
+    CHAR            shift and go to state 13
+    SHORT           shift and go to state 14
+    INT             shift and go to state 15
+    LONG            shift and go to state 16
+    FLOAT           shift and go to state 17
+    DOUBLE          shift and go to state 18
+    STRUCT          shift and go to state 19
+    CLASS           shift and go to state 20
+    PLUSPLUS        shift and go to state 48
+    MINUSMINUS      shift and go to state 49
+    +               shift and go to state 45
+    -               shift and go to state 46
+    !               shift and go to state 50
+    &               shift and go to state 51
+    ID              shift and go to state 40
+    NUMBER          shift and go to state 55
+    CHR             shift and go to state 56
+    STR             shift and go to state 57
+    (               shift and go to state 53
 
+    expression                     shift and go to state 118
+    statement                      shift and go to state 200
+    decl                           shift and go to state 120
+    block                          shift and go to state 121
+    conditional                    shift and go to state 122
+    iteration                      shift and go to state 123
+    jump                           shift and go to state 124
+    tern_expr                      shift and go to state 43
+    usual_dec                      shift and go to state 8
+    new_type_dec                   shift and go to state 9
+    bin_expr                       shift and go to state 44
+    type                           shift and go to state 113
+    new_type                       shift and go to state 11
+    pre_unary_expr                 shift and go to state 47
+    post_unary_expr                shift and go to state 52
+    element                        shift and go to state 54
 
 state 197
 
-    (53) iteration -> FOR ( expr_or_null_or_init ; . expr_or_null ; expr_or_null ) { stats_or_null }
-    (54) expr_or_null -> . expression
-    (55) expr_or_null -> . empty
+    (52) iteration -> DO statement WHILE ( . expression ) ;
     (64) expression -> . tern_expr
+    (65) tern_expr -> . tern_expr ? tern_expr : tern_expr
+    (66) tern_expr -> . bin_expr
+    (67) bin_expr -> . bin_expr + bin_expr
+    (68) bin_expr -> . bin_expr - bin_expr
+    (69) bin_expr -> . bin_expr * bin_expr
+    (70) bin_expr -> . bin_expr / bin_expr
+    (71) bin_expr -> . bin_expr ^ bin_expr
+    (72) bin_expr -> . bin_expr > bin_expr
+    (73) bin_expr -> . bin_expr < bin_expr
+    (74) bin_expr -> . bin_expr LOGAND bin_expr
+    (75) bin_expr -> . bin_expr LOGOR bin_expr
+    (76) bin_expr -> . bin_expr LOGEQ bin_expr
+    (77) bin_expr -> . bin_expr LOGNEQ bin_expr
+    (78) bin_expr -> . bin_expr LEQ bin_expr
+    (79) bin_expr -> . bin_expr GEQ bin_expr
+    (80) bin_expr -> . bin_expr LSHIFT bin_expr
+    (81) bin_expr -> . bin_expr RSHIFT bin_expr
+    (82) bin_expr -> . bin_expr = bin_expr
+    (83) bin_expr -> . bin_expr ADDEQ bin_expr
+    (84) bin_expr -> . bin_expr SUBEQ bin_expr
+    (85) bin_expr -> . bin_expr MULTEQ bin_expr
+    (86) bin_expr -> . bin_expr DIVEQ bin_expr
+    (87) bin_expr -> . bin_expr MODEQ bin_expr
+    (88) bin_expr -> . pre_unary_expr
+    (89) pre_unary_expr -> . PLUSPLUS pre_unary_expr
+    (90) pre_unary_expr -> . MINUSMINUS pre_unary_expr
+    (91) pre_unary_expr -> . + pre_unary_expr
+    (92) pre_unary_expr -> . - pre_unary_expr
+    (93) pre_unary_expr -> . ! pre_unary_expr
+    (94) pre_unary_expr -> . & pre_unary_expr
+    (95) pre_unary_expr -> . post_unary_expr
+    (96) post_unary_expr -> . post_unary_expr [ expression ]
+    (97) post_unary_expr -> . post_unary_expr ( )
+    (98) post_unary_expr -> . post_unary_expr ( expressions )
+    (99) post_unary_expr -> . post_unary_expr PLUSPLUS
+    (100) post_unary_expr -> . post_unary_expr MINUSMINUS
+    (101) post_unary_expr -> . post_unary_expr . ID
+    (102) post_unary_expr -> . post_unary_expr RARROW ID
+    (103) post_unary_expr -> . element
+    (104) element -> . ID
+    (105) element -> . NUMBER
+    (106) element -> . CHR
+    (107) element -> . STR
+    (108) element -> . ( expression )
+
+    PLUSPLUS        shift and go to state 48
+    MINUSMINUS      shift and go to state 49
+    +               shift and go to state 45
+    -               shift and go to state 46
+    !               shift and go to state 50
+    &               shift and go to state 51
+    ID              shift and go to state 40
+    NUMBER          shift and go to state 55
+    CHR             shift and go to state 56
+    STR             shift and go to state 57
+    (               shift and go to state 53
+
+    expression                     shift and go to state 201
+    tern_expr                      shift and go to state 43
+    bin_expr                       shift and go to state 44
+    pre_unary_expr                 shift and go to state 47
+    post_unary_expr                shift and go to state 52
+    element                        shift and go to state 54
+
+state 198
+
+    (53) iteration -> FOR ( expr_or_null_or_init ; . expr_or_null ; expr_or_null ) statement
+    (54) expr_or_null -> . expressions
+    (55) expr_or_null -> . empty
+    (62) expressions -> . expression , expressions
+    (63) expressions -> . expression
     (116) empty -> .
+    (64) expression -> . tern_expr
     (65) tern_expr -> . tern_expr ? tern_expr : tern_expr
     (66) tern_expr -> . bin_expr
     (67) bin_expr -> . bin_expr + bin_expr
@@ -7365,177 +7712,127 @@ state 197
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    expr_or_null                   shift and go to state 201
-    expression                     shift and go to state 191
-    empty                          shift and go to state 192
+    expr_or_null                   shift and go to state 202
+    expressions                    shift and go to state 192
+    empty                          shift and go to state 193
+    expression                     shift and go to state 107
     tern_expr                      shift and go to state 43
     bin_expr                       shift and go to state 44
-    pre_unary_expr                 shift and go to state 47
-    post_unary_expr                shift and go to state 52
-    element                        shift and go to state 54
-
-state 198
-
-    (45) conditional -> IF ( expression ) { . stats_or_null }
-    (46) conditional -> IF ( expression ) { . stats_or_null } ELSE conditional
-    (47) conditional -> IF ( expression ) { . stats_or_null } ELSE { stats_or_null }
-    (49) stats_or_null -> . statements
-    (50) stats_or_null -> . empty
-    (37) statements -> . statement statements
-    (38) statements -> . statement
-    (116) empty -> .
-    (39) statement -> . expression ;
-    (40) statement -> . decl ;
-    (41) statement -> . conditional
-    (42) statement -> . iteration
-    (43) statement -> . jump ;
-    (44) statement -> . ;
-    (48) statement -> . { stats_or_null }
-    (64) expression -> . tern_expr
-    (9) decl -> . usual_dec
-    (10) decl -> . new_type_dec
-    (45) conditional -> . IF ( expression ) { stats_or_null }
-    (46) conditional -> . IF ( expression ) { stats_or_null } ELSE conditional
-    (47) conditional -> . IF ( expression ) { stats_or_null } ELSE { stats_or_null }
-    (51) iteration -> . WHILE ( expression ) { stats_or_null }
-    (52) iteration -> . DO { stats_or_null } WHILE ( expression ) ;
-    (53) iteration -> . FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null }
-    (58) jump -> . BREAK
-    (59) jump -> . CONTINUE
-    (60) jump -> . RETURN
-    (61) jump -> . RETURN expression
-    (65) tern_expr -> . tern_expr ? tern_expr : tern_expr
-    (66) tern_expr -> . bin_expr
-    (11) usual_dec -> . type declarators
-    (22) new_type_dec -> . new_type ID { new_type_params }
-    (23) new_type_dec -> . new_type ID { new_type_params } declarators
-    (24) new_type_dec -> . new_type ID declarators
-    (67) bin_expr -> . bin_expr + bin_expr
-    (68) bin_expr -> . bin_expr - bin_expr
-    (69) bin_expr -> . bin_expr * bin_expr
-    (70) bin_expr -> . bin_expr / bin_expr
-    (71) bin_expr -> . bin_expr ^ bin_expr
-    (72) bin_expr -> . bin_expr > bin_expr
-    (73) bin_expr -> . bin_expr < bin_expr
-    (74) bin_expr -> . bin_expr LOGAND bin_expr
-    (75) bin_expr -> . bin_expr LOGOR bin_expr
-    (76) bin_expr -> . bin_expr LOGEQ bin_expr
-    (77) bin_expr -> . bin_expr LOGNEQ bin_expr
-    (78) bin_expr -> . bin_expr LEQ bin_expr
-    (79) bin_expr -> . bin_expr GEQ bin_expr
-    (80) bin_expr -> . bin_expr LSHIFT bin_expr
-    (81) bin_expr -> . bin_expr RSHIFT bin_expr
-    (82) bin_expr -> . bin_expr = bin_expr
-    (83) bin_expr -> . bin_expr ADDEQ bin_expr
-    (84) bin_expr -> . bin_expr SUBEQ bin_expr
-    (85) bin_expr -> . bin_expr MULTEQ bin_expr
-    (86) bin_expr -> . bin_expr DIVEQ bin_expr
-    (87) bin_expr -> . bin_expr MODEQ bin_expr
-    (88) bin_expr -> . pre_unary_expr
-    (109) type -> . VOID
-    (110) type -> . CHAR
-    (111) type -> . SHORT
-    (112) type -> . INT
-    (113) type -> . LONG
-    (114) type -> . FLOAT
-    (115) type -> . DOUBLE
-    (25) new_type -> . STRUCT
-    (26) new_type -> . CLASS
-    (89) pre_unary_expr -> . PLUSPLUS pre_unary_expr
-    (90) pre_unary_expr -> . MINUSMINUS pre_unary_expr
-    (91) pre_unary_expr -> . + pre_unary_expr
-    (92) pre_unary_expr -> . - pre_unary_expr
-    (93) pre_unary_expr -> . ! pre_unary_expr
-    (94) pre_unary_expr -> . & pre_unary_expr
-    (95) pre_unary_expr -> . post_unary_expr
-    (96) post_unary_expr -> . post_unary_expr [ expression ]
-    (97) post_unary_expr -> . post_unary_expr ( )
-    (98) post_unary_expr -> . post_unary_expr ( expressions )
-    (99) post_unary_expr -> . post_unary_expr PLUSPLUS
-    (100) post_unary_expr -> . post_unary_expr MINUSMINUS
-    (101) post_unary_expr -> . post_unary_expr . ID
-    (102) post_unary_expr -> . post_unary_expr RARROW ID
-    (103) post_unary_expr -> . element
-    (104) element -> . ID
-    (105) element -> . NUMBER
-    (106) element -> . CHR
-    (107) element -> . STR
-    (108) element -> . ( expression )
-
-    }               reduce using rule 116 (empty -> .)
-    ;               shift and go to state 119
-    {               shift and go to state 114
-    IF              shift and go to state 124
-    WHILE           shift and go to state 125
-    DO              shift and go to state 126
-    FOR             shift and go to state 127
-    BREAK           shift and go to state 128
-    CONTINUE        shift and go to state 129
-    RETURN          shift and go to state 130
-    VOID            shift and go to state 12
-    CHAR            shift and go to state 13
-    SHORT           shift and go to state 14
-    INT             shift and go to state 15
-    LONG            shift and go to state 16
-    FLOAT           shift and go to state 17
-    DOUBLE          shift and go to state 18
-    STRUCT          shift and go to state 19
-    CLASS           shift and go to state 20
-    PLUSPLUS        shift and go to state 48
-    MINUSMINUS      shift and go to state 49
-    +               shift and go to state 45
-    -               shift and go to state 46
-    !               shift and go to state 50
-    &               shift and go to state 51
-    ID              shift and go to state 40
-    NUMBER          shift and go to state 55
-    CHR             shift and go to state 56
-    STR             shift and go to state 57
-    (               shift and go to state 53
-
-    expression                     shift and go to state 118
-    stats_or_null                  shift and go to state 202
-    conditional                    shift and go to state 121
-    statements                     shift and go to state 167
-    empty                          shift and go to state 168
-    statement                      shift and go to state 117
-    decl                           shift and go to state 120
-    iteration                      shift and go to state 122
-    jump                           shift and go to state 123
-    tern_expr                      shift and go to state 43
-    usual_dec                      shift and go to state 8
-    new_type_dec                   shift and go to state 9
-    bin_expr                       shift and go to state 44
-    type                           shift and go to state 113
-    new_type                       shift and go to state 11
     pre_unary_expr                 shift and go to state 47
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
 
 state 199
 
-    (51) iteration -> WHILE ( expression ) { . stats_or_null }
-    (49) stats_or_null -> . statements
-    (50) stats_or_null -> . empty
-    (37) statements -> . statement statements
-    (38) statements -> . statement
-    (116) empty -> .
+    (46) conditional -> IF ( expression ) statement .
+    (47) conditional -> IF ( expression ) statement . ELSE statement
+
+  ! shift/reduce conflict for ELSE resolved as shift
+    ;               reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    {               reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    IF              reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    WHILE           reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    DO              reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    FOR             reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    BREAK           reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    CONTINUE        reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    RETURN          reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    VOID            reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    CHAR            reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    SHORT           reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    INT             reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    LONG            reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    FLOAT           reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    DOUBLE          reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    STRUCT          reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    CLASS           reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    PLUSPLUS        reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    MINUSMINUS      reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    +               reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    -               reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    !               reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    &               reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    ID              reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    NUMBER          reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    CHR             reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    STR             reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    (               reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    }               reduce using rule 46 (conditional -> IF ( expression ) statement .)
+    ELSE            shift and go to state 203
+
+  ! ELSE            [ reduce using rule 46 (conditional -> IF ( expression ) statement .) ]
+
+
+state 200
+
+    (51) iteration -> WHILE ( expression ) statement .
+
+    ;               reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    {               reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    IF              reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    WHILE           reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    DO              reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    FOR             reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    BREAK           reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    CONTINUE        reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    RETURN          reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    VOID            reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    CHAR            reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    SHORT           reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    INT             reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    LONG            reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    FLOAT           reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    DOUBLE          reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    STRUCT          reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    CLASS           reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    PLUSPLUS        reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    MINUSMINUS      reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    +               reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    -               reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    !               reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    &               reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    ID              reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    NUMBER          reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    CHR             reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    STR             reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    (               reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    }               reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+    ELSE            reduce using rule 51 (iteration -> WHILE ( expression ) statement .)
+
+
+state 201
+
+    (52) iteration -> DO statement WHILE ( expression . ) ;
+
+    )               shift and go to state 204
+
+
+state 202
+
+    (53) iteration -> FOR ( expr_or_null_or_init ; expr_or_null . ; expr_or_null ) statement
+
+    ;               shift and go to state 205
+
+
+state 203
+
+    (47) conditional -> IF ( expression ) statement ELSE . statement
     (39) statement -> . expression ;
     (40) statement -> . decl ;
-    (41) statement -> . conditional
-    (42) statement -> . iteration
-    (43) statement -> . jump ;
-    (44) statement -> . ;
-    (48) statement -> . { stats_or_null }
+    (41) statement -> . block
+    (42) statement -> . conditional
+    (43) statement -> . iteration
+    (44) statement -> . jump ;
+    (45) statement -> . ;
     (64) expression -> . tern_expr
     (9) decl -> . usual_dec
     (10) decl -> . new_type_dec
-    (45) conditional -> . IF ( expression ) { stats_or_null }
-    (46) conditional -> . IF ( expression ) { stats_or_null } ELSE conditional
-    (47) conditional -> . IF ( expression ) { stats_or_null } ELSE { stats_or_null }
-    (51) iteration -> . WHILE ( expression ) { stats_or_null }
-    (52) iteration -> . DO { stats_or_null } WHILE ( expression ) ;
-    (53) iteration -> . FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null }
+    (48) block -> . { stats_or_null }
+    (46) conditional -> . IF ( expression ) statement
+    (47) conditional -> . IF ( expression ) statement ELSE statement
+    (51) iteration -> . WHILE ( expression ) statement
+    (52) iteration -> . DO statement WHILE ( expression ) ;
+    (53) iteration -> . FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement
     (58) jump -> . BREAK
     (59) jump -> . CONTINUE
     (60) jump -> . RETURN
@@ -7598,16 +7895,15 @@ state 199
     (107) element -> . STR
     (108) element -> . ( expression )
 
-    }               reduce using rule 116 (empty -> .)
     ;               shift and go to state 119
     {               shift and go to state 114
-    IF              shift and go to state 124
-    WHILE           shift and go to state 125
-    DO              shift and go to state 126
-    FOR             shift and go to state 127
-    BREAK           shift and go to state 128
-    CONTINUE        shift and go to state 129
-    RETURN          shift and go to state 130
+    IF              shift and go to state 125
+    WHILE           shift and go to state 126
+    DO              shift and go to state 127
+    FOR             shift and go to state 128
+    BREAK           shift and go to state 129
+    CONTINUE        shift and go to state 130
+    RETURN          shift and go to state 131
     VOID            shift and go to state 12
     CHAR            shift and go to state 13
     SHORT           shift and go to state 14
@@ -7630,14 +7926,12 @@ state 199
     (               shift and go to state 53
 
     expression                     shift and go to state 118
-    stats_or_null                  shift and go to state 203
-    statements                     shift and go to state 167
-    empty                          shift and go to state 168
-    statement                      shift and go to state 117
+    statement                      shift and go to state 206
     decl                           shift and go to state 120
-    conditional                    shift and go to state 121
-    iteration                      shift and go to state 122
-    jump                           shift and go to state 123
+    block                          shift and go to state 121
+    conditional                    shift and go to state 122
+    iteration                      shift and go to state 123
+    jump                           shift and go to state 124
     tern_expr                      shift and go to state 43
     usual_dec                      shift and go to state 8
     new_type_dec                   shift and go to state 9
@@ -7648,111 +7942,22 @@ state 199
     post_unary_expr                shift and go to state 52
     element                        shift and go to state 54
 
-state 200
-
-    (52) iteration -> DO { stats_or_null } WHILE . ( expression ) ;
-
-    (               shift and go to state 204
-
-
-state 201
-
-    (53) iteration -> FOR ( expr_or_null_or_init ; expr_or_null . ; expr_or_null ) { stats_or_null }
-
-    ;               shift and go to state 205
-
-
-state 202
-
-    (45) conditional -> IF ( expression ) { stats_or_null . }
-    (46) conditional -> IF ( expression ) { stats_or_null . } ELSE conditional
-    (47) conditional -> IF ( expression ) { stats_or_null . } ELSE { stats_or_null }
-
-    }               shift and go to state 206
-
-
-state 203
-
-    (51) iteration -> WHILE ( expression ) { stats_or_null . }
-
-    }               shift and go to state 207
-
-
 state 204
 
-    (52) iteration -> DO { stats_or_null } WHILE ( . expression ) ;
-    (64) expression -> . tern_expr
-    (65) tern_expr -> . tern_expr ? tern_expr : tern_expr
-    (66) tern_expr -> . bin_expr
-    (67) bin_expr -> . bin_expr + bin_expr
-    (68) bin_expr -> . bin_expr - bin_expr
-    (69) bin_expr -> . bin_expr * bin_expr
-    (70) bin_expr -> . bin_expr / bin_expr
-    (71) bin_expr -> . bin_expr ^ bin_expr
-    (72) bin_expr -> . bin_expr > bin_expr
-    (73) bin_expr -> . bin_expr < bin_expr
-    (74) bin_expr -> . bin_expr LOGAND bin_expr
-    (75) bin_expr -> . bin_expr LOGOR bin_expr
-    (76) bin_expr -> . bin_expr LOGEQ bin_expr
-    (77) bin_expr -> . bin_expr LOGNEQ bin_expr
-    (78) bin_expr -> . bin_expr LEQ bin_expr
-    (79) bin_expr -> . bin_expr GEQ bin_expr
-    (80) bin_expr -> . bin_expr LSHIFT bin_expr
-    (81) bin_expr -> . bin_expr RSHIFT bin_expr
-    (82) bin_expr -> . bin_expr = bin_expr
-    (83) bin_expr -> . bin_expr ADDEQ bin_expr
-    (84) bin_expr -> . bin_expr SUBEQ bin_expr
-    (85) bin_expr -> . bin_expr MULTEQ bin_expr
-    (86) bin_expr -> . bin_expr DIVEQ bin_expr
-    (87) bin_expr -> . bin_expr MODEQ bin_expr
-    (88) bin_expr -> . pre_unary_expr
-    (89) pre_unary_expr -> . PLUSPLUS pre_unary_expr
-    (90) pre_unary_expr -> . MINUSMINUS pre_unary_expr
-    (91) pre_unary_expr -> . + pre_unary_expr
-    (92) pre_unary_expr -> . - pre_unary_expr
-    (93) pre_unary_expr -> . ! pre_unary_expr
-    (94) pre_unary_expr -> . & pre_unary_expr
-    (95) pre_unary_expr -> . post_unary_expr
-    (96) post_unary_expr -> . post_unary_expr [ expression ]
-    (97) post_unary_expr -> . post_unary_expr ( )
-    (98) post_unary_expr -> . post_unary_expr ( expressions )
-    (99) post_unary_expr -> . post_unary_expr PLUSPLUS
-    (100) post_unary_expr -> . post_unary_expr MINUSMINUS
-    (101) post_unary_expr -> . post_unary_expr . ID
-    (102) post_unary_expr -> . post_unary_expr RARROW ID
-    (103) post_unary_expr -> . element
-    (104) element -> . ID
-    (105) element -> . NUMBER
-    (106) element -> . CHR
-    (107) element -> . STR
-    (108) element -> . ( expression )
+    (52) iteration -> DO statement WHILE ( expression ) . ;
 
-    PLUSPLUS        shift and go to state 48
-    MINUSMINUS      shift and go to state 49
-    +               shift and go to state 45
-    -               shift and go to state 46
-    !               shift and go to state 50
-    &               shift and go to state 51
-    ID              shift and go to state 40
-    NUMBER          shift and go to state 55
-    CHR             shift and go to state 56
-    STR             shift and go to state 57
-    (               shift and go to state 53
+    ;               shift and go to state 207
 
-    expression                     shift and go to state 208
-    tern_expr                      shift and go to state 43
-    bin_expr                       shift and go to state 44
-    pre_unary_expr                 shift and go to state 47
-    post_unary_expr                shift and go to state 52
-    element                        shift and go to state 54
 
 state 205
 
-    (53) iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; . expr_or_null ) { stats_or_null }
-    (54) expr_or_null -> . expression
+    (53) iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; . expr_or_null ) statement
+    (54) expr_or_null -> . expressions
     (55) expr_or_null -> . empty
-    (64) expression -> . tern_expr
+    (62) expressions -> . expression , expressions
+    (63) expressions -> . expression
     (116) empty -> .
+    (64) expression -> . tern_expr
     (65) tern_expr -> . tern_expr ? tern_expr : tern_expr
     (66) tern_expr -> . bin_expr
     (67) bin_expr -> . bin_expr + bin_expr
@@ -7811,9 +8016,10 @@ state 205
     STR             shift and go to state 57
     (               shift and go to state 53
 
-    expr_or_null                   shift and go to state 209
-    expression                     shift and go to state 191
-    empty                          shift and go to state 192
+    expr_or_null                   shift and go to state 208
+    expressions                    shift and go to state 192
+    empty                          shift and go to state 193
+    expression                     shift and go to state 107
     tern_expr                      shift and go to state 43
     bin_expr                       shift and go to state 44
     pre_unary_expr                 shift and go to state 47
@@ -7822,546 +8028,250 @@ state 205
 
 state 206
 
-    (45) conditional -> IF ( expression ) { stats_or_null } .
-    (46) conditional -> IF ( expression ) { stats_or_null } . ELSE conditional
-    (47) conditional -> IF ( expression ) { stats_or_null } . ELSE { stats_or_null }
+    (47) conditional -> IF ( expression ) statement ELSE statement .
 
-    ;               reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    {               reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    IF              reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    WHILE           reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    DO              reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    FOR             reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    BREAK           reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    CONTINUE        reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    RETURN          reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    VOID            reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    CHAR            reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    SHORT           reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    INT             reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    LONG            reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    FLOAT           reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    DOUBLE          reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    STRUCT          reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    CLASS           reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    PLUSPLUS        reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    MINUSMINUS      reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    +               reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    -               reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    !               reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    &               reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    ID              reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    NUMBER          reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    CHR             reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    STR             reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    (               reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    }               reduce using rule 45 (conditional -> IF ( expression ) { stats_or_null } .)
-    ELSE            shift and go to state 210
+    ;               reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    {               reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    IF              reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    WHILE           reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    DO              reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    FOR             reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    BREAK           reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    CONTINUE        reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    RETURN          reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    VOID            reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    CHAR            reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    SHORT           reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    INT             reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    LONG            reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    FLOAT           reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    DOUBLE          reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    STRUCT          reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    CLASS           reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    PLUSPLUS        reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    MINUSMINUS      reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    +               reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    -               reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    !               reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    &               reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    ID              reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    NUMBER          reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    CHR             reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    STR             reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    (               reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    }               reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
+    ELSE            reduce using rule 47 (conditional -> IF ( expression ) statement ELSE statement .)
 
 
 state 207
 
-    (51) iteration -> WHILE ( expression ) { stats_or_null } .
+    (52) iteration -> DO statement WHILE ( expression ) ; .
 
-    ;               reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    {               reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    IF              reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    WHILE           reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    DO              reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    FOR             reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    BREAK           reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    CONTINUE        reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    RETURN          reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    VOID            reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    CHAR            reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    SHORT           reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    INT             reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    LONG            reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    FLOAT           reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    DOUBLE          reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    STRUCT          reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    CLASS           reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    PLUSPLUS        reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    MINUSMINUS      reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    +               reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    -               reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    !               reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    &               reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    ID              reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    NUMBER          reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    CHR             reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    STR             reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    (               reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
-    }               reduce using rule 51 (iteration -> WHILE ( expression ) { stats_or_null } .)
+    ;               reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    {               reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    IF              reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    WHILE           reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    DO              reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    FOR             reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    BREAK           reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    CONTINUE        reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    RETURN          reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    VOID            reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    CHAR            reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    SHORT           reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    INT             reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    LONG            reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    FLOAT           reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    DOUBLE          reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    STRUCT          reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    CLASS           reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    PLUSPLUS        reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    MINUSMINUS      reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    +               reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    -               reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    !               reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    &               reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    ID              reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    NUMBER          reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    CHR             reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    STR             reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    (               reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    }               reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
+    ELSE            reduce using rule 52 (iteration -> DO statement WHILE ( expression ) ; .)
 
 
 state 208
 
-    (52) iteration -> DO { stats_or_null } WHILE ( expression . ) ;
+    (53) iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null . ) statement
 
-    )               shift and go to state 211
+    )               shift and go to state 209
 
 
 state 209
 
-    (53) iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null . ) { stats_or_null }
+    (53) iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) . statement
+    (39) statement -> . expression ;
+    (40) statement -> . decl ;
+    (41) statement -> . block
+    (42) statement -> . conditional
+    (43) statement -> . iteration
+    (44) statement -> . jump ;
+    (45) statement -> . ;
+    (64) expression -> . tern_expr
+    (9) decl -> . usual_dec
+    (10) decl -> . new_type_dec
+    (48) block -> . { stats_or_null }
+    (46) conditional -> . IF ( expression ) statement
+    (47) conditional -> . IF ( expression ) statement ELSE statement
+    (51) iteration -> . WHILE ( expression ) statement
+    (52) iteration -> . DO statement WHILE ( expression ) ;
+    (53) iteration -> . FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement
+    (58) jump -> . BREAK
+    (59) jump -> . CONTINUE
+    (60) jump -> . RETURN
+    (61) jump -> . RETURN expression
+    (65) tern_expr -> . tern_expr ? tern_expr : tern_expr
+    (66) tern_expr -> . bin_expr
+    (11) usual_dec -> . type declarators
+    (22) new_type_dec -> . new_type ID { new_type_params }
+    (23) new_type_dec -> . new_type ID { new_type_params } declarators
+    (24) new_type_dec -> . new_type ID declarators
+    (67) bin_expr -> . bin_expr + bin_expr
+    (68) bin_expr -> . bin_expr - bin_expr
+    (69) bin_expr -> . bin_expr * bin_expr
+    (70) bin_expr -> . bin_expr / bin_expr
+    (71) bin_expr -> . bin_expr ^ bin_expr
+    (72) bin_expr -> . bin_expr > bin_expr
+    (73) bin_expr -> . bin_expr < bin_expr
+    (74) bin_expr -> . bin_expr LOGAND bin_expr
+    (75) bin_expr -> . bin_expr LOGOR bin_expr
+    (76) bin_expr -> . bin_expr LOGEQ bin_expr
+    (77) bin_expr -> . bin_expr LOGNEQ bin_expr
+    (78) bin_expr -> . bin_expr LEQ bin_expr
+    (79) bin_expr -> . bin_expr GEQ bin_expr
+    (80) bin_expr -> . bin_expr LSHIFT bin_expr
+    (81) bin_expr -> . bin_expr RSHIFT bin_expr
+    (82) bin_expr -> . bin_expr = bin_expr
+    (83) bin_expr -> . bin_expr ADDEQ bin_expr
+    (84) bin_expr -> . bin_expr SUBEQ bin_expr
+    (85) bin_expr -> . bin_expr MULTEQ bin_expr
+    (86) bin_expr -> . bin_expr DIVEQ bin_expr
+    (87) bin_expr -> . bin_expr MODEQ bin_expr
+    (88) bin_expr -> . pre_unary_expr
+    (109) type -> . VOID
+    (110) type -> . CHAR
+    (111) type -> . SHORT
+    (112) type -> . INT
+    (113) type -> . LONG
+    (114) type -> . FLOAT
+    (115) type -> . DOUBLE
+    (25) new_type -> . STRUCT
+    (26) new_type -> . CLASS
+    (89) pre_unary_expr -> . PLUSPLUS pre_unary_expr
+    (90) pre_unary_expr -> . MINUSMINUS pre_unary_expr
+    (91) pre_unary_expr -> . + pre_unary_expr
+    (92) pre_unary_expr -> . - pre_unary_expr
+    (93) pre_unary_expr -> . ! pre_unary_expr
+    (94) pre_unary_expr -> . & pre_unary_expr
+    (95) pre_unary_expr -> . post_unary_expr
+    (96) post_unary_expr -> . post_unary_expr [ expression ]
+    (97) post_unary_expr -> . post_unary_expr ( )
+    (98) post_unary_expr -> . post_unary_expr ( expressions )
+    (99) post_unary_expr -> . post_unary_expr PLUSPLUS
+    (100) post_unary_expr -> . post_unary_expr MINUSMINUS
+    (101) post_unary_expr -> . post_unary_expr . ID
+    (102) post_unary_expr -> . post_unary_expr RARROW ID
+    (103) post_unary_expr -> . element
+    (104) element -> . ID
+    (105) element -> . NUMBER
+    (106) element -> . CHR
+    (107) element -> . STR
+    (108) element -> . ( expression )
 
-    )               shift and go to state 212
+    ;               shift and go to state 119
+    {               shift and go to state 114
+    IF              shift and go to state 125
+    WHILE           shift and go to state 126
+    DO              shift and go to state 127
+    FOR             shift and go to state 128
+    BREAK           shift and go to state 129
+    CONTINUE        shift and go to state 130
+    RETURN          shift and go to state 131
+    VOID            shift and go to state 12
+    CHAR            shift and go to state 13
+    SHORT           shift and go to state 14
+    INT             shift and go to state 15
+    LONG            shift and go to state 16
+    FLOAT           shift and go to state 17
+    DOUBLE          shift and go to state 18
+    STRUCT          shift and go to state 19
+    CLASS           shift and go to state 20
+    PLUSPLUS        shift and go to state 48
+    MINUSMINUS      shift and go to state 49
+    +               shift and go to state 45
+    -               shift and go to state 46
+    !               shift and go to state 50
+    &               shift and go to state 51
+    ID              shift and go to state 40
+    NUMBER          shift and go to state 55
+    CHR             shift and go to state 56
+    STR             shift and go to state 57
+    (               shift and go to state 53
 
+    statement                      shift and go to state 210
+    expression                     shift and go to state 118
+    decl                           shift and go to state 120
+    block                          shift and go to state 121
+    conditional                    shift and go to state 122
+    iteration                      shift and go to state 123
+    jump                           shift and go to state 124
+    tern_expr                      shift and go to state 43
+    usual_dec                      shift and go to state 8
+    new_type_dec                   shift and go to state 9
+    bin_expr                       shift and go to state 44
+    type                           shift and go to state 113
+    new_type                       shift and go to state 11
+    pre_unary_expr                 shift and go to state 47
+    post_unary_expr                shift and go to state 52
+    element                        shift and go to state 54
 
 state 210
 
-    (46) conditional -> IF ( expression ) { stats_or_null } ELSE . conditional
-    (47) conditional -> IF ( expression ) { stats_or_null } ELSE . { stats_or_null }
-    (45) conditional -> . IF ( expression ) { stats_or_null }
-    (46) conditional -> . IF ( expression ) { stats_or_null } ELSE conditional
-    (47) conditional -> . IF ( expression ) { stats_or_null } ELSE { stats_or_null }
+    (53) iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .
 
-    {               shift and go to state 213
-    IF              shift and go to state 124
+    ;               reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    {               reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    IF              reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    WHILE           reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    DO              reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    FOR             reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    BREAK           reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    CONTINUE        reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    RETURN          reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    VOID            reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    CHAR            reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    SHORT           reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    INT             reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    LONG            reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    FLOAT           reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    DOUBLE          reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    STRUCT          reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    CLASS           reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    PLUSPLUS        reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    MINUSMINUS      reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    +               reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    -               reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    !               reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    &               reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    ID              reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    NUMBER          reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    CHR             reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    STR             reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    (               reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    }               reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
+    ELSE            reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) statement .)
 
-    conditional                    shift and go to state 214
-
-state 211
-
-    (52) iteration -> DO { stats_or_null } WHILE ( expression ) . ;
-
-    ;               shift and go to state 215
-
-
-state 212
-
-    (53) iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) . { stats_or_null }
-
-    {               shift and go to state 216
-
-
-state 213
-
-    (47) conditional -> IF ( expression ) { stats_or_null } ELSE { . stats_or_null }
-    (49) stats_or_null -> . statements
-    (50) stats_or_null -> . empty
-    (37) statements -> . statement statements
-    (38) statements -> . statement
-    (116) empty -> .
-    (39) statement -> . expression ;
-    (40) statement -> . decl ;
-    (41) statement -> . conditional
-    (42) statement -> . iteration
-    (43) statement -> . jump ;
-    (44) statement -> . ;
-    (48) statement -> . { stats_or_null }
-    (64) expression -> . tern_expr
-    (9) decl -> . usual_dec
-    (10) decl -> . new_type_dec
-    (45) conditional -> . IF ( expression ) { stats_or_null }
-    (46) conditional -> . IF ( expression ) { stats_or_null } ELSE conditional
-    (47) conditional -> . IF ( expression ) { stats_or_null } ELSE { stats_or_null }
-    (51) iteration -> . WHILE ( expression ) { stats_or_null }
-    (52) iteration -> . DO { stats_or_null } WHILE ( expression ) ;
-    (53) iteration -> . FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null }
-    (58) jump -> . BREAK
-    (59) jump -> . CONTINUE
-    (60) jump -> . RETURN
-    (61) jump -> . RETURN expression
-    (65) tern_expr -> . tern_expr ? tern_expr : tern_expr
-    (66) tern_expr -> . bin_expr
-    (11) usual_dec -> . type declarators
-    (22) new_type_dec -> . new_type ID { new_type_params }
-    (23) new_type_dec -> . new_type ID { new_type_params } declarators
-    (24) new_type_dec -> . new_type ID declarators
-    (67) bin_expr -> . bin_expr + bin_expr
-    (68) bin_expr -> . bin_expr - bin_expr
-    (69) bin_expr -> . bin_expr * bin_expr
-    (70) bin_expr -> . bin_expr / bin_expr
-    (71) bin_expr -> . bin_expr ^ bin_expr
-    (72) bin_expr -> . bin_expr > bin_expr
-    (73) bin_expr -> . bin_expr < bin_expr
-    (74) bin_expr -> . bin_expr LOGAND bin_expr
-    (75) bin_expr -> . bin_expr LOGOR bin_expr
-    (76) bin_expr -> . bin_expr LOGEQ bin_expr
-    (77) bin_expr -> . bin_expr LOGNEQ bin_expr
-    (78) bin_expr -> . bin_expr LEQ bin_expr
-    (79) bin_expr -> . bin_expr GEQ bin_expr
-    (80) bin_expr -> . bin_expr LSHIFT bin_expr
-    (81) bin_expr -> . bin_expr RSHIFT bin_expr
-    (82) bin_expr -> . bin_expr = bin_expr
-    (83) bin_expr -> . bin_expr ADDEQ bin_expr
-    (84) bin_expr -> . bin_expr SUBEQ bin_expr
-    (85) bin_expr -> . bin_expr MULTEQ bin_expr
-    (86) bin_expr -> . bin_expr DIVEQ bin_expr
-    (87) bin_expr -> . bin_expr MODEQ bin_expr
-    (88) bin_expr -> . pre_unary_expr
-    (109) type -> . VOID
-    (110) type -> . CHAR
-    (111) type -> . SHORT
-    (112) type -> . INT
-    (113) type -> . LONG
-    (114) type -> . FLOAT
-    (115) type -> . DOUBLE
-    (25) new_type -> . STRUCT
-    (26) new_type -> . CLASS
-    (89) pre_unary_expr -> . PLUSPLUS pre_unary_expr
-    (90) pre_unary_expr -> . MINUSMINUS pre_unary_expr
-    (91) pre_unary_expr -> . + pre_unary_expr
-    (92) pre_unary_expr -> . - pre_unary_expr
-    (93) pre_unary_expr -> . ! pre_unary_expr
-    (94) pre_unary_expr -> . & pre_unary_expr
-    (95) pre_unary_expr -> . post_unary_expr
-    (96) post_unary_expr -> . post_unary_expr [ expression ]
-    (97) post_unary_expr -> . post_unary_expr ( )
-    (98) post_unary_expr -> . post_unary_expr ( expressions )
-    (99) post_unary_expr -> . post_unary_expr PLUSPLUS
-    (100) post_unary_expr -> . post_unary_expr MINUSMINUS
-    (101) post_unary_expr -> . post_unary_expr . ID
-    (102) post_unary_expr -> . post_unary_expr RARROW ID
-    (103) post_unary_expr -> . element
-    (104) element -> . ID
-    (105) element -> . NUMBER
-    (106) element -> . CHR
-    (107) element -> . STR
-    (108) element -> . ( expression )
-
-    }               reduce using rule 116 (empty -> .)
-    ;               shift and go to state 119
-    {               shift and go to state 114
-    IF              shift and go to state 124
-    WHILE           shift and go to state 125
-    DO              shift and go to state 126
-    FOR             shift and go to state 127
-    BREAK           shift and go to state 128
-    CONTINUE        shift and go to state 129
-    RETURN          shift and go to state 130
-    VOID            shift and go to state 12
-    CHAR            shift and go to state 13
-    SHORT           shift and go to state 14
-    INT             shift and go to state 15
-    LONG            shift and go to state 16
-    FLOAT           shift and go to state 17
-    DOUBLE          shift and go to state 18
-    STRUCT          shift and go to state 19
-    CLASS           shift and go to state 20
-    PLUSPLUS        shift and go to state 48
-    MINUSMINUS      shift and go to state 49
-    +               shift and go to state 45
-    -               shift and go to state 46
-    !               shift and go to state 50
-    &               shift and go to state 51
-    ID              shift and go to state 40
-    NUMBER          shift and go to state 55
-    CHR             shift and go to state 56
-    STR             shift and go to state 57
-    (               shift and go to state 53
-
-    expression                     shift and go to state 118
-    stats_or_null                  shift and go to state 217
-    statements                     shift and go to state 167
-    empty                          shift and go to state 168
-    statement                      shift and go to state 117
-    decl                           shift and go to state 120
-    conditional                    shift and go to state 121
-    iteration                      shift and go to state 122
-    jump                           shift and go to state 123
-    tern_expr                      shift and go to state 43
-    usual_dec                      shift and go to state 8
-    new_type_dec                   shift and go to state 9
-    bin_expr                       shift and go to state 44
-    type                           shift and go to state 113
-    new_type                       shift and go to state 11
-    pre_unary_expr                 shift and go to state 47
-    post_unary_expr                shift and go to state 52
-    element                        shift and go to state 54
-
-state 214
-
-    (46) conditional -> IF ( expression ) { stats_or_null } ELSE conditional .
-
-    ;               reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    {               reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    IF              reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    WHILE           reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    DO              reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    FOR             reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    BREAK           reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    CONTINUE        reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    RETURN          reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    VOID            reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    CHAR            reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    SHORT           reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    INT             reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    LONG            reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    FLOAT           reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    DOUBLE          reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    STRUCT          reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    CLASS           reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    PLUSPLUS        reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    MINUSMINUS      reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    +               reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    -               reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    !               reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    &               reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    ID              reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    NUMBER          reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    CHR             reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    STR             reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    (               reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-    }               reduce using rule 46 (conditional -> IF ( expression ) { stats_or_null } ELSE conditional .)
-
-
-state 215
-
-    (52) iteration -> DO { stats_or_null } WHILE ( expression ) ; .
-
-    ;               reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    {               reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    IF              reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    WHILE           reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    DO              reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    FOR             reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    BREAK           reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    CONTINUE        reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    RETURN          reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    VOID            reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    CHAR            reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    SHORT           reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    INT             reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    LONG            reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    FLOAT           reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    DOUBLE          reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    STRUCT          reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    CLASS           reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    PLUSPLUS        reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    MINUSMINUS      reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    +               reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    -               reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    !               reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    &               reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    ID              reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    NUMBER          reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    CHR             reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    STR             reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    (               reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-    }               reduce using rule 52 (iteration -> DO { stats_or_null } WHILE ( expression ) ; .)
-
-
-state 216
-
-    (53) iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { . stats_or_null }
-    (49) stats_or_null -> . statements
-    (50) stats_or_null -> . empty
-    (37) statements -> . statement statements
-    (38) statements -> . statement
-    (116) empty -> .
-    (39) statement -> . expression ;
-    (40) statement -> . decl ;
-    (41) statement -> . conditional
-    (42) statement -> . iteration
-    (43) statement -> . jump ;
-    (44) statement -> . ;
-    (48) statement -> . { stats_or_null }
-    (64) expression -> . tern_expr
-    (9) decl -> . usual_dec
-    (10) decl -> . new_type_dec
-    (45) conditional -> . IF ( expression ) { stats_or_null }
-    (46) conditional -> . IF ( expression ) { stats_or_null } ELSE conditional
-    (47) conditional -> . IF ( expression ) { stats_or_null } ELSE { stats_or_null }
-    (51) iteration -> . WHILE ( expression ) { stats_or_null }
-    (52) iteration -> . DO { stats_or_null } WHILE ( expression ) ;
-    (53) iteration -> . FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null }
-    (58) jump -> . BREAK
-    (59) jump -> . CONTINUE
-    (60) jump -> . RETURN
-    (61) jump -> . RETURN expression
-    (65) tern_expr -> . tern_expr ? tern_expr : tern_expr
-    (66) tern_expr -> . bin_expr
-    (11) usual_dec -> . type declarators
-    (22) new_type_dec -> . new_type ID { new_type_params }
-    (23) new_type_dec -> . new_type ID { new_type_params } declarators
-    (24) new_type_dec -> . new_type ID declarators
-    (67) bin_expr -> . bin_expr + bin_expr
-    (68) bin_expr -> . bin_expr - bin_expr
-    (69) bin_expr -> . bin_expr * bin_expr
-    (70) bin_expr -> . bin_expr / bin_expr
-    (71) bin_expr -> . bin_expr ^ bin_expr
-    (72) bin_expr -> . bin_expr > bin_expr
-    (73) bin_expr -> . bin_expr < bin_expr
-    (74) bin_expr -> . bin_expr LOGAND bin_expr
-    (75) bin_expr -> . bin_expr LOGOR bin_expr
-    (76) bin_expr -> . bin_expr LOGEQ bin_expr
-    (77) bin_expr -> . bin_expr LOGNEQ bin_expr
-    (78) bin_expr -> . bin_expr LEQ bin_expr
-    (79) bin_expr -> . bin_expr GEQ bin_expr
-    (80) bin_expr -> . bin_expr LSHIFT bin_expr
-    (81) bin_expr -> . bin_expr RSHIFT bin_expr
-    (82) bin_expr -> . bin_expr = bin_expr
-    (83) bin_expr -> . bin_expr ADDEQ bin_expr
-    (84) bin_expr -> . bin_expr SUBEQ bin_expr
-    (85) bin_expr -> . bin_expr MULTEQ bin_expr
-    (86) bin_expr -> . bin_expr DIVEQ bin_expr
-    (87) bin_expr -> . bin_expr MODEQ bin_expr
-    (88) bin_expr -> . pre_unary_expr
-    (109) type -> . VOID
-    (110) type -> . CHAR
-    (111) type -> . SHORT
-    (112) type -> . INT
-    (113) type -> . LONG
-    (114) type -> . FLOAT
-    (115) type -> . DOUBLE
-    (25) new_type -> . STRUCT
-    (26) new_type -> . CLASS
-    (89) pre_unary_expr -> . PLUSPLUS pre_unary_expr
-    (90) pre_unary_expr -> . MINUSMINUS pre_unary_expr
-    (91) pre_unary_expr -> . + pre_unary_expr
-    (92) pre_unary_expr -> . - pre_unary_expr
-    (93) pre_unary_expr -> . ! pre_unary_expr
-    (94) pre_unary_expr -> . & pre_unary_expr
-    (95) pre_unary_expr -> . post_unary_expr
-    (96) post_unary_expr -> . post_unary_expr [ expression ]
-    (97) post_unary_expr -> . post_unary_expr ( )
-    (98) post_unary_expr -> . post_unary_expr ( expressions )
-    (99) post_unary_expr -> . post_unary_expr PLUSPLUS
-    (100) post_unary_expr -> . post_unary_expr MINUSMINUS
-    (101) post_unary_expr -> . post_unary_expr . ID
-    (102) post_unary_expr -> . post_unary_expr RARROW ID
-    (103) post_unary_expr -> . element
-    (104) element -> . ID
-    (105) element -> . NUMBER
-    (106) element -> . CHR
-    (107) element -> . STR
-    (108) element -> . ( expression )
-
-    }               reduce using rule 116 (empty -> .)
-    ;               shift and go to state 119
-    {               shift and go to state 114
-    IF              shift and go to state 124
-    WHILE           shift and go to state 125
-    DO              shift and go to state 126
-    FOR             shift and go to state 127
-    BREAK           shift and go to state 128
-    CONTINUE        shift and go to state 129
-    RETURN          shift and go to state 130
-    VOID            shift and go to state 12
-    CHAR            shift and go to state 13
-    SHORT           shift and go to state 14
-    INT             shift and go to state 15
-    LONG            shift and go to state 16
-    FLOAT           shift and go to state 17
-    DOUBLE          shift and go to state 18
-    STRUCT          shift and go to state 19
-    CLASS           shift and go to state 20
-    PLUSPLUS        shift and go to state 48
-    MINUSMINUS      shift and go to state 49
-    +               shift and go to state 45
-    -               shift and go to state 46
-    !               shift and go to state 50
-    &               shift and go to state 51
-    ID              shift and go to state 40
-    NUMBER          shift and go to state 55
-    CHR             shift and go to state 56
-    STR             shift and go to state 57
-    (               shift and go to state 53
-
-    stats_or_null                  shift and go to state 218
-    statements                     shift and go to state 167
-    empty                          shift and go to state 168
-    statement                      shift and go to state 117
-    expression                     shift and go to state 118
-    decl                           shift and go to state 120
-    conditional                    shift and go to state 121
-    iteration                      shift and go to state 122
-    jump                           shift and go to state 123
-    tern_expr                      shift and go to state 43
-    usual_dec                      shift and go to state 8
-    new_type_dec                   shift and go to state 9
-    bin_expr                       shift and go to state 44
-    type                           shift and go to state 113
-    new_type                       shift and go to state 11
-    pre_unary_expr                 shift and go to state 47
-    post_unary_expr                shift and go to state 52
-    element                        shift and go to state 54
-
-state 217
-
-    (47) conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null . }
-
-    }               shift and go to state 219
-
-
-state 218
-
-    (53) iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null . }
-
-    }               shift and go to state 220
-
-
-state 219
-
-    (47) conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .
-
-    ;               reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    {               reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    IF              reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    WHILE           reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    DO              reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    FOR             reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    BREAK           reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    CONTINUE        reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    RETURN          reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    VOID            reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    CHAR            reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    SHORT           reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    INT             reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    LONG            reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    FLOAT           reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    DOUBLE          reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    STRUCT          reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    CLASS           reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    PLUSPLUS        reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    MINUSMINUS      reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    +               reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    -               reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    !               reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    &               reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    ID              reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    NUMBER          reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    CHR             reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    STR             reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    (               reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-    }               reduce using rule 47 (conditional -> IF ( expression ) { stats_or_null } ELSE { stats_or_null } .)
-
-
-state 220
-
-    (53) iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .
-
-    ;               reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    {               reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    IF              reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    WHILE           reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    DO              reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    FOR             reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    BREAK           reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    CONTINUE        reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    RETURN          reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    VOID            reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    CHAR            reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    SHORT           reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    INT             reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    LONG            reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    FLOAT           reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    DOUBLE          reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    STRUCT          reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    CLASS           reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    PLUSPLUS        reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    MINUSMINUS      reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    +               reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    -               reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    !               reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    &               reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    ID              reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    NUMBER          reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    CHR             reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    STR             reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    (               reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-    }               reduce using rule 53 (iteration -> FOR ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null } .)
-
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for ELSE in state 199 resolved as shift
