@@ -76,7 +76,8 @@ expressions : expressions expression
 
 /* function definition */
 
-func_def : type ID ( params ) { statements }
+func_def        : type ID ( params ) { statements }
+                | type ID ( ) { }
 
 // c statements
 

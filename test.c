@@ -5,8 +5,11 @@ char b = 'c', a[], g();
 struct A
 {
     int a, b;
-    int a[10];
+    int a[];
 };
+int main()
+{
+}
 /*
 char c[10] = "abc";
 

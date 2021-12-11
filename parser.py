@@ -56,6 +56,7 @@ def p_include(p):
 def p_external_declaration(p):
     """
         external_decl   : decl
+                        | func_def
     """
     p[0] = n("external_decl", [p[1]])
 
@@ -172,7 +173,44 @@ def p_new_type_param(p):
     """
         new_type_param : type declarators ';'
     """
-    p[0] = n("decl", [p[2]], (p[1],))
+    p[0] = n("param", [p[2]], (p[1],))
+
+# ------------------ new types end -------------------
+
+
+def p_function_definition(p):
+    """
+        func_def : type ID '(' params ')' '{' '}'
+    """
+    p[0] = n("func_def", [], p[3])
+
+
+def p_function_defintion_noparam(p):
+    """
+        func_def : type ID '(' ')' '{' '}'
+    """
+    p[0] = n("func_def", [])
+
+
+def p_params(p):
+    """
+        params : param ',' params
+    """
+    p[0] = n("params", p[1] + p[3].children)
+
+
+def p_params_end(p):
+    """
+        params : param
+    """
+    p[0] = n("params", [p[1]])
+
+
+def p_param(p):
+    """
+        param : type declarator_2
+    """
+    p[0] = n("param", [p[2]], p[1])
 
 
 def p_type(p):

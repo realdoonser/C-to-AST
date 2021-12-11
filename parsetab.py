@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = "BREAK CHAR CHR CLASS DOUBLE ELSE FLOAT GEQ ID IF INCLUDE INT LEQ LONG NUMBER RETURN SHORT STR STRUCT THEN VOID WHILE\n        program : include program\n                | external_decl program\n    \n        program : include\n                | external_decl\n    \n        include : INCLUDE\n    \n        external_decl   : decl\n    \n        decl : type declarators ';'\n    \n        decl : new_type_dec\n    \n        declarators : declarator_1 ',' declarators\n    \n        declarators : declarator_1\n    \n        declarator_1    : declarator_2\n    \n        declarator_1    : declarator_2 '=' initializer\n    \n        declarator_2    : ID\n    \n        declarator_2    : ID '(' ')'\n    \n        declarator_2    : ID '[' ']'\n    \n        initializer : NUMBER\n                    | CHR\n                    | STR\n    \n        new_type_dec    : new_type ID '{' new_type_params '}' ';'\n    \n        new_type    : STRUCT\n                    | CLASS\n    \n        new_type_params : new_type_param new_type_params \n    \n        new_type_params : new_type_param\n    \n        new_type_param : type declarators ';'\n    \n        type    : VOID \n                | CHAR \n                | SHORT \n                | INT \n                | LONG \n                | FLOAT \n                | DOUBLE\n    "
+_lr_signature = "BREAK CHAR CHR CLASS DOUBLE ELSE FLOAT GEQ ID IF INCLUDE INT LEQ LONG NUMBER RETURN SHORT STR STRUCT THEN VOID WHILE\n        program : include program\n                | external_decl program\n    \n        program : include\n                | external_decl\n    \n        include : INCLUDE\n    \n        external_decl   : decl\n                        | func_def\n    \n        decl : type declarators ';'\n    \n        decl : new_type_dec\n    \n        declarators : declarator_1 ',' declarators\n    \n        declarators : declarator_1\n    \n        declarator_1    : declarator_2\n    \n        declarator_1    : declarator_2 '=' initializer\n    \n        declarator_2    : ID\n    \n        declarator_2    : ID '(' ')'\n    \n        declarator_2    : ID '[' ']'\n    \n        initializer : NUMBER\n                    | CHR\n                    | STR\n    \n        new_type_dec    : new_type ID '{' new_type_params '}' ';'\n    \n        new_type    : STRUCT\n                    | CLASS\n    \n        new_type_params : new_type_param new_type_params \n    \n        new_type_params : new_type_param\n    \n        new_type_param : type declarators ';'\n    \n        func_def : type ID '(' params ')' '{' '}'\n    \n        func_def : type ID '(' ')' '{' '}'\n    \n        params : param ',' params\n    \n        params : param\n    \n        param : type declarator_2\n    \n        type    : VOID \n                | CHAR \n                | SHORT \n                | INT \n                | LONG \n                | FLOAT \n                | DOUBLE\n    "
     
-_lr_action_items = {'INCLUDE':([0,2,3,4,5,7,25,44,],[4,4,4,-5,-6,-8,-7,-19,]),'VOID':([0,2,3,4,5,7,25,30,39,44,45,],[8,8,8,-5,-6,-8,-7,8,8,-19,-24,]),'CHAR':([0,2,3,4,5,7,25,30,39,44,45,],[9,9,9,-5,-6,-8,-7,9,9,-19,-24,]),'SHORT':([0,2,3,4,5,7,25,30,39,44,45,],[10,10,10,-5,-6,-8,-7,10,10,-19,-24,]),'INT':([0,2,3,4,5,7,25,30,39,44,45,],[11,11,11,-5,-6,-8,-7,11,11,-19,-24,]),'LONG':([0,2,3,4,5,7,25,30,39,44,45,],[12,12,12,-5,-6,-8,-7,12,12,-19,-24,]),'FLOAT':([0,2,3,4,5,7,25,30,39,44,45,],[13,13,13,-5,-6,-8,-7,13,13,-19,-24,]),'DOUBLE':([0,2,3,4,5,7,25,30,39,44,45,],[14,14,14,-5,-6,-8,-7,14,14,-19,-24,]),'STRUCT':([0,2,3,4,5,7,25,44,],[16,16,16,-5,-6,-8,-7,-19,]),'CLASS':([0,2,3,4,5,7,25,44,],[17,17,17,-5,-6,-8,-7,-19,]),'$end':([1,2,3,4,5,7,18,19,25,44,],[0,-3,-4,-5,-6,-8,-1,-2,-7,-19,]),'ID':([6,8,9,10,11,12,13,14,15,16,17,26,40,],[23,-25,-26,-27,-28,-29,-30,-31,24,-20,-21,23,23,]),';':([20,21,22,23,31,32,33,34,35,36,37,41,43,],[25,-10,-11,-13,-9,-12,-16,-17,-18,-14,-15,44,45,]),',':([21,22,23,32,33,34,35,36,37,],[26,-11,-13,-12,-16,-17,-18,-14,-15,]),'=':([22,23,36,37,],[27,-13,-14,-15,]),'(':([23,],[28,]),'[':([23,],[29,]),'{':([24,],[30,]),'NUMBER':([27,],[33,]),'CHR':([27,],[34,]),'STR':([27,],[35,]),')':([28,],[36,]),']':([29,],[37,]),'}':([38,39,42,45,],[41,-23,-22,-24,]),}
+_lr_action_items = {'INCLUDE':([0,2,3,4,5,6,8,26,55,58,60,],[4,4,4,-5,-6,-7,-9,-8,-27,-20,-26,]),'VOID':([0,2,3,4,5,6,8,26,27,31,44,49,55,58,59,60,],[9,9,9,-5,-6,-7,-9,-8,9,9,9,9,-27,-20,-25,-26,]),'CHAR':([0,2,3,4,5,6,8,26,27,31,44,49,55,58,59,60,],[10,10,10,-5,-6,-7,-9,-8,10,10,10,10,-27,-20,-25,-26,]),'SHORT':([0,2,3,4,5,6,8,26,27,31,44,49,55,58,59,60,],[11,11,11,-5,-6,-7,-9,-8,11,11,11,11,-27,-20,-25,-26,]),'INT':([0,2,3,4,5,6,8,26,27,31,44,49,55,58,59,60,],[12,12,12,-5,-6,-7,-9,-8,12,12,12,12,-27,-20,-25,-26,]),'LONG':([0,2,3,4,5,6,8,26,27,31,44,49,55,58,59,60,],[13,13,13,-5,-6,-7,-9,-8,13,13,13,13,-27,-20,-25,-26,]),'FLOAT':([0,2,3,4,5,6,8,26,27,31,44,49,55,58,59,60,],[14,14,14,-5,-6,-7,-9,-8,14,14,14,14,-27,-20,-25,-26,]),'DOUBLE':([0,2,3,4,5,6,8,26,27,31,44,49,55,58,59,60,],[15,15,15,-5,-6,-7,-9,-8,15,15,15,15,-27,-20,-25,-26,]),'STRUCT':([0,2,3,4,5,6,8,26,55,58,60,],[17,17,17,-5,-6,-7,-9,-8,-27,-20,-26,]),'CLASS':([0,2,3,4,5,6,8,26,55,58,60,],[18,18,18,-5,-6,-7,-9,-8,-27,-20,-26,]),'$end':([1,2,3,4,5,6,8,19,20,26,55,58,60,],[0,-3,-4,-5,-6,-7,-9,-1,-2,-8,-27,-20,-26,]),'ID':([7,9,10,11,12,13,14,15,16,17,18,29,32,45,],[22,-31,-32,-33,-34,-35,-36,-37,25,-21,-22,38,38,38,]),';':([21,22,23,24,34,36,37,38,39,40,41,42,51,53,57,],[26,-14,-11,-12,-15,-16,-10,-14,-13,-17,-18,-19,58,59,-15,]),'(':([22,38,],[27,50,]),'=':([22,24,34,36,38,57,],[-14,30,-15,-16,-14,-15,]),',':([22,23,24,34,35,36,38,39,40,41,42,46,57,],[-14,29,-12,-15,49,-16,-14,-13,-17,-18,-19,-30,-15,]),'[':([22,38,],[28,28,]),'{':([25,34,47,],[31,48,54,]),')':([27,33,35,36,38,46,50,56,57,],[34,47,-29,-16,-14,-30,57,-28,-15,]),']':([28,],[36,]),'NUMBER':([30,],[40,]),'CHR':([30,],[41,]),'STR':([30,],[42,]),'}':([43,44,48,52,54,59,],[51,-24,55,-23,60,-25,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'program':([0,2,3,],[1,18,19,]),'include':([0,2,3,],[2,2,2,]),'external_decl':([0,2,3,],[3,3,3,]),'decl':([0,2,3,],[5,5,5,]),'type':([0,2,3,30,39,],[6,6,6,40,40,]),'new_type_dec':([0,2,3,],[7,7,7,]),'new_type':([0,2,3,],[15,15,15,]),'declarators':([6,26,40,],[20,31,43,]),'declarator_1':([6,26,40,],[21,21,21,]),'declarator_2':([6,26,40,],[22,22,22,]),'initializer':([27,],[32,]),'new_type_params':([30,39,],[38,42,]),'new_type_param':([30,39,],[39,39,]),}
+_lr_goto_items = {'program':([0,2,3,],[1,19,20,]),'include':([0,2,3,],[2,2,2,]),'external_decl':([0,2,3,],[3,3,3,]),'decl':([0,2,3,],[5,5,5,]),'func_def':([0,2,3,],[6,6,6,]),'type':([0,2,3,27,31,44,49,],[7,7,7,32,45,45,32,]),'new_type_dec':([0,2,3,],[8,8,8,]),'new_type':([0,2,3,],[16,16,16,]),'declarators':([7,29,45,],[21,37,53,]),'declarator_1':([7,29,45,],[23,23,23,]),'declarator_2':([7,29,32,45,],[24,24,46,24,]),'params':([27,49,],[33,56,]),'param':([27,49,],[35,35,]),'initializer':([30,],[39,]),'new_type_params':([31,44,],[43,52,]),'new_type_param':([31,44,],[44,44,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -33,29 +33,35 @@ _lr_productions = [
   ('program -> external_decl','program',1,'p_program_end','parser.py',38),
   ('include -> INCLUDE','include',1,'p_include','parser.py',49),
   ('external_decl -> decl','external_decl',1,'p_external_declaration','parser.py',58),
-  ('decl -> type declarators ;','decl',3,'p_decl','parser.py',65),
-  ('decl -> new_type_dec','decl',1,'p_decl_struct','parser.py',72),
-  ('declarators -> declarator_1 , declarators','declarators',3,'p_declarators','parser.py',81),
-  ('declarators -> declarator_1','declarators',1,'p_declarator_end','parser.py',88),
-  ('declarator_1 -> declarator_2','declarator_1',1,'p_declarator_1','parser.py',95),
-  ('declarator_1 -> declarator_2 = initializer','declarator_1',3,'p_declarator_1_winit','parser.py',102),
-  ('declarator_2 -> ID','declarator_2',1,'p_declarator_2_single','parser.py',109),
-  ('declarator_2 -> ID ( )','declarator_2',3,'p_declarator_2_func','parser.py',116),
-  ('declarator_2 -> ID [ ]','declarator_2',3,'p_declarator_2_array','parser.py',123),
-  ('initializer -> NUMBER','initializer',1,'p_initializer','parser.py',130),
-  ('initializer -> CHR','initializer',1,'p_initializer','parser.py',131),
-  ('initializer -> STR','initializer',1,'p_initializer','parser.py',132),
-  ('new_type_dec -> new_type ID { new_type_params } ;','new_type_dec',6,'p_new_type_dec','parser.py',144),
-  ('new_type -> STRUCT','new_type',1,'p_new_type','parser.py',151),
-  ('new_type -> CLASS','new_type',1,'p_new_type','parser.py',152),
-  ('new_type_params -> new_type_param new_type_params','new_type_params',2,'p_new_type_params','parser.py',159),
-  ('new_type_params -> new_type_param','new_type_params',1,'p_new_type_params_end','parser.py',166),
-  ('new_type_param -> type declarators ;','new_type_param',3,'p_new_type_param','parser.py',173),
-  ('type -> VOID','type',1,'p_type','parser.py',181),
-  ('type -> CHAR','type',1,'p_type','parser.py',182),
-  ('type -> SHORT','type',1,'p_type','parser.py',183),
-  ('type -> INT','type',1,'p_type','parser.py',184),
-  ('type -> LONG','type',1,'p_type','parser.py',185),
-  ('type -> FLOAT','type',1,'p_type','parser.py',186),
-  ('type -> DOUBLE','type',1,'p_type','parser.py',187),
+  ('external_decl -> func_def','external_decl',1,'p_external_declaration','parser.py',59),
+  ('decl -> type declarators ;','decl',3,'p_decl','parser.py',66),
+  ('decl -> new_type_dec','decl',1,'p_decl_struct','parser.py',73),
+  ('declarators -> declarator_1 , declarators','declarators',3,'p_declarators','parser.py',82),
+  ('declarators -> declarator_1','declarators',1,'p_declarator_end','parser.py',89),
+  ('declarator_1 -> declarator_2','declarator_1',1,'p_declarator_1','parser.py',96),
+  ('declarator_1 -> declarator_2 = initializer','declarator_1',3,'p_declarator_1_winit','parser.py',103),
+  ('declarator_2 -> ID','declarator_2',1,'p_declarator_2_single','parser.py',110),
+  ('declarator_2 -> ID ( )','declarator_2',3,'p_declarator_2_func','parser.py',117),
+  ('declarator_2 -> ID [ ]','declarator_2',3,'p_declarator_2_array','parser.py',124),
+  ('initializer -> NUMBER','initializer',1,'p_initializer','parser.py',131),
+  ('initializer -> CHR','initializer',1,'p_initializer','parser.py',132),
+  ('initializer -> STR','initializer',1,'p_initializer','parser.py',133),
+  ('new_type_dec -> new_type ID { new_type_params } ;','new_type_dec',6,'p_new_type_dec','parser.py',145),
+  ('new_type -> STRUCT','new_type',1,'p_new_type','parser.py',152),
+  ('new_type -> CLASS','new_type',1,'p_new_type','parser.py',153),
+  ('new_type_params -> new_type_param new_type_params','new_type_params',2,'p_new_type_params','parser.py',160),
+  ('new_type_params -> new_type_param','new_type_params',1,'p_new_type_params_end','parser.py',167),
+  ('new_type_param -> type declarators ;','new_type_param',3,'p_new_type_param','parser.py',174),
+  ('func_def -> type ID ( params ) { }','func_def',7,'p_function_definition','parser.py',183),
+  ('func_def -> type ID ( ) { }','func_def',6,'p_function_defintion_noparam','parser.py',190),
+  ('params -> param , params','params',3,'p_params','parser.py',197),
+  ('params -> param','params',1,'p_params_end','parser.py',204),
+  ('param -> type declarator_2','param',2,'p_param','parser.py',211),
+  ('type -> VOID','type',1,'p_type','parser.py',218),
+  ('type -> CHAR','type',1,'p_type','parser.py',219),
+  ('type -> SHORT','type',1,'p_type','parser.py',220),
+  ('type -> INT','type',1,'p_type','parser.py',221),
+  ('type -> LONG','type',1,'p_type','parser.py',222),
+  ('type -> FLOAT','type',1,'p_type','parser.py',223),
+  ('type -> DOUBLE','type',1,'p_type','parser.py',224),
 ]
