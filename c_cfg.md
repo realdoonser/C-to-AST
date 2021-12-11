@@ -25,7 +25,8 @@ type    : VOID | CHAR | SHORT | INT | LONG | FLOAT | DOUBLE
 // self defined data structures (struct, class)
 
 new_type_dec    : new_type ID { new_type_params } ;
-                | new_type ID { new_type_params } new_type_inits ;
+                | new_type ID { new_type_params } declarators ;
+                | new_type ID declarators ;
 
 new_type : CLASS | STRUCT
 
@@ -34,9 +35,6 @@ new_type_params : new_type_param; new_type_params
                 | new_type_param; // inside struct {... int a; ...} where int a; is the param
 
 new_type_param  : type ID ;
-
-new_type_inits  : ID , new_type_inits
-                | ID
 
 /* struct class end */
 
