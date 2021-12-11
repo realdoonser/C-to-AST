@@ -8,7 +8,7 @@ program : include program
         | include
         | external_decl
 
-include : # ID < ID . ID >
+include : #include < ID . ID >
 
 /* External Declarations (函数外声明) */
 exernal_decl    : decl // int a = 10; etc.
@@ -167,7 +167,7 @@ pre_unary_expr  : post_unary_expr
                 | !  pre_unary_expr
 
 post_unary_expr : element
-                | post_unary_expr [ expr ]
+                | post_unary_expr [ expression ]
                 | post_unary_expr ( expressions )
                 | post_unary_expr ( )
                 | post_unary_expr ++
