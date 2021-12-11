@@ -1,6 +1,5 @@
+
 int main()
 {
-    char c = 'a';
-    (c = getchar()) = 'a';
-    return 0;
+    (1 + 2) / 2 + 3 / 5;
 }

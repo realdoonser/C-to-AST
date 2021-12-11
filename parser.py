@@ -17,7 +17,7 @@ precedence = (
     ('left', '+', '-'),
     ('left', '*', '/'),
     ('right', 'LPLUSPLUS', 'LMINUSMINUS', 'LPOS', 'LNEG', 'LNOT'),
-    ('left', 'RPLUSPLUS', 'RMINUSMINUS', '.', 'RARROW')
+    ('left', 'RPLUSPLUS', 'RMINUSMINUS', '.', 'RARROW'),
 )
 
 
@@ -342,7 +342,9 @@ def p_statement_or_null(p):
         stats_or_null   : statements
                         | empty
     """
-    if (len(p) == 2):
+    if p[1] == None:
+        p[0] = []
+    else:
         p[0] = p[1]
 
 # ===================== iteration =========================
@@ -374,7 +376,10 @@ def p_expr_or_null(p):
         expr_or_null    : expression
                         | empty
     """
-    p[0] = p[1]
+    if p[1] == None:
+        p[0] = []
+    else:
+        p[0] = p[1]
 
 
 def p_expr_or_null_or_init(p):
@@ -419,25 +424,6 @@ def p_expressions_end(p):
     p[0] = n("expressions", [p[1]])
 
 
-def p_expression(p):
-    """
-        expression  : expression '=' expression
-                    | expression ADDEQ expression
-                    | expression SUBEQ expression
-                    | expression MULTEQ expression
-                    | expression DIVEQ expression
-                    | expression MODEQ expression
-    """
-    p[0] = n("assignment", [p[1], p[3]], p[2])
-
-
-def p_expression_wparenth(p):
-    """
-        expression : '(' expression ')'
-    """
-    p[0] = p[2]
-
-
 def p_expression_to_ternary(p):
     """
         expression : tern_expr
@@ -461,7 +447,13 @@ def p_ternary_expr_to_binary(p):
 
 def p_binary_expr(p):
     """
-        bin_expr    : pre_unary_expr bin_op bin_expr
+        bin_expr        : bin_expr '+' bin_expr
+                        | bin_expr '-' bin_expr
+                        | bin_expr '*' bin_expr
+                        | bin_expr '/' bin_expr
+                        | bin_expr '^' bin_expr
+                        | bin_expr '>' bin_expr
+                        | bin_expr '<' bin_expr
     """
     p[0] = n("binary_expression", [p[1], p[3]], p[2])
 
@@ -473,25 +465,31 @@ def p_binary_to_unary(p):
     p[0] = p[1]
 
 
-def p_binary_operator(p):
-    """
-        bin_op      : '+'
-                    | '-'
-                    | '*'
-                    | '/'
-                    | LOGAND
-                    | LOGOR
-                    | LOGEQ
-                    | LOGNEQ
-                    | LSHIFT
-                    | RSHIFT
-                    | '<'
-                    | '>'
-                    | LEQ
-                    | GEQ
-                    | '^'	
-    """
-    p[0] = p[1]
+# def p_binary_operator(p):
+#     """
+#         bin_op      : '+'
+#                     | '-'
+#                     | '*'
+#                     | '/'
+#                     | LOGAND
+#                     | LOGOR
+#                     | LOGEQ
+#                     | LOGNEQ
+#                     | LSHIFT
+#                     | RSHIFT
+#                     | '<'
+#                     | '>'
+#                     | LEQ
+#                     | GEQ
+#                     | '^'
+#                     | '='
+#                     | ADDEQ
+#                     | SUBEQ
+#                     | MULTEQ
+#                     | DIVEQ
+#                     | MODEQ
+#     """
+#     p[0] = p[1]
 
 
 def p_pre_unary_expr(p):
@@ -549,7 +547,7 @@ def p_post_unary_access_member(p):
     p[0] = n("post_unary", [p[1], p[3]], p[2])
 
 
-def p_post_unary_to_element(p):
+def p_post_unary_to_parenthesis(p):
     """
         post_unary_expr : element
     """
@@ -570,6 +568,13 @@ def p_element_const(p):
                 | STR
     """
     p[0] = n("const", [], p[1])
+
+
+def p_element_paren_expr(p):
+    """
+        element : '(' expression ')'
+    """
+    p[0] = p[2]
 
 # ------------------- expression end -----------------------
 
