@@ -16,7 +16,7 @@ exernal_decl    : decl // int a = 10; etc.
 
 /* decl */
 
-decl    : type declarators ; // int a, b=2, d, g();
+decl    : usual_dec // int a, b=2, d, g();
         | new_type_dec // new class or struct
 
 type    : VOID | CHAR | SHORT | INT | LONG | FLOAT | DOUBLE
@@ -39,6 +39,8 @@ new_type_inits  : ID , new_type_inits
                 | ID
 
 /* struct class end */
+
+usual_dec : type declarators ;
 
 // can can many declarator (eg. int a,b,c,d,e )
 declarators : declarator_1
@@ -114,7 +116,7 @@ expr_or_null    : expression
                 | empty
 
 expr_or_null_or_init    : expr_or_null
-                        | declarator_1
+                        | usual_dec
 
 jump            : break ;
                 | continue ;
