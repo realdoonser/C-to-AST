@@ -162,8 +162,8 @@ mult_expr       : unary_expr
 unary_expr      : post_unary_expr
                 | ++ unary_expr
                 | -- unary_expr
-                | + uanry_expr
-                | - uanry_expr
+                | + unary_expr
+                | - unary_expr
                 | ! unary_expr
 
 post_unary_expr : element
@@ -176,8 +176,9 @@ post_unary_expr : element
                 | post_unary_expr -> ID
 
 element : ID
-        | NUMBER
-
+        | NUMBER // 11212.12121
+        | CHR // character 'a'
+        | STR // string "abd"
 ```
 
 Currently not supprted styles (that i know of):
