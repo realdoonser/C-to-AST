@@ -89,7 +89,7 @@ statements  : statement statements
 statement       : expression ; // a+1*10
                 | assignment_expr ; // a *= b + c;
                 | decl ; // int a = 10;
-                | { statements }
+                | { statements } // block statements
                 | conditional // if () {} else {}
                 | iteration // while () {}
                 | jump
@@ -105,6 +105,10 @@ conditional     : if ( expression ) { statements }
 
 iteration       : while ( expression ) { statements }
                 | do { statements } while ( expression ) ;
+                | for ( expr_or_null ; expr_or_null ; expr_or_null ) { statements }
+
+expr_or_null    : expression
+                | empty
 
 jump            : break ;
                 | continue ;
