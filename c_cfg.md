@@ -168,15 +168,12 @@ unary_expr      : post_unary_expr
 
 post_unary_expr : element
                 | post_unary_expr [ expr ]
-                | post_unary_expr ( expressions_comma )
+                | post_unary_expr ( expressions )
                 | post_unary_expr ( )
                 | post_unary_expr ++
                 | post_uanry_expr --
                 | post_unary_expr . ID
                 | post_unary_expr -> ID
-
-expressions_comma       : expression , expression_comma
-                        | expression
 
 element : ID
         | NUMBER
