@@ -70,6 +70,13 @@ def p_external_declaration(p):
     p[0] = n("external_decl", [p[1]])
 
 
+def p_external_declaration_extra_semicolon(p):
+    """
+        external_decl : ';'
+    """
+    pass
+
+
 def p_decl(p):
     """
         decl    : usual_dec
@@ -161,7 +168,7 @@ def p_initializer(p):
 
 def p_new_type_dec(p):
     """
-        new_type_dec    : new_type ID '{' new_type_params '}' ';'
+        new_type_dec    : new_type ID '{' new_type_params '}'
     """
     p[0] = n(p[1], p[4], p[2])
 

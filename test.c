@@ -1,4 +1,5 @@
-int main()
+struct A
 {
-    int a, b[10] = {1, 2}, c;
-}
+    int a;
+};
+;
