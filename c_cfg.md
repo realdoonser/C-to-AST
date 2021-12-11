@@ -93,7 +93,7 @@ statement       : expression ; // a+1*10
                 | { statements } // block statements
                 | conditional // if () {} else {}
                 | iteration // while () {}
-                | jump
+                | jump ;
                 | ; // many ;'s
 
 assignment_expr : ID assignment_op expression
@@ -118,10 +118,10 @@ expr_or_null    : expression
 expr_or_null_or_init    : expr_or_null
                         | usual_dec
 
-jump            : break ;
-                | continue ;
-                | return ;
-                | return expression ;
+jump            : break
+                | continue
+                | return
+                | return expression
 
 /* expressions in the order of operation */
 expression      : or_expr ? or_expr : or_expr
