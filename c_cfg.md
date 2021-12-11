@@ -11,7 +11,7 @@ program : include program
 include : #include < ID . ID >
 
 /* External Declarations (函数外声明) */
-exernal_decl    : decl // int a = 10; etc.
+exernal_decl    : decl ; // int a = 10; etc.
                 | func_def // void f(){ ... }
 
 /* decl */
@@ -24,9 +24,9 @@ type    : VOID | CHAR | SHORT | INT | LONG | FLOAT | DOUBLE
 /* struct class begin: */
 // self defined data structures (struct, class)
 
-new_type_dec    : new_type ID { new_type_params } ;
-                | new_type ID { new_type_params } declarators ;
-                | new_type ID declarators ;
+new_type_dec    : new_type ID { new_type_params }
+                | new_type ID { new_type_params } declarators
+                | new_type ID declarators
 
 new_type : CLASS | STRUCT
 
