@@ -87,7 +87,6 @@ statements  : statement statements
             | statement
 
 statement       : expression ; // a+1*10
-                | assignment_expr ; // a *= b + c;
                 | decl ; // int a = 10;
                 | { statements } // block statements
                 | conditional // if () {} else {}
@@ -122,6 +121,7 @@ jump            : break ;
 /* expressions in the order of operation */
 expression      : or_expr ? or_expr : or_expr
                 | or_expr
+                | assignment_expr
 
 or_expr         : and_expr || and_expr
                 | and_expr
@@ -190,7 +190,6 @@ int foo(int, float, int) // function definition with type but no var name
 int foo(float a, ...) // stdarg style three dots ...
 if (a = b)
     do stuff // if/for/while statements without {}
-while ((c = getchar()) != EOF) // assignments in expressions
 a | b // bitwise operations
 switch () // switch statements
 goto // will not plan on adding
