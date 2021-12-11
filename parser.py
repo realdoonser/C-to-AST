@@ -171,7 +171,21 @@ def p_new_type_dec(p):
     """
         new_type_dec    : new_type ID '{' new_type_params '}'
     """
-    p[0] = n(p[1], p[4], p[2])
+    p[0] = n(p[1], [p[4]], p[2])
+
+
+def p_new_type_dec_winit(p):
+    """
+        new_type_dec    : new_type ID '{' new_type_params '}' declarators
+    """
+    p[0] = n(p[1], [p[4], p[6]])
+
+
+def p_new_type_dec_wodef(p):
+    """
+        new_type_dec    : new_type ID declarators
+    """
+    p[0] = n(p[1], [p[3]])
 
 
 def p_new_type(p):
@@ -186,14 +200,14 @@ def p_new_type_params(p):
     """
         new_type_params : new_type_param new_type_params
     """
-    p[0] = [p[1]] + p[2]
+    p[0] = n("params", [p[1]] + p[2].children)
 
 
 def p_new_type_params_end(p):
     """
         new_type_params : new_type_param
     """
-    p[0] = [p[1]]
+    p[0] = n("params", [p[1]])
 
 
 def p_new_type_param(p):
