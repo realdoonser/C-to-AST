@@ -6,7 +6,7 @@ import pprint
 
 
 precedence = (
-    ('left', '=', 'MULTEQ', 'DIVEQ', 'ADDEQ', 'SUBEQ'),
+    ('left', 'ADDEQ', 'SUBEQ', 'MODEQ', 'MULTEQ', 'DIVEQ', '='),
     ('left', '?', ':'),
     ('left', 'LOGOR'),
     ('left', 'LOGAND'),
@@ -454,6 +454,20 @@ def p_binary_expr(p):
                         | bin_expr '^' bin_expr
                         | bin_expr '>' bin_expr
                         | bin_expr '<' bin_expr
+                        | bin_expr LOGAND bin_expr
+                        | bin_expr LOGOR bin_expr
+                        | bin_expr LOGEQ bin_expr
+                        | bin_expr LOGNEQ bin_expr
+                        | bin_expr LEQ bin_expr
+                        | bin_expr GEQ bin_expr
+                        | bin_expr LSHIFT bin_expr
+                        | bin_expr RSHIFT bin_expr
+                        | bin_expr '=' bin_expr
+                        | bin_expr ADDEQ bin_expr
+                        | bin_expr SUBEQ bin_expr
+                        | bin_expr MULTEQ bin_expr
+                        | bin_expr DIVEQ bin_expr
+                        | bin_expr MODEQ bin_expr
     """
     p[0] = n("binary_expression", [p[1], p[3]], p[2])
 
@@ -463,33 +477,6 @@ def p_binary_to_unary(p):
         bin_expr    : pre_unary_expr
     """
     p[0] = p[1]
-
-
-# def p_binary_operator(p):
-#     """
-#         bin_op      : '+'
-#                     | '-'
-#                     | '*'
-#                     | '/'
-#                     | LOGAND
-#                     | LOGOR
-#                     | LOGEQ
-#                     | LOGNEQ
-#                     | LSHIFT
-#                     | RSHIFT
-#                     | '<'
-#                     | '>'
-#                     | LEQ
-#                     | GEQ
-#                     | '^'
-#                     | '='
-#                     | ADDEQ
-#                     | SUBEQ
-#                     | MULTEQ
-#                     | DIVEQ
-#                     | MODEQ
-#     """
-#     p[0] = p[1]
 
 
 def p_pre_unary_expr(p):
