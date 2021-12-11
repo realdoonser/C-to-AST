@@ -155,23 +155,23 @@ add_expr        : mult_expr
                 | add_expr + mult_expr
                 | add_expr - mult_expr
 
-mult_expr       : unary_expr
-                | mult_expr * unary_expr
-                | mult_expr / unary_expr
+mult_expr       : pre_unary_expr
+                | mult_expr * pre_unary_expr
+                | mult_expr / pre_unary_expr
 
-unary_expr      : post_unary_expr
-                | ++ unary_expr
-                | -- unary_expr
-                | + unary_expr
-                | - unary_expr
-                | ! unary_expr
+pre_unary_expr  : post_unary_expr
+                | ++ pre_unary_expr
+                | -- pre_unary_expr
+                | +  pre_unary_expr
+                | -  pre_unary_expr
+                | !  pre_unary_expr
 
 post_unary_expr : element
                 | post_unary_expr [ expr ]
                 | post_unary_expr ( expressions )
                 | post_unary_expr ( )
                 | post_unary_expr ++
-                | post_uanry_expr --
+                | post_unary_expr --
                 | post_unary_expr . ID
                 | post_unary_expr -> ID
 
