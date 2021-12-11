@@ -96,11 +96,6 @@ statement       : expression ; // a+1*10
                 | jump ;
                 | ; // many ;'s
 
-assignment_expr : ID assignment_op expression
-
-assignment_op   : = | *= | /= | %= | += | -= | <<=
-                | >>= | $= | ^= | |=
-
 conditional     : if ( expression ) { stats_or_null }
                 | if ( expression ) else conditional // higher precedence
                 | if ( expression ) { stats_or_null } else { stats_or_null } // lower precedence
@@ -124,9 +119,10 @@ jump            : break
                 | return expression
 
 /* expressions in the order of operation */
-expression      : or_expr ? or_expr : or_expr
-                | or_expr
-                | assignment_expr
+expression      : or_expr assignment_op expression
+
+assignment_op   : = | *= | /= | %= | += | -= | <<=
+                | >>= | $= | ^= | |=
 
 or_expr         : and_expr || and_expr
                 | and_expr
