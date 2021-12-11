@@ -105,13 +105,16 @@ conditional     : if ( expression ) { stats_or_null }
 
 iteration       : while ( expression ) { stats_or_null }
                 | do { stats_or_null } while ( expression ) ;
-                | for ( expr_or_null ; expr_or_null ; expr_or_null ) { stats_or_null }
+                | for ( expr_or_null_or_init ; expr_or_null ; expr_or_null ) { stats_or_null }
 
 stats_or_null : statements // statements or empty
                 | empty
 
 expr_or_null    : expression
                 | empty
+
+expr_or_null_or_init    : expr_or_null
+                        | declarator_1
 
 jump            : break ;
                 | continue ;
