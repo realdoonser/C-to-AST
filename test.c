@@ -1,5 +1,6 @@
 
 int main()
 {
-    (1 + 2) / 2 + 3 / 5;
+    for(int i = 0; i < 5; i++)
+        char str[] = "KILL YOURSELF!!!";
 }
